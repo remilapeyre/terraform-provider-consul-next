@@ -1,0 +1,20 @@
+{
+  "data.consul_autopilot_health.test": {
+    "failure_tolerance": "0",
+    "healthy": "false",
+    "id": "autopilot_health",
+    "servers.#": "1",
+    "servers.0.%": "11",
+    "servers.0.address": "127.0.0.1:8300",
+    "servers.0.healthy": "false",
+    "servers.0.id": "<set>",
+    "servers.0.last_index": "1",
+    "servers.0.last_term": "1",
+    "servers.0.leader": "false",
+    "servers.0.name": "<set>",
+    "servers.0.serf_status": "alive",
+    "servers.0.stable_since": "<set>",
+    "servers.0.version": "1.16.1",
+    "servers.0.voter": "true"
+  }
+}

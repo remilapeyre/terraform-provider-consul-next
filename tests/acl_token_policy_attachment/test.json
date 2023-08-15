@@ -1,0 +1,9 @@
+{
+  "consul_acl_token_policy_attachment.attachment": {
+    "id": "00000000-0000-0000-0000-000000000002-test",
+    "policy.%": "2",
+    "policy.id": "<set>",
+    "policy.name": "test",
+    "token_id": "<set>"
+  }
+}

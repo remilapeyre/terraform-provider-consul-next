@@ -1,0 +1,8 @@
+{
+  "consul_certificate_authority.test": {
+    "config": "{\"IntermediateCertTTL\":\"216h\",\"LeafCertTTL\":\"72h\",\"RootCertTTL\":\"216h\"}",
+    "connect_provider": "consul",
+    "force_without_cross_signing": "false",
+    "id": "certificate_authority"
+  }
+}

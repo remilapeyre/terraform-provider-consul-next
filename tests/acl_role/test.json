@@ -1,0 +1,16 @@
+{
+  "consul_acl_role.test": {
+    "description": "",
+    "id": "<set>",
+    "name": "test",
+    "namespace": "",
+    "partition": "",
+    "policies.#": "1",
+    "policies.0.%": "2",
+    "policies.0.id": "<set>",
+    "policies.0.name": "test",
+    "service_identities.#": "1",
+    "service_identities.0.%": "2",
+    "service_identities.0.service_name": "foo"
+  }
+}

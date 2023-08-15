@@ -1,0 +1,11 @@
+{
+  "consul_autopilot_config.test": {
+    "cleanup_dead_servers": "true",
+    "disable_upgrade_migration": "false",
+    "id": "autopilot_config",
+    "max_trailing_logs": "2500",
+    "min_quorum": "0",
+    "redundancy_zone_tag": "",
+    "upgrade_version_tag": ""
+  }
+}

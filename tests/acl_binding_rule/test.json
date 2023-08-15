@@ -1,0 +1,22 @@
+{
+  "consul_acl_binding_rule.test": {
+    "auth_method": "test",
+    "bind_name": "foo",
+    "bind_type": "role",
+    "description": "",
+    "id": "<set>",
+    "namespace": "",
+    "partition": "",
+    "selector": ""
+  },
+  "data.consul_acl_binding_rule.test": {
+    "auth_method": "test",
+    "bind_name": "foo",
+    "bind_type": "role",
+    "description": "",
+    "id": "<set>",
+    "namespace": "",
+    "partition": "",
+    "selector": ""
+  }
+}

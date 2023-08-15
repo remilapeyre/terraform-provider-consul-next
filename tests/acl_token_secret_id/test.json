@@ -1,0 +1,22 @@
+{
+  "consul_acl_token.test": {
+    "accessor_id": "<set>",
+    "auth_method": "",
+    "auth_method_namespace": "",
+    "create_time": "<set>",
+    "description": "",
+    "expiration_ttl": "0s",
+    "id": "<set>",
+    "local": "false",
+    "namespace": "",
+    "partition": ""
+  },
+  "data.consul_acl_token_secret_id.test": {
+    "accessor_id": "<set>",
+    "id": "",
+    "namespace": "",
+    "partition": "",
+    "pgp_key": "",
+    "secret_id": "<set>"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "consul_acl_policy.test": {
+    "description": "",
+    "id": "<set>",
+    "name": "test",
+    "namespace": "",
+    "partition": "",
+    "rules": "node_prefix \"\" {\n  policy = \"read\"\n}\n"
+  },
+  "data.consul_acl_policy.test": {
+    "description": "",
+    "id": "<set>",
+    "name": "test",
+    "namespace": "",
+    "partition": "",
+    "rules": "node_prefix \"\" {\n  policy = \"read\"\n}\n"
+  }
+}

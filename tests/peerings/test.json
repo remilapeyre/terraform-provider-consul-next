@@ -1,0 +1,6 @@
+{
+  "data.consul_peerings.test": {
+    "id": "peerings",
+    "peerings.#": "0"
+  }
+}

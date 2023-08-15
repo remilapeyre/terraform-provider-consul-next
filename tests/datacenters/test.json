@@ -1,0 +1,7 @@
+{
+  "data.consul_datacenters.test": {
+    "datacenters.#": "1",
+    "datacenters.0": "dc1",
+    "id": "datacenters"
+  }
+}

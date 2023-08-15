@@ -1,0 +1,61 @@
+config:
+  description: |
+    Consul is a service networking platform which provides service discovery, service mesh,
+    and application configuration capabilities. The Consul provider exposes resources used
+    to interact with a Consul cluster. Configuration of the provider is optional, as it provides
+    reasonable defaults for all arguments.
+
+    Use the navigation to the left to read about the available resources.
+
+    ~> **NOTE:** The Consul provider should not be confused with the [Consul remote
+    state backend][consul-remote-state-backend], which is one of many backends that
+    can be used to store Terraform state. The Consul provider is instead used to
+    manage resources within Consul itself, such as adding external services or
+    working with the key/value store.
+
+    [consul-remote-state-backend]: /docs/backends/types/consul.html
+
+  address:
+    description: "Address is the address of the Consul server"
+  datacenter:
+    description: "Datacenter to use. If not provided, the default agent datacenter is used."
+  http_auth:
+    description: "HttpAuth is the auth info to use for http access."
+  namespace:
+    description: "Namespace is the name of the namespace to send along for the request when no other Namespace is present in the QueryOptions"
+  partition:
+    description: "Partition is the name of the partition to send along for the request when no other Partition is present in the QueryOptions"
+  path_prefix:
+    description: "Prefix for URIs for when consul is behind an API gateway (reverse proxy).  The API gateway must strip off the PathPrefix before passing the request onto consul."
+  scheme:
+    description: "Scheme is the URI scheme for the Consul server."
+  tls_config:
+    description: "TLSConfig is used to generate a TLSClientConfig that's useful for talking to Consul using TLS."
+  token:
+    description: "Token is used to provide a per-request ACL token"
+  token_file:
+    description: "TokenFile is a file containing the current token to use for this client. If provided it is read once at startup and never again."
+
+  http_auth.username:
+    description: "Username to use for HTTP Basic Authentication"
+  http_auth.password:
+    description: "Password to use for HTTP Basic Authentication"
+
+  tls_config.address:
+    description: "Address is the optional address of the Consul server. The port, if any will be removed from here and this will be set to the ServerName of the resulting config."
+  tls_config.ca_file:
+    description: "CAFile is the optional path to the CA certificate used for Consul communication, defaults to the system bundle if not specified."
+  tls_config.ca_path:
+    description: "CAPath is the optional path to a directory of CA certificates to use for Consul communication, defaults to the system bundle if not specified."
+  tls_config.ca_pem:
+    description: "CAPem is the optional PEM-encoded CA certificate used for Consul communication, defaults to the system bundle if not specified."
+  tls_config.cert_file:
+    description: "CertFile is the optional path to the certificate for Consul communication. If this is set then you need to also set KeyFile."
+  tls_config.cert_pem:
+    description: "CertPEM is the optional PEM-encoded certificate for Consul communication. If this is set then you need to also set KeyPEM."
+  tls_config.insecure_skip_verify:
+    description: "InsecureSkipVerify if set to true will disable TLS host verification."
+  tls_config.key_file:
+    description: "KeyFile is the optional path to the private key for Consul communication. If this is set then you need to also set CertFile."
+  tls_config.key_pem:
+    description: "KeyPEM is the optional PEM-encoded private key for Consul communication. If this is set then you need to also set CertPEM."

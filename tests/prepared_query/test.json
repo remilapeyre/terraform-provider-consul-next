@@ -1,0 +1,31 @@
+{
+  "consul_prepared_query.test": {
+    "dns.%": "1",
+    "dns.ttl": "30s",
+    "id": "<set>",
+    "name": "myquery",
+    "service.%": "12",
+    "service.connect": "false",
+    "service.failover.%": "3",
+    "service.failover.datacenters.#": "3",
+    "service.failover.datacenters.0": "us-west1",
+    "service.failover.datacenters.1": "us-east-2",
+    "service.failover.datacenters.2": "asia-east1",
+    "service.failover.nearest_n": "3",
+    "service.name": "myapp",
+    "service.namespace": "",
+    "service.near": "_agent",
+    "service.only_passing": "true",
+    "service.partition": "",
+    "service.sameness_group": "",
+    "service.tags.#": "2",
+    "service.tags.0": "active",
+    "service.tags.1": "!standby",
+    "session": "",
+    "template.%": "3",
+    "template.regexp": "",
+    "template.remove_empty_tags": "false",
+    "template.type": "",
+    "token": "wxyz"
+  }
+}

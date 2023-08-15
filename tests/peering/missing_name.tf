@@ -1,0 +1,2 @@
+# ExpectError: The argument "name" is required
+data "consul_peering" "test" {}

@@ -1,0 +1,21 @@
+{
+  "data.consul_nodes.test": {
+    "id": "nodes",
+    "nodes.#": "1",
+    "nodes.0.%": "9",
+    "nodes.0.address": "127.0.0.1",
+    "nodes.0.datacenter": "dc1",
+    "nodes.0.id": "<set>",
+    "nodes.0.meta.%": "2",
+    "nodes.0.meta.consul-network-segment": "",
+    "nodes.0.meta.consul-version": "1.16.1",
+    "nodes.0.node": "<set>",
+    "nodes.0.partition": "",
+    "nodes.0.peer_name": "",
+    "nodes.0.tagged_addresses.%": "4",
+    "nodes.0.tagged_addresses.lan": "127.0.0.1",
+    "nodes.0.tagged_addresses.lan_ipv4": "127.0.0.1",
+    "nodes.0.tagged_addresses.wan": "127.0.0.1",
+    "nodes.0.tagged_addresses.wan_ipv4": "127.0.0.1"
+  }
+}

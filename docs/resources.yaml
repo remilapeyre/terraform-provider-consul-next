@@ -1,0 +1,130 @@
+acl_auth_method:
+  name:
+    description: "The name of the ACL auth method."
+  type:
+    description: "The type of the ACL auth method."
+  config:
+    description: "The configuration for this ACL auth method. This should only contain primitive values and containers (such as lists and maps)."
+  namespace_rules:
+    description: "namespace_rules apply only on auth methods defined in the default namespace. Namespacing is a Consul Enterprise feature."
+  namespace_rules.selector:
+    description: "selector is an expression that matches against verified identity attributes returned from the auth method during login."
+  namespace_rules.bind_namespace:
+    description: "bind_namespace is the target namespace of the binding. Can be lightly templated using HIL `${foo}` syntax from available field names. If empty it's created in the same namespace as the auth method."
+  description:
+    description: "The description for this ACL auth method."
+    default: ""
+  display_name:
+    description: "The display name for this ACL auth method."
+    default: ""
+  partition:
+    description: "The partition this ACL auth method is associated with. Partitions are a Consul Enterprise feature."
+    default: ""
+  namespace:
+    description: "The namespace this ACL auth method is associated with. Namespacing is a Consul Enterprise feature."
+    default: ""
+  token_locality:
+    description: "token_locality defines the kind of token that this auth method produces. This can be either 'local' or 'global'. If empty 'local' is assumed."
+    default: ""
+  max_token_ttl:
+    description: "The maximum time-to-live of the tokens this auth method produces."
+    default: "0s"
+
+acl_binding_rule:
+  description:
+    default: ""
+  namespace:
+    default: ""
+  partition:
+    default: ""
+  selector:
+    default: ""
+
+acl_policy:
+  name:
+    description: "The name of this ACL policy."
+  rules:
+    description: "The rules of this ACL policy."
+  datacenters:
+    description: "The datacenters this ACL policy is valid in."
+  description:
+    description: "The description of this ACL policy."
+    default: ""
+  namespace:
+    description: "The namespace the ACL policy is associated with. Namespacing is a Consul Enterprise feature."
+    default: ""
+  partition:
+    description: "The partition the ACL policy is associated with. Partitions are a Consul Enterprise feature."
+    default: ""
+
+acl_role:
+  name:
+    description: "The name of this ACL role."
+  description:
+    description: "The description of this ACL role."
+    default: ""
+  policies:
+    description: "The policies associated with this ACL role."
+    default: ""
+  policies.id:
+    description: "The ID of the ACL policy associated with this role."
+  policies.name:
+    description: "The name of the ACL policy associated with this role."
+  service_identities:
+    description: "The services associated with this ACL role."
+  service_identities.service_name:
+    description: "The service associated with this ACL role."
+  node_identities:
+    description: "The nodes associated with this ACL role."
+  node_identities.node_name:
+    description: "The node associated with this ACL role."
+  namespace:
+    description: "The namespace the ACL role is associated with. Namespacing is a Consul Enterprise feature."
+    default: ""
+  partition:
+    description: "The partition the ACL role is associated with. Partitions are a Consul Enterprise feature."
+    default: ""
+
+acl_token:
+  auth_method_namespace:
+    default: ""
+  local:
+    default: false
+  expiration_ttl:
+    default: "0s"
+  namespace:
+    default: ""
+  auth_method:
+    default: ""
+  description:
+    default: ""
+  partition:
+    default: ""
+
+config_entry:
+  partition:
+    default: ""
+  namespace:
+    default: ""
+
+peering_token:
+  partition:
+    default: ""
+
+prepared_query_definition:
+  session:
+    default: ""
+  service.partition:
+    default: ""
+  service.sameness_group:
+    default: ""
+  service.connect:
+    default: false
+  service.namespace:
+    default: ""
+  template.regexp:
+    default: ""
+  template.remove_empty_tags:
+    default: false
+  template.type:
+    default: ""

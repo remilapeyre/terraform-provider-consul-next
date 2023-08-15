@@ -1,0 +1,13 @@
+{
+  "data.consul_agent_config.test": {
+    "build_date": "<set>",
+    "datacenter": "dc1",
+    "id": "agent_config",
+    "node_id": "<set>",
+    "node_name": "<set>",
+    "primary_datacenter": "dc1",
+    "revision": "e0ab4d29",
+    "server": "true",
+    "version": "1.16.1"
+  }
+}

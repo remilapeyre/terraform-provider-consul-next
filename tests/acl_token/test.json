@@ -1,0 +1,34 @@
+{
+  "consul_acl_token.test": {
+    "accessor_id": "<set>",
+    "auth_method": "",
+    "auth_method_namespace": "",
+    "create_time": "<set>",
+    "description": "",
+    "expiration_ttl": "0s",
+    "id": "<set>",
+    "local": "false",
+    "namespace": "",
+    "partition": "",
+    "policies.#": "1",
+    "policies.0.%": "2",
+    "policies.0.id": "<set>",
+    "policies.0.name": "test"
+  },
+  "data.consul_acl_token.test": {
+    "accessor_id": "<set>",
+    "auth_method": "",
+    "auth_method_namespace": "",
+    "create_time": "<set>",
+    "description": "",
+    "expiration_ttl": "0s",
+    "id": "<set>",
+    "local": "false",
+    "namespace": "",
+    "partition": "",
+    "policies.#": "1",
+    "policies.0.%": "2",
+    "policies.0.id": "<set>",
+    "policies.0.name": "test"
+  }
+}

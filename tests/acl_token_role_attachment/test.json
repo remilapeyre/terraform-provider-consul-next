@@ -1,0 +1,9 @@
+{
+  "consul_acl_token_role_attachment.attachment": {
+    "id": "<set>",
+    "role.%": "2",
+    "role.id": "<set>",
+    "role.name": "test",
+    "token_id": "<set>"
+  }
+}

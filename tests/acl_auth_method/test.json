@@ -1,0 +1,26 @@
+{
+  "consul_acl_auth_method.test": {
+    "config": "{\"JWTValidationPubKeys\":[\"-----BEGIN PUBLIC KEY-----\\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAERVchfCZng4mmdvQz1+sJHRN40snC\\nYt8NjYOnbnScEXMkyoUmASr88gb7jaVAVt3RYASAbgBjB2Z+EUizWkx5Tg==\\n-----END PUBLIC KEY-----\"]}",
+    "description": "this is a test auth metho",
+    "display_name": "",
+    "id": "test",
+    "max_token_ttl": "2h0m0s",
+    "name": "test",
+    "namespace": "",
+    "partition": "",
+    "token_locality": "",
+    "type": "jwt"
+  },
+  "data.consul_acl_auth_method.test": {
+    "config": "{\"JWTValidationPubKeys\":[\"-----BEGIN PUBLIC KEY-----\\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAERVchfCZng4mmdvQz1+sJHRN40snC\\nYt8NjYOnbnScEXMkyoUmASr88gb7jaVAVt3RYASAbgBjB2Z+EUizWkx5Tg==\\n-----END PUBLIC KEY-----\"]}",
+    "description": "this is a test auth metho",
+    "display_name": "",
+    "id": "acl_auth_method",
+    "max_token_ttl": "2h0m0s",
+    "name": "test",
+    "namespace": "",
+    "partition": "",
+    "token_locality": "",
+    "type": "jwt"
+  }
+}
