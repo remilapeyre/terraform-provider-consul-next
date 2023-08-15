@@ -3,6 +3,6 @@
     "config": "{\"IntermediateCertTTL\":\"8760h\",\"LeafCertTTL\":\"72h\",\"RootCertTTL\":\"87600h\"}",
     "connect_provider": "consul",
     "force_without_cross_signing": "false",
-    "id": "certificate_autority"
+    "id": "certificate_authority"
   }
 }

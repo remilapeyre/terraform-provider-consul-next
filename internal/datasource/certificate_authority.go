@@ -30,7 +30,7 @@ func (r *CertificateAuthority) Read(ctx context.Context, client *api.Client, req
 	}
 
 	state := &structs.CAConfig{
-		ID:     "certificate_autority",
+		ID:     "certificate_authority",
 		Config: *config,
 	}
 	resp.Diagnostics.Append(models.Set(ctx, &resp.State, state)...)

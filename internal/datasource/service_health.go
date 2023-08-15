@@ -27,7 +27,7 @@ func (d *ServiceHealth) Read(ctx context.Context, client *api.Client, req dataso
 	// 	return
 	// }
 
-	client.Health().Service("", "", true, nil)
+	// client.Health().Service("", "", true, nil)
 	// if err != nil {
 	// 	resp.Diagnostics.AddError(fmt.Sprintf("failed to read ACL token %q", service.AccessorID), err.Error())
 	// 	return

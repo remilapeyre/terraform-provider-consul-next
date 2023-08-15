@@ -95,8 +95,12 @@ func testAccPreCheck(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Cleanup(func() {
-		cmd.Process.Kill()
-		cmd.Process.Wait()
+		if err := cmd.Process.Kill(); err != nil {
+			t.Logf("failed to kill process: %v", err)
+		}
+		if _, err := cmd.Process.Wait(); err != nil {
+			t.Logf("failed to wait on process: %v", err)
+		}
 	})
 }
 
