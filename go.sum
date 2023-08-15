@@ -1,4 +1,6 @@
 github.com/DataDog/datadog-go v3.2.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
+github.com/Lenstra/terraform-plugin-generator v0.0.0-20230815145806-37a9fa808896 h1:h9wfKIgFDB+flcTVtM8Rz/NXQzOd7uMlQFByKCfU4ls=
+github.com/Lenstra/terraform-plugin-generator v0.0.0-20230815145806-37a9fa808896/go.mod h1:gbN8Y6m5HppKDlx/1X4YfiXuQLd6N/gulq5VZxMcqvY=
 github.com/Masterminds/goutils v1.1.1 h1:5nUrii3FMTL5diU80unEVvNevw1nH4+ZV4DSLVJLSYI=
 github.com/Masterminds/goutils v1.1.1/go.mod h1:8cTjp+g8YejhMuvIA5y2vz3BpJxksy863GQaJW2MFNU=
 github.com/Masterminds/semver/v3 v3.1.1 h1:hLg3sBzpNErnxhQtUy/mmLR2I9foDujNK030IGemrRc=

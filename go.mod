@@ -3,7 +3,7 @@ module github.com/remilapeyre/terraform-provider-consul-next
 go 1.20
 
 require (
-	github.com/Lenstra/terraform-plugin-generator v0.0.0-00010101000000-000000000000
+	github.com/Lenstra/terraform-plugin-generator v0.0.0-20230815145806-37a9fa808896
 	github.com/dave/jennifer v1.6.1
 	github.com/hashicorp/consul/api v1.24.0
 	github.com/hashicorp/terraform-plugin-docs v0.16.0
@@ -90,5 +90,3 @@ require (
 )
 
 replace github.com/hashicorp/consul/api => ./api
-
-replace github.com/Lenstra/terraform-plugin-generator => ../terraform-plugin-generator
