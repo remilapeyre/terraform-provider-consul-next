@@ -3,7 +3,7 @@
 page_title: "consul_prepared_query Resource - consul"
 subcategory: ""
 description: |-
-
+  
 ---
 
 # consul_prepared_query (Resource)
@@ -64,7 +64,7 @@ Optional:
 - `targets` (Attributes List) (see [below for nested schema](#nestedatt--service--failover--targets))
 
 <a id="nestedatt--service--failover--targets"></a>
-### Nested Schema for `service.failover.targets`^
+### Nested Schema for `service.failover.targets`
 
 Optional:
 

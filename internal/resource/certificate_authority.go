@@ -15,7 +15,7 @@ import (
 func NewCertificateAuthority() resource.Resource {
 	return NewResource(
 		"certificate_authority",
-		certificateAutoritySchema(),
+		certificateAuthoritySchema(),
 		&CertificateAuthority{},
 	)
 }

@@ -788,7 +788,7 @@ func catalogServiceSchema() schema.Schema {
 	}
 }
 
-func certificateAutoritySchema() schema.Schema {
+func certificateAuthoritySchema() schema.Schema {
 	return schema.Schema{
 		MarkdownDescription: "",
 		Attributes: map[string]schema.Attribute{

@@ -15,7 +15,7 @@ import (
 func NewCertificateAuthority() datasource.DataSource {
 	return NewDataSource(
 		"certificate_authority",
-		certificateAutoritySchema(),
+		certificateAuthoritySchema(),
 		&CertificateAuthority{},
 	)
 }
