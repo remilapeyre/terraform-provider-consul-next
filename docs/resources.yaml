@@ -126,3 +126,59 @@ prepared_query_definition:
     default: false
   template.type:
     default: ""
+
+proxy_config_entry:
+  namespace:
+    default: ""
+  mode:
+    default: ""
+  partition:
+    default: ""
+  mutual_tls_mode:
+    default: ""
+
+service_config_entry:
+  balance_inbound_connections:
+    default: ""
+  local_connect_timeout_ms:
+    default: 0
+  namespace:
+    default: ""
+  mode:
+    default: ""
+  partition:
+    default: ""
+  max_inbound_connections:
+    default: 0
+  mutual_tls_mode:
+    default: ""
+  external_sni:
+    default: ""
+  local_request_timeout_ms:
+    default: 0
+
+service_router_config_entry:
+  routes.match.http.request_timeout:
+    default: "0s"
+  routes.match.http.path_exact:
+    default: ""
+  routes.match.http.path_prefix:
+    default: ""
+  routes.match.http.path_regex:
+    default: ""
+  namespace:
+    default: ""
+  partition:
+    default: ""
+  routes.destination.service_subset:
+    default: ""
+  routes.destination.retry_on_connect_failure:
+    default: false
+  routes.destination.num_retries:
+    default: 0
+  routes.destination.idle_timeout:
+    default: "0s"
+  routes.destination.request_timeout:
+    default: "0s"
+  routes.destination.prefix_rewrite:
+    default: ""

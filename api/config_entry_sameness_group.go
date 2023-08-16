@@ -5,19 +5,19 @@ package api
 
 type SamenessGroupConfigEntry struct {
 	Kind               string
-	Name               string
-	Partition          string `json:",omitempty"`
-	DefaultForFailover bool   `json:",omitempty" alias:"default_for_failover"`
-	IncludeLocal       bool   `json:",omitempty" alias:"include_local"`
-	Members            []SamenessGroupMember
-	Meta               map[string]string `json:",omitempty"`
+	Name               string                `terraform:"name"`
+	Partition          string                `json:",omitempty" terraform:"partition"`
+	DefaultForFailover bool                  `json:",omitempty" alias:"default_for_failover" terraform:"default_for_failover"`
+	IncludeLocal       bool                  `json:",omitempty" alias:"include_local" terraform:"include_local"`
+	Members            []SamenessGroupMember `terraform:"members"`
+	Meta               map[string]string     `json:",omitempty" terraform:"meta"`
 	CreateIndex        uint64
 	ModifyIndex        uint64
 }
 
 type SamenessGroupMember struct {
-	Partition string `json:",omitempty"`
-	Peer      string `json:",omitempty"`
+	Partition string `json:",omitempty" terraform:"partition"`
+	Peer      string `json:",omitempty" terraform:"peer"`
 }
 
 func (s *SamenessGroupConfigEntry) GetKind() string            { return s.Kind }

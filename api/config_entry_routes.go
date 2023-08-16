@@ -10,18 +10,18 @@ type TCPRouteConfigEntry struct {
 
 	// Name is used to match the config entry with its associated tcp-route
 	// service. This should match the name provided in the service definition.
-	Name string
+	Name string `terraform:"name"`
 
 	// Parents is a list of gateways that this route should be bound to.
-	Parents []ResourceReference
+	Parents []ResourceReference `terraform:"parents"`
 	// Services is a list of TCP-based services that this should route to.
 	// Currently, this must specify at maximum one service.
-	Services []TCPService
+	Services []TCPService `terraform:"services"`
 
-	Meta map[string]string `json:",omitempty"`
+	Meta map[string]string `json:",omitempty" terraform:"meta"`
 
 	// Status is the asynchronous status which a TCPRoute propagates to the user.
-	Status ConfigEntryStatus
+	Status ConfigEntryStatus `terraform:"status"`
 
 	// CreateIndex is the Raft index this entry was created at. This is a
 	// read-only field.
@@ -34,11 +34,11 @@ type TCPRouteConfigEntry struct {
 
 	// Partition is the partition the config entry is associated with.
 	// Partitioning is a Consul Enterprise feature.
-	Partition string `json:",omitempty"`
+	Partition string `json:",omitempty" terraform:"partition"`
 
 	// Namespace is the namespace the config entry is associated with.
 	// Namespacing is a Consul Enterprise feature.
-	Namespace string `json:",omitempty"`
+	Namespace string `json:",omitempty" terraform:"namespace"`
 }
 
 func (a *TCPRouteConfigEntry) GetKind() string            { return TCPRoute }
@@ -51,15 +51,15 @@ func (a *TCPRouteConfigEntry) GetModifyIndex() uint64     { return a.ModifyIndex
 
 // TCPService is a service reference for a TCPRoute
 type TCPService struct {
-	Name string
+	Name string `terraform:"name"`
 
 	// Partition is the partition the config entry is associated with.
 	// Partitioning is a Consul Enterprise feature.
-	Partition string `json:",omitempty"`
+	Partition string `json:",omitempty" terraform:"partition"`
 
 	// Namespace is the namespace the config entry is associated with.
 	// Namespacing is a Consul Enterprise feature.
-	Namespace string `json:",omitempty"`
+	Namespace string `json:",omitempty" terraform:"namespace"`
 }
 
 // HTTPRouteConfigEntry manages the configuration for a HTTP route
@@ -69,17 +69,17 @@ type HTTPRouteConfigEntry struct {
 	Kind string
 
 	// Name is used to match the config entry with its associated http-route.
-	Name string
+	Name string `terraform:"name"`
 
 	// Parents is a list of gateways that this route should be bound to
-	Parents []ResourceReference
+	Parents []ResourceReference `terraform:"parents"`
 	// Rules are a list of HTTP-based routing rules that this route should
 	// use for constructing a routing table.
-	Rules []HTTPRouteRule
+	Rules []HTTPRouteRule `terraform:"rules"`
 	// Hostnames are the hostnames for which this HTTPRoute should respond to requests.
-	Hostnames []string
+	Hostnames []string `terraform:"hostnames"`
 
-	Meta map[string]string `json:",omitempty"`
+	Meta map[string]string `json:",omitempty" terraform:"meta"`
 
 	// CreateIndex is the Raft index this entry was created at. This is a
 	// read-only field.
@@ -92,14 +92,14 @@ type HTTPRouteConfigEntry struct {
 
 	// Partition is the partition the config entry is associated with.
 	// Partitioning is a Consul Enterprise feature.
-	Partition string `json:",omitempty"`
+	Partition string `json:",omitempty" terraform:"partition"`
 
 	// Namespace is the namespace the config entry is associated with.
 	// Namespacing is a Consul Enterprise feature.
-	Namespace string `json:",omitempty"`
+	Namespace string `json:",omitempty" terraform:"namespace"`
 
 	// Status is the asynchronous status which an HTTPRoute propagates to the user.
-	Status ConfigEntryStatus
+	Status ConfigEntryStatus `terraform:"status"`
 }
 
 func (r *HTTPRouteConfigEntry) GetKind() string            { return HTTPRoute }
@@ -114,10 +114,10 @@ func (r *HTTPRouteConfigEntry) GetModifyIndex() uint64     { return r.ModifyInde
 // used in determining whether or not a request should
 // be routed to a given set of services.
 type HTTPMatch struct {
-	Headers []HTTPHeaderMatch
-	Method  HTTPMatchMethod
-	Path    HTTPPathMatch
-	Query   []HTTPQueryMatch
+	Headers []HTTPHeaderMatch `terraform:"headers"`
+	Method  HTTPMatchMethod   `terraform:"method"`
+	Path    HTTPPathMatch     `terraform:"path"`
+	Query   []HTTPQueryMatch  `terraform:"query"`
 }
 
 // HTTPMatchMethod specifies which type of HTTP verb should
@@ -152,9 +152,9 @@ const (
 // HTTPHeaderMatch specifies how a match should be done
 // on a request's headers.
 type HTTPHeaderMatch struct {
-	Match HTTPHeaderMatchType
-	Name  string
-	Value string
+	Match HTTPHeaderMatchType `terraform:"match"`
+	Name  string              `terraform:"name"`
+	Value string              `terraform:"value"`
 }
 
 // HTTPPathMatchType specifies how path matching criteria
@@ -170,8 +170,8 @@ const (
 // HTTPPathMatch specifies how a match should be done
 // on a request's path.
 type HTTPPathMatch struct {
-	Match HTTPPathMatchType
-	Value string
+	Match HTTPPathMatchType `terraform:"match"`
+	Value string            `terraform:"value"`
 }
 
 // HTTPQueryMatchType specifies how querys matching criteria
@@ -187,27 +187,27 @@ const (
 // HTTPQueryMatch specifies how a match should be done
 // on a request's query parameters.
 type HTTPQueryMatch struct {
-	Match HTTPQueryMatchType
-	Name  string
-	Value string
+	Match HTTPQueryMatchType `terraform:"match"`
+	Name  string             `terraform:"name"`
+	Value string             `terraform:"value"`
 }
 
 // HTTPFilters specifies a list of filters used to modify a request
 // before it is routed to an upstream.
 type HTTPFilters struct {
-	Headers    []HTTPHeaderFilter
-	URLRewrite *URLRewrite
+	Headers    []HTTPHeaderFilter `terraform:"headers"`
+	URLRewrite *URLRewrite        `terraform:"url_rewrite"`
 }
 
 // HTTPHeaderFilter specifies how HTTP headers should be modified.
 type HTTPHeaderFilter struct {
-	Add    map[string]string
-	Remove []string
-	Set    map[string]string
+	Add    map[string]string `terraform:"add"`
+	Remove []string          `terraform:"remove"`
+	Set    map[string]string `terraform:"set"`
 }
 
 type URLRewrite struct {
-	Path string
+	Path string `terraform:"path"`
 }
 
 // HTTPRouteRule specifies the routing rules used to determine what upstream
@@ -215,31 +215,31 @@ type URLRewrite struct {
 type HTTPRouteRule struct {
 	// Filters is a list of HTTP-based filters used to modify a request prior
 	// to routing it to the upstream service
-	Filters HTTPFilters
+	Filters HTTPFilters `terraform:"filters"`
 	// Matches specified the matching criteria used in the routing table. If a
 	// request matches the given HTTPMatch configuration, then traffic is routed
 	// to services specified in the Services field.
-	Matches []HTTPMatch
+	Matches []HTTPMatch `terraform:"matches"`
 	// Services is a list of HTTP-based services to route to if the request matches
 	// the rules specified in the Matches field.
-	Services []HTTPService
+	Services []HTTPService `terraform:"services"`
 }
 
 // HTTPService is a service reference for HTTP-based routing rules
 type HTTPService struct {
-	Name string
+	Name string `terraform:"name"`
 	// Weight is an arbitrary integer used in calculating how much
 	// traffic should be sent to the given service.
-	Weight int
+	Weight int `terraform:"weight"`
 	// Filters is a list of HTTP-based filters used to modify a request prior
 	// to routing it to the upstream service
-	Filters HTTPFilters
+	Filters HTTPFilters `terraform:"filters"`
 
 	// Partition is the partition the config entry is associated with.
 	// Partitioning is a Consul Enterprise feature.
-	Partition string `json:",omitempty"`
+	Partition string `json:",omitempty" terraform:"partition"`
 
 	// Namespace is the namespace the config entry is associated with.
 	// Namespacing is a Consul Enterprise feature.
-	Namespace string `json:",omitempty"`
+	Namespace string `json:",omitempty" terraform:"namespace"`
 }

@@ -100,19 +100,74 @@ Optional:
 
 Optional:
 
-- `access_logs` (Attributes) (see [below for nested schema](#nestedatt--service_proxy--access_logs))
 - `config` (String)
 - `destination_service_id` (String)
 - `destination_service_name` (String)
 - `envoy_extensions` (Attributes List) (see [below for nested schema](#nestedatt--service_proxy--envoy_extensions))
-- `expose` (Attributes) (see [below for nested schema](#nestedatt--service_proxy--expose))
 - `local_service_address` (String)
 - `local_service_port` (Number)
 - `local_service_socket_path` (String)
-- `mesh_gateway` (Attributes) (see [below for nested schema](#nestedatt--service_proxy--mesh_gateway))
 - `mode` (String)
 - `transparent_proxy` (Attributes) (see [below for nested schema](#nestedatt--service_proxy--transparent_proxy))
 - `upstreams` (Attributes List) (see [below for nested schema](#nestedatt--service_proxy--upstreams))
+
+Read-Only:
+
+- `access_logs` (Attributes) (see [below for nested schema](#nestedatt--service_proxy--access_logs))
+- `expose` (Attributes) (see [below for nested schema](#nestedatt--service_proxy--expose))
+- `mesh_gateway` (Attributes) (see [below for nested schema](#nestedatt--service_proxy--mesh_gateway))
+
+<a id="nestedatt--service_proxy--envoy_extensions"></a>
+### Nested Schema for `service_proxy.envoy_extensions`
+
+Optional:
+
+- `arguments` (String)
+- `consul_version` (String)
+- `envoy_version` (String)
+- `name` (String)
+- `required` (Boolean)
+
+
+<a id="nestedatt--service_proxy--transparent_proxy"></a>
+### Nested Schema for `service_proxy.transparent_proxy`
+
+Optional:
+
+- `dialed_directly` (Boolean)
+- `outbound_listener_port` (Number)
+
+
+<a id="nestedatt--service_proxy--upstreams"></a>
+### Nested Schema for `service_proxy.upstreams`
+
+Optional:
+
+- `centrally_configured` (Boolean)
+- `config` (String)
+- `datacenter` (String)
+- `destination_name` (String)
+- `destination_namespace` (String)
+- `destination_partition` (String)
+- `destination_peer` (String)
+- `destination_type` (String)
+- `local_bind_address` (String)
+- `local_bind_port` (Number)
+- `local_bind_socket_mode` (String)
+- `local_bind_socket_path` (String)
+
+Read-Only:
+
+- `mesh_gateway` (Attributes) (see [below for nested schema](#nestedatt--service_proxy--upstreams--mesh_gateway))
+
+<a id="nestedatt--service_proxy--upstreams--mesh_gateway"></a>
+### Nested Schema for `service_proxy.upstreams.mesh_gateway`
+
+Optional:
+
+- `mode` (String)
+
+
 
 <a id="nestedatt--service_proxy--access_logs"></a>
 ### Nested Schema for `service_proxy.access_logs`
@@ -125,18 +180,6 @@ Optional:
 - `path` (String)
 - `text_format` (String)
 - `type` (String)
-
-
-<a id="nestedatt--service_proxy--envoy_extensions"></a>
-### Nested Schema for `service_proxy.envoy_extensions`
-
-Optional:
-
-- `arguments` (String)
-- `consul_version` (String)
-- `envoy_version` (String)
-- `name` (String)
-- `required` (Boolean)
 
 
 <a id="nestedatt--service_proxy--expose"></a>
@@ -166,43 +209,6 @@ Optional:
 Optional:
 
 - `mode` (String)
-
-
-<a id="nestedatt--service_proxy--transparent_proxy"></a>
-### Nested Schema for `service_proxy.transparent_proxy`
-
-Optional:
-
-- `dialed_directly` (Boolean)
-- `outbound_listener_port` (Number)
-
-
-<a id="nestedatt--service_proxy--upstreams"></a>
-### Nested Schema for `service_proxy.upstreams`
-
-Optional:
-
-- `centrally_configured` (Boolean)
-- `config` (String)
-- `datacenter` (String)
-- `destination_name` (String)
-- `destination_namespace` (String)
-- `destination_partition` (String)
-- `destination_peer` (String)
-- `destination_type` (String)
-- `local_bind_address` (String)
-- `local_bind_port` (Number)
-- `local_bind_socket_mode` (String)
-- `local_bind_socket_path` (String)
-- `mesh_gateway` (Attributes) (see [below for nested schema](#nestedatt--service_proxy--upstreams--mesh_gateway))
-
-<a id="nestedatt--service_proxy--upstreams--mesh_gateway"></a>
-### Nested Schema for `service_proxy.upstreams.mesh_gateway`
-
-Optional:
-
-- `mode` (String)
-
 
 
 

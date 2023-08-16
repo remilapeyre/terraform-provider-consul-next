@@ -20,7 +20,7 @@ type Setter interface {
 	Set(context.Context, interface{}) diag.Diagnostics
 }
 
-func Set[Model *structs.ACLAuthMethod | *api.ACLBindingRule | *api.ACLPolicy | *api.ACLRole | *structs.ACLToken | *structs.ACLTokenPolicyAttachment | *structs.ACLTokenRoleAttachment | *structs.ACLTokenSecretID | *structs.AgentConfig | *api.Area | *structs.AutopilotConfig | *structs.AutopilotHealth | *structs.CAConfig | *api.CatalogNode | *api.CatalogService | *api.Config | *structs.ConfigEntry | *structs.Datacenters | *structs.KeyPrefix | *structs.Keys | *api.Namespace | *structs.NamespacePolicyAttachment | *structs.NamespaceRoleAttachment | *structs.NetworkAreaMembers | *structs.NetworkSegments | *structs.Nodes | *api.OperatorHealthReply | *api.Partition | *api.Peering | *structs.PeeringResource | *structs.PeeringToken | *structs.Peerings | *api.PreparedQueryDefinition | *structs.ServiceHealth](ctx context.Context, setter Setter, obj Model) diag.Diagnostics {
+func Set[Model *structs.ACLAuthMethod | *api.ACLBindingRule | *api.ACLPolicy | *api.ACLRole | *structs.ACLToken | *structs.ACLTokenPolicyAttachment | *structs.ACLTokenRoleAttachment | *structs.ACLTokenSecretID | *api.APIGatewayConfigEntry | *structs.AgentConfig | *api.Area | *structs.AutopilotConfig | *structs.AutopilotHealth | *structs.CAConfig | *api.CatalogNode | *api.CatalogService | *api.Config | *structs.ConfigEntry | *structs.Datacenters | *api.ExportedServicesConfigEntry | *api.HTTPRouteConfigEntry | *api.IngressGatewayConfigEntry | *api.InlineCertificateConfigEntry | *api.JWTProviderConfigEntry | *structs.KeyPrefix | *structs.Keys | *api.MeshConfigEntry | *api.Namespace | *structs.NamespacePolicyAttachment | *structs.NamespaceRoleAttachment | *structs.NetworkAreaMembers | *structs.NetworkSegments | *structs.Nodes | *api.OperatorHealthReply | *api.Partition | *api.Peering | *structs.PeeringResource | *structs.PeeringToken | *structs.Peerings | *api.PreparedQueryDefinition | *structs.ProxyConfigEntry | *api.RateLimitIPConfigEntry | *api.SamenessGroupConfigEntry | *structs.ServiceConfigEntry | *structs.ServiceHealth | *api.ServiceIntentionsConfigEntry | *api.ServiceResolverConfigEntry | *structs.ServiceRouterConfigEntry | *api.ServiceSplitterConfigEntry | *api.TCPRouteConfigEntry | *api.TerminatingGatewayConfigEntry](ctx context.Context, setter Setter, obj Model) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var converted interface{}
 	switch o := any(obj).(type) {
@@ -40,6 +40,8 @@ func Set[Model *structs.ACLAuthMethod | *api.ACLBindingRule | *api.ACLPolicy | *
 		converted, diags = EncodeACLTokenRoleAttachment(o)
 	case *structs.ACLTokenSecretID:
 		converted, diags = EncodeACLTokenSecretID(o)
+	case *api.APIGatewayConfigEntry:
+		converted, diags = EncodeAPIGatewayConfigEntry(o)
 	case *structs.AgentConfig:
 		converted, diags = EncodeAgentConfig(o)
 	case *api.Area:
@@ -60,10 +62,22 @@ func Set[Model *structs.ACLAuthMethod | *api.ACLBindingRule | *api.ACLPolicy | *
 		converted, diags = EncodeConfigEntry(o)
 	case *structs.Datacenters:
 		converted, diags = EncodeDatacenters(o)
+	case *api.ExportedServicesConfigEntry:
+		converted, diags = EncodeExportedServicesConfigEntry(o)
+	case *api.HTTPRouteConfigEntry:
+		converted, diags = EncodeHTTPRouteConfigEntry(o)
+	case *api.IngressGatewayConfigEntry:
+		converted, diags = EncodeIngressGatewayConfigEntry(o)
+	case *api.InlineCertificateConfigEntry:
+		converted, diags = EncodeInlineCertificateConfigEntry(o)
+	case *api.JWTProviderConfigEntry:
+		converted, diags = EncodeJWTProviderConfigEntry(o)
 	case *structs.KeyPrefix:
 		converted, diags = EncodeKeyPrefix(o)
 	case *structs.Keys:
 		converted, diags = EncodeKeys(o)
+	case *api.MeshConfigEntry:
+		converted, diags = EncodeMeshConfigEntry(o)
 	case *api.Namespace:
 		converted, diags = EncodeNamespace(o)
 	case *structs.NamespacePolicyAttachment:
@@ -90,8 +104,28 @@ func Set[Model *structs.ACLAuthMethod | *api.ACLBindingRule | *api.ACLPolicy | *
 		converted, diags = EncodePeerings(o)
 	case *api.PreparedQueryDefinition:
 		converted, diags = EncodePreparedQueryDefinition(o)
+	case *structs.ProxyConfigEntry:
+		converted, diags = EncodeProxyConfigEntry(o)
+	case *api.RateLimitIPConfigEntry:
+		converted, diags = EncodeRateLimitIPConfigEntry(o)
+	case *api.SamenessGroupConfigEntry:
+		converted, diags = EncodeSamenessGroupConfigEntry(o)
+	case *structs.ServiceConfigEntry:
+		converted, diags = EncodeServiceConfigEntry(o)
 	case *structs.ServiceHealth:
 		converted, diags = EncodeServiceHealth(o)
+	case *api.ServiceIntentionsConfigEntry:
+		converted, diags = EncodeServiceIntentionsConfigEntry(o)
+	case *api.ServiceResolverConfigEntry:
+		converted, diags = EncodeServiceResolverConfigEntry(o)
+	case *structs.ServiceRouterConfigEntry:
+		converted, diags = EncodeServiceRouterConfigEntry(o)
+	case *api.ServiceSplitterConfigEntry:
+		converted, diags = EncodeServiceSplitterConfigEntry(o)
+	case *api.TCPRouteConfigEntry:
+		converted, diags = EncodeTCPRouteConfigEntry(o)
+	case *api.TerminatingGatewayConfigEntry:
+		converted, diags = EncodeTerminatingGatewayConfigEntry(o)
 	default:
 		diags.AddError("unsupported object type", fmt.Sprintf("%T is not supported in %s.Set(). Please report this issue to the provider developers.", obj, "models"))
 		return diags
@@ -381,6 +415,50 @@ func EncodeACLTokenSecretID(aclTokenSecretId *structs.ACLTokenSecretID) (*ACLTok
 	res.Partition = types.StringValue(aclTokenSecretId.Partition)
 	res.Namespace = types.StringValue(aclTokenSecretId.Namespace)
 	res.PGPKey = types.StringValue(aclTokenSecretId.PGPKey)
+	return &res, diags
+}
+
+func EncodeAPIGatewayConfigEntry(apiGatewayConfigEntry *api.APIGatewayConfigEntry) (*APIGatewayConfigEntry, diag.Diagnostics) {
+	if apiGatewayConfigEntry == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := APIGatewayConfigEntry{}
+	res.Name = types.StringValue(apiGatewayConfigEntry.Name)
+	if apiGatewayConfigEntry.Meta != nil {
+		res.Meta = map[string]types.String{}
+		for k, v := range apiGatewayConfigEntry.Meta {
+			res.Meta[k] = types.StringValue(v)
+		}
+	}
+	if apiGatewayConfigEntry.Listeners != nil {
+		res.Listeners = make([]*APIGatewayListener, len(apiGatewayConfigEntry.Listeners))
+		for i, attr := range apiGatewayConfigEntry.Listeners {
+			{
+				data, d := encodeAPIGatewayListener(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Listeners[i] = data
+				}
+			}
+		}
+	}
+	{
+		data, d := encodeConfigEntryStatus(&apiGatewayConfigEntry.Status)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Status = data
+		}
+	}
+	res.Partition = types.StringValue(apiGatewayConfigEntry.Partition)
+	res.Namespace = types.StringValue(apiGatewayConfigEntry.Namespace)
 	return &res, diags
 }
 
@@ -737,6 +815,251 @@ func EncodeDatacenters(datacenters *structs.Datacenters) (*Datacenters, diag.Dia
 	return &res, diags
 }
 
+func EncodeExportedServicesConfigEntry(exportedServicesConfigEntry *api.ExportedServicesConfigEntry) (*ExportedServicesConfigEntry, diag.Diagnostics) {
+	if exportedServicesConfigEntry == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ExportedServicesConfigEntry{}
+	res.Name = types.StringValue(exportedServicesConfigEntry.Name)
+	res.Partition = types.StringValue(exportedServicesConfigEntry.Partition)
+	if exportedServicesConfigEntry.Services != nil {
+		res.Services = make([]*ExportedService, len(exportedServicesConfigEntry.Services))
+		for i, attr := range exportedServicesConfigEntry.Services {
+			{
+				data, d := encodeExportedService(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Services[i] = data
+				}
+			}
+		}
+	}
+	if exportedServicesConfigEntry.Meta != nil {
+		res.Meta = map[string]types.String{}
+		for k, v := range exportedServicesConfigEntry.Meta {
+			res.Meta[k] = types.StringValue(v)
+		}
+	}
+	return &res, diags
+}
+
+func EncodeHTTPRouteConfigEntry(httpRouteConfigEntry *api.HTTPRouteConfigEntry) (*HTTPRouteConfigEntry, diag.Diagnostics) {
+	if httpRouteConfigEntry == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := HTTPRouteConfigEntry{}
+	res.Name = types.StringValue(httpRouteConfigEntry.Name)
+	if httpRouteConfigEntry.Parents != nil {
+		res.Parents = make([]*ResourceReference, len(httpRouteConfigEntry.Parents))
+		for i, attr := range httpRouteConfigEntry.Parents {
+			{
+				data, d := encodeResourceReference(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Parents[i] = data
+				}
+			}
+		}
+	}
+	if httpRouteConfigEntry.Rules != nil {
+		res.Rules = make([]*HTTPRouteRule, len(httpRouteConfigEntry.Rules))
+		for i, attr := range httpRouteConfigEntry.Rules {
+			{
+				data, d := encodeHTTPRouteRule(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Rules[i] = data
+				}
+			}
+		}
+	}
+	if httpRouteConfigEntry.Hostnames != nil {
+		res.Hostnames = make([]types.String, len(httpRouteConfigEntry.Hostnames))
+		for i, attr := range httpRouteConfigEntry.Hostnames {
+			res.Hostnames[i] = types.StringValue(attr)
+		}
+	}
+	if httpRouteConfigEntry.Meta != nil {
+		res.Meta = map[string]types.String{}
+		for k, v := range httpRouteConfigEntry.Meta {
+			res.Meta[k] = types.StringValue(v)
+		}
+	}
+	res.Partition = types.StringValue(httpRouteConfigEntry.Partition)
+	res.Namespace = types.StringValue(httpRouteConfigEntry.Namespace)
+	{
+		data, d := encodeConfigEntryStatus(&httpRouteConfigEntry.Status)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Status = data
+		}
+	}
+	return &res, diags
+}
+
+func EncodeIngressGatewayConfigEntry(ingressGatewayConfigEntry *api.IngressGatewayConfigEntry) (*IngressGatewayConfigEntry, diag.Diagnostics) {
+	if ingressGatewayConfigEntry == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := IngressGatewayConfigEntry{}
+	res.Name = types.StringValue(ingressGatewayConfigEntry.Name)
+	res.Partition = types.StringValue(ingressGatewayConfigEntry.Partition)
+	res.Namespace = types.StringValue(ingressGatewayConfigEntry.Namespace)
+	{
+		data, d := encodeGatewayTLSConfig(&ingressGatewayConfigEntry.TLS)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.TLS = data
+		}
+	}
+	if ingressGatewayConfigEntry.Listeners != nil {
+		res.Listeners = make([]*IngressListener, len(ingressGatewayConfigEntry.Listeners))
+		for i, attr := range ingressGatewayConfigEntry.Listeners {
+			{
+				data, d := encodeIngressListener(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Listeners[i] = data
+				}
+			}
+		}
+	}
+	if ingressGatewayConfigEntry.Meta != nil {
+		res.Meta = map[string]types.String{}
+		for k, v := range ingressGatewayConfigEntry.Meta {
+			res.Meta[k] = types.StringValue(v)
+		}
+	}
+	{
+		data, d := encodeIngressServiceConfig(ingressGatewayConfigEntry.Defaults)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Defaults = data
+		}
+	}
+	return &res, diags
+}
+
+func EncodeInlineCertificateConfigEntry(inlineCertificateConfigEntry *api.InlineCertificateConfigEntry) (*InlineCertificateConfigEntry, diag.Diagnostics) {
+	if inlineCertificateConfigEntry == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := InlineCertificateConfigEntry{}
+	res.Name = types.StringValue(inlineCertificateConfigEntry.Name)
+	res.Certificate = types.StringValue(inlineCertificateConfigEntry.Certificate)
+	res.PrivateKey = types.StringValue(inlineCertificateConfigEntry.PrivateKey)
+	if inlineCertificateConfigEntry.Meta != nil {
+		res.Meta = map[string]types.String{}
+		for k, v := range inlineCertificateConfigEntry.Meta {
+			res.Meta[k] = types.StringValue(v)
+		}
+	}
+	res.Partition = types.StringValue(inlineCertificateConfigEntry.Partition)
+	res.Namespace = types.StringValue(inlineCertificateConfigEntry.Namespace)
+	return &res, diags
+}
+
+func EncodeJWTProviderConfigEntry(jwtProviderConfigEntry *api.JWTProviderConfigEntry) (*JWTProviderConfigEntry, diag.Diagnostics) {
+	if jwtProviderConfigEntry == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := JWTProviderConfigEntry{}
+	res.Name = types.StringValue(jwtProviderConfigEntry.Name)
+	{
+		data, d := encodeJSONWebKeySet(jwtProviderConfigEntry.JSONWebKeySet)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.JSONWebKeySet = data
+		}
+	}
+	res.Issuer = types.StringValue(jwtProviderConfigEntry.Issuer)
+	if jwtProviderConfigEntry.Audiences != nil {
+		res.Audiences = make([]types.String, len(jwtProviderConfigEntry.Audiences))
+		for i, attr := range jwtProviderConfigEntry.Audiences {
+			res.Audiences[i] = types.StringValue(attr)
+		}
+	}
+	if jwtProviderConfigEntry.Locations != nil {
+		res.Locations = make([]*JWTLocation, len(jwtProviderConfigEntry.Locations))
+		for i, attr := range jwtProviderConfigEntry.Locations {
+			{
+				data, d := encodeJWTLocation(attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Locations[i] = data
+				}
+			}
+		}
+	}
+	{
+		data, d := encodeJWTForwardingConfig(jwtProviderConfigEntry.Forwarding)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Forwarding = data
+		}
+	}
+	res.ClockSkewSeconds = types.Int64Value(int64(jwtProviderConfigEntry.ClockSkewSeconds))
+	{
+		data, d := encodeJWTCacheConfig(jwtProviderConfigEntry.CacheConfig)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.CacheConfig = data
+		}
+	}
+	if jwtProviderConfigEntry.Meta != nil {
+		res.Meta = map[string]types.String{}
+		for k, v := range jwtProviderConfigEntry.Meta {
+			res.Meta[k] = types.StringValue(v)
+		}
+	}
+	res.Partition = types.StringValue(jwtProviderConfigEntry.Partition)
+	res.Namespace = types.StringValue(jwtProviderConfigEntry.Namespace)
+	return &res, diags
+}
+
 func EncodeKeyPrefix(keyPrefix *structs.KeyPrefix) (*KeyPrefix, diag.Diagnostics) {
 	if keyPrefix == nil {
 		return nil, nil
@@ -769,6 +1092,65 @@ func EncodeKeys(keys *structs.Keys) (*Keys, diag.Diagnostics) {
 					res.Keys[i] = data
 				}
 			}
+		}
+	}
+	return &res, diags
+}
+
+func EncodeMeshConfigEntry(meshConfigEntry *api.MeshConfigEntry) (*MeshConfigEntry, diag.Diagnostics) {
+	if meshConfigEntry == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := MeshConfigEntry{}
+	res.Partition = types.StringValue(meshConfigEntry.Partition)
+	res.Namespace = types.StringValue(meshConfigEntry.Namespace)
+	{
+		data, d := encodeTransparentProxyMeshConfig(&meshConfigEntry.TransparentProxy)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.TransparentProxy = data
+		}
+	}
+	res.AllowEnablingPermissiveMutualTLS = types.BoolValue(meshConfigEntry.AllowEnablingPermissiveMutualTLS)
+	{
+		data, d := encodeMeshTLSConfig(meshConfigEntry.TLS)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.TLS = data
+		}
+	}
+	{
+		data, d := encodeMeshHTTPConfig(meshConfigEntry.HTTP)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.HTTP = data
+		}
+	}
+	{
+		data, d := encodePeeringMeshConfig(meshConfigEntry.Peering)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Peering = data
+		}
+	}
+	if meshConfigEntry.Meta != nil {
+		res.Meta = map[string]types.String{}
+		for k, v := range meshConfigEntry.Meta {
+			res.Meta[k] = types.StringValue(v)
 		}
 	}
 	return &res, diags
@@ -1172,6 +1554,490 @@ func EncodePreparedQueryDefinition(preparedQueryDefinition *api.PreparedQueryDef
 	return &res, diags
 }
 
+func EncodeProxyConfigEntry(proxyConfigEntry *structs.ProxyConfigEntry) (*ProxyConfigEntry, diag.Diagnostics) {
+	if proxyConfigEntry == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ProxyConfigEntry{}
+	res.ID = types.StringValue(proxyConfigEntry.ID)
+	res.Name = types.StringValue(proxyConfigEntry.Entry.Name)
+	res.Partition = types.StringValue(proxyConfigEntry.Entry.Partition)
+	res.Namespace = types.StringValue(proxyConfigEntry.Entry.Namespace)
+	res.Mode = types.StringValue(string(proxyConfigEntry.Entry.Mode))
+	{
+		data, d := encodeTransparentProxyConfig(proxyConfigEntry.Entry.TransparentProxy)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.TransparentProxy = data
+		}
+	}
+	res.MutualTLSMode = types.StringValue(string(proxyConfigEntry.Entry.MutualTLSMode))
+	if proxyConfigEntry.Entry.Config != nil {
+		data, err := json.Marshal(proxyConfigEntry.Entry.Config)
+		if err != nil {
+			panic(err)
+		}
+		res.Config = types.StringValue(string(data))
+	}
+	{
+		data, d := encodeMeshGatewayConfig(&proxyConfigEntry.Entry.MeshGateway)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.MeshGateway = data
+		}
+	}
+	{
+		data, d := encodeExposeConfig(&proxyConfigEntry.Entry.Expose)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Expose = data
+		}
+	}
+	{
+		data, d := encodeAccessLogsConfig(proxyConfigEntry.Entry.AccessLogs)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.AccessLogs = data
+		}
+	}
+	if proxyConfigEntry.Entry.EnvoyExtensions != nil {
+		res.EnvoyExtensions = make([]*EnvoyExtension, len(proxyConfigEntry.Entry.EnvoyExtensions))
+		for i, attr := range proxyConfigEntry.Entry.EnvoyExtensions {
+			{
+				data, d := encodeEnvoyExtension(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.EnvoyExtensions[i] = data
+				}
+			}
+		}
+	}
+	{
+		data, d := encodeServiceResolverFailoverPolicy(proxyConfigEntry.Entry.FailoverPolicy)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.FailoverPolicy = data
+		}
+	}
+	{
+		data, d := encodeServiceResolverPrioritizeByLocality(proxyConfigEntry.Entry.PrioritizeByLocality)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.PrioritizeByLocality = data
+		}
+	}
+	if proxyConfigEntry.Entry.Meta != nil {
+		res.Meta = map[string]types.String{}
+		for k, v := range proxyConfigEntry.Entry.Meta {
+			res.Meta[k] = types.StringValue(v)
+		}
+	}
+	return &res, diags
+}
+
+func EncodeRateLimitIPConfigEntry(rateLimitIpConfigEntry *api.RateLimitIPConfigEntry) (*RateLimitIPConfigEntry, diag.Diagnostics) {
+	if rateLimitIpConfigEntry == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := RateLimitIPConfigEntry{}
+	res.Name = types.StringValue(rateLimitIpConfigEntry.Name)
+	res.Mode = types.StringValue(rateLimitIpConfigEntry.Mode)
+	if rateLimitIpConfigEntry.Meta != nil {
+		res.Meta = map[string]types.String{}
+		for k, v := range rateLimitIpConfigEntry.Meta {
+			res.Meta[k] = types.StringValue(v)
+		}
+	}
+	res.ReadRate = types.Float64Value(float64(rateLimitIpConfigEntry.ReadRate))
+	res.WriteRate = types.Float64Value(float64(rateLimitIpConfigEntry.WriteRate))
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.ACL)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.ACL = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.Catalog)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Catalog = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.ConfigEntry)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.ConfigEntry = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.ConnectCA)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.ConnectCA = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.Coordinate)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Coordinate = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.DiscoveryChain)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.DiscoveryChain = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.ServerDiscovery)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.ServerDiscovery = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.Health)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Health = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.Intention)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Intention = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.KV)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.KV = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.Tenancy)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Tenancy = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.PreparedQuery)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.PreparedQuery = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.Session)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Session = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.Txn)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Txn = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.AutoConfig)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.AutoConfig = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.FederationState)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.FederationState = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.Internal)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Internal = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.PeerStream)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.PeerStream = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.Peering)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Peering = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.DataPlane)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.DataPlane = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.DNS)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.DNS = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.Subscribe)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Subscribe = data
+		}
+	}
+	{
+		data, d := encodeReadWriteRatesConfig(rateLimitIpConfigEntry.Resource)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Resource = data
+		}
+	}
+	res.Partition = types.StringValue(rateLimitIpConfigEntry.Partition)
+	res.Namespace = types.StringValue(rateLimitIpConfigEntry.Namespace)
+	return &res, diags
+}
+
+func EncodeSamenessGroupConfigEntry(samenessGroupConfigEntry *api.SamenessGroupConfigEntry) (*SamenessGroupConfigEntry, diag.Diagnostics) {
+	if samenessGroupConfigEntry == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := SamenessGroupConfigEntry{}
+	res.Name = types.StringValue(samenessGroupConfigEntry.Name)
+	res.Partition = types.StringValue(samenessGroupConfigEntry.Partition)
+	res.DefaultForFailover = types.BoolValue(samenessGroupConfigEntry.DefaultForFailover)
+	res.IncludeLocal = types.BoolValue(samenessGroupConfigEntry.IncludeLocal)
+	if samenessGroupConfigEntry.Members != nil {
+		res.Members = make([]*SamenessGroupMember, len(samenessGroupConfigEntry.Members))
+		for i, attr := range samenessGroupConfigEntry.Members {
+			{
+				data, d := encodeSamenessGroupMember(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Members[i] = data
+				}
+			}
+		}
+	}
+	if samenessGroupConfigEntry.Meta != nil {
+		res.Meta = map[string]types.String{}
+		for k, v := range samenessGroupConfigEntry.Meta {
+			res.Meta[k] = types.StringValue(v)
+		}
+	}
+	return &res, diags
+}
+
+func EncodeServiceConfigEntry(serviceConfigEntry *structs.ServiceConfigEntry) (*ServiceConfigEntry, diag.Diagnostics) {
+	if serviceConfigEntry == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ServiceConfigEntry{}
+	res.ID = types.StringValue(serviceConfigEntry.ID)
+	res.Name = types.StringValue(serviceConfigEntry.Entry.Name)
+	res.Partition = types.StringValue(serviceConfigEntry.Entry.Partition)
+	res.Namespace = types.StringValue(serviceConfigEntry.Entry.Namespace)
+	res.Protocol = types.StringValue(serviceConfigEntry.Entry.Protocol)
+	res.Mode = types.StringValue(string(serviceConfigEntry.Entry.Mode))
+	{
+		data, d := encodeTransparentProxyConfig(serviceConfigEntry.Entry.TransparentProxy)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.TransparentProxy = data
+		}
+	}
+	res.MutualTLSMode = types.StringValue(string(serviceConfigEntry.Entry.MutualTLSMode))
+	{
+		data, d := encodeMeshGatewayConfig(&serviceConfigEntry.Entry.MeshGateway)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.MeshGateway = data
+		}
+	}
+	{
+		data, d := encodeExposeConfig(&serviceConfigEntry.Entry.Expose)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Expose = data
+		}
+	}
+	res.ExternalSNI = types.StringValue(serviceConfigEntry.Entry.ExternalSNI)
+	{
+		data, d := encodeUpstreamConfiguration(serviceConfigEntry.Entry.UpstreamConfig)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.UpstreamConfig = data
+		}
+	}
+	{
+		data, d := encodeDestinationConfig(serviceConfigEntry.Entry.Destination)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Destination = data
+		}
+	}
+	res.MaxInboundConnections = types.Int64Value(int64(serviceConfigEntry.Entry.MaxInboundConnections))
+	res.LocalConnectTimeoutMs = types.Int64Value(int64(serviceConfigEntry.Entry.LocalConnectTimeoutMs))
+	res.LocalRequestTimeoutMs = types.Int64Value(int64(serviceConfigEntry.Entry.LocalRequestTimeoutMs))
+	res.BalanceInboundConnections = types.StringValue(serviceConfigEntry.Entry.BalanceInboundConnections)
+	if serviceConfigEntry.Entry.EnvoyExtensions != nil {
+		res.EnvoyExtensions = make([]*EnvoyExtension, len(serviceConfigEntry.Entry.EnvoyExtensions))
+		for i, attr := range serviceConfigEntry.Entry.EnvoyExtensions {
+			{
+				data, d := encodeEnvoyExtension(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.EnvoyExtensions[i] = data
+				}
+			}
+		}
+	}
+	if serviceConfigEntry.Entry.Meta != nil {
+		res.Meta = map[string]types.String{}
+		for k, v := range serviceConfigEntry.Entry.Meta {
+			res.Meta[k] = types.StringValue(v)
+		}
+	}
+	return &res, diags
+}
+
 func EncodeServiceHealth(serviceHealth *structs.ServiceHealth) (*ServiceHealth, diag.Diagnostics) {
 	if serviceHealth == nil {
 		return nil, nil
@@ -1195,6 +2061,294 @@ func EncodeServiceHealth(serviceHealth *structs.ServiceHealth) (*ServiceHealth, 
 			}
 		}
 	}
+	return &res, diags
+}
+
+func EncodeServiceIntentionsConfigEntry(serviceIntentionsConfigEntry *api.ServiceIntentionsConfigEntry) (*ServiceIntentionsConfigEntry, diag.Diagnostics) {
+	if serviceIntentionsConfigEntry == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ServiceIntentionsConfigEntry{}
+	res.Name = types.StringValue(serviceIntentionsConfigEntry.Name)
+	res.Partition = types.StringValue(serviceIntentionsConfigEntry.Partition)
+	res.Namespace = types.StringValue(serviceIntentionsConfigEntry.Namespace)
+	if serviceIntentionsConfigEntry.Sources != nil {
+		res.Sources = make([]*SourceIntention, len(serviceIntentionsConfigEntry.Sources))
+		for i, attr := range serviceIntentionsConfigEntry.Sources {
+			{
+				data, d := encodeSourceIntention(attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Sources[i] = data
+				}
+			}
+		}
+	}
+	{
+		data, d := encodeIntentionJWTRequirement(serviceIntentionsConfigEntry.JWT)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.JWT = data
+		}
+	}
+	if serviceIntentionsConfigEntry.Meta != nil {
+		res.Meta = map[string]types.String{}
+		for k, v := range serviceIntentionsConfigEntry.Meta {
+			res.Meta[k] = types.StringValue(v)
+		}
+	}
+	return &res, diags
+}
+
+func EncodeServiceResolverConfigEntry(serviceResolverConfigEntry *api.ServiceResolverConfigEntry) (*ServiceResolverConfigEntry, diag.Diagnostics) {
+	if serviceResolverConfigEntry == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ServiceResolverConfigEntry{}
+	res.Name = types.StringValue(serviceResolverConfigEntry.Name)
+	res.Partition = types.StringValue(serviceResolverConfigEntry.Partition)
+	res.Namespace = types.StringValue(serviceResolverConfigEntry.Namespace)
+	res.DefaultSubset = types.StringValue(serviceResolverConfigEntry.DefaultSubset)
+	if serviceResolverConfigEntry.Subsets != nil {
+		res.Subsets = map[string]*ServiceResolverSubset{}
+		for k, v := range serviceResolverConfigEntry.Subsets {
+			{
+				data, d := encodeServiceResolverSubset(&v)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Subsets[k] = data
+				}
+			}
+		}
+	}
+	{
+		data, d := encodeServiceResolverRedirect(serviceResolverConfigEntry.Redirect)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Redirect = data
+		}
+	}
+	if serviceResolverConfigEntry.Failover != nil {
+		res.Failover = map[string]*ServiceResolverFailover{}
+		for k, v := range serviceResolverConfigEntry.Failover {
+			{
+				data, d := encodeServiceResolverFailover(&v)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Failover[k] = data
+				}
+			}
+		}
+	}
+	res.ConnectTimeout = types.StringValue(serviceResolverConfigEntry.ConnectTimeout.String())
+	res.RequestTimeout = types.StringValue(serviceResolverConfigEntry.RequestTimeout.String())
+	{
+		data, d := encodeServiceResolverPrioritizeByLocality(serviceResolverConfigEntry.PrioritizeByLocality)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.PrioritizeByLocality = data
+		}
+	}
+	{
+		data, d := encodeLoadBalancer(serviceResolverConfigEntry.LoadBalancer)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.LoadBalancer = data
+		}
+	}
+	if serviceResolverConfigEntry.Meta != nil {
+		res.Meta = map[string]types.String{}
+		for k, v := range serviceResolverConfigEntry.Meta {
+			res.Meta[k] = types.StringValue(v)
+		}
+	}
+	return &res, diags
+}
+
+func EncodeServiceRouterConfigEntry(serviceRouterConfigEntry *structs.ServiceRouterConfigEntry) (*ServiceRouterConfigEntry, diag.Diagnostics) {
+	if serviceRouterConfigEntry == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ServiceRouterConfigEntry{}
+	res.ID = types.StringValue(serviceRouterConfigEntry.ID)
+	res.Name = types.StringValue(serviceRouterConfigEntry.Entry.Name)
+	res.Partition = types.StringValue(serviceRouterConfigEntry.Entry.Partition)
+	res.Namespace = types.StringValue(serviceRouterConfigEntry.Entry.Namespace)
+	if serviceRouterConfigEntry.Entry.Routes != nil {
+		res.Routes = make([]*ServiceRoute, len(serviceRouterConfigEntry.Entry.Routes))
+		for i, attr := range serviceRouterConfigEntry.Entry.Routes {
+			{
+				data, d := encodeServiceRoute(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Routes[i] = data
+				}
+			}
+		}
+	}
+	if serviceRouterConfigEntry.Entry.Meta != nil {
+		res.Meta = map[string]types.String{}
+		for k, v := range serviceRouterConfigEntry.Entry.Meta {
+			res.Meta[k] = types.StringValue(v)
+		}
+	}
+	return &res, diags
+}
+
+func EncodeServiceSplitterConfigEntry(serviceSplitterConfigEntry *api.ServiceSplitterConfigEntry) (*ServiceSplitterConfigEntry, diag.Diagnostics) {
+	if serviceSplitterConfigEntry == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ServiceSplitterConfigEntry{}
+	res.Name = types.StringValue(serviceSplitterConfigEntry.Name)
+	res.Partition = types.StringValue(serviceSplitterConfigEntry.Partition)
+	res.Namespace = types.StringValue(serviceSplitterConfigEntry.Namespace)
+	if serviceSplitterConfigEntry.Splits != nil {
+		res.Splits = make([]*ServiceSplit, len(serviceSplitterConfigEntry.Splits))
+		for i, attr := range serviceSplitterConfigEntry.Splits {
+			{
+				data, d := encodeServiceSplit(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Splits[i] = data
+				}
+			}
+		}
+	}
+	if serviceSplitterConfigEntry.Meta != nil {
+		res.Meta = map[string]types.String{}
+		for k, v := range serviceSplitterConfigEntry.Meta {
+			res.Meta[k] = types.StringValue(v)
+		}
+	}
+	return &res, diags
+}
+
+func EncodeTCPRouteConfigEntry(tcpRouteConfigEntry *api.TCPRouteConfigEntry) (*TCPRouteConfigEntry, diag.Diagnostics) {
+	if tcpRouteConfigEntry == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := TCPRouteConfigEntry{}
+	res.Name = types.StringValue(tcpRouteConfigEntry.Name)
+	if tcpRouteConfigEntry.Parents != nil {
+		res.Parents = make([]*ResourceReference, len(tcpRouteConfigEntry.Parents))
+		for i, attr := range tcpRouteConfigEntry.Parents {
+			{
+				data, d := encodeResourceReference(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Parents[i] = data
+				}
+			}
+		}
+	}
+	if tcpRouteConfigEntry.Services != nil {
+		res.Services = make([]*TCPService, len(tcpRouteConfigEntry.Services))
+		for i, attr := range tcpRouteConfigEntry.Services {
+			{
+				data, d := encodeTCPService(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Services[i] = data
+				}
+			}
+		}
+	}
+	if tcpRouteConfigEntry.Meta != nil {
+		res.Meta = map[string]types.String{}
+		for k, v := range tcpRouteConfigEntry.Meta {
+			res.Meta[k] = types.StringValue(v)
+		}
+	}
+	{
+		data, d := encodeConfigEntryStatus(&tcpRouteConfigEntry.Status)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Status = data
+		}
+	}
+	res.Partition = types.StringValue(tcpRouteConfigEntry.Partition)
+	res.Namespace = types.StringValue(tcpRouteConfigEntry.Namespace)
+	return &res, diags
+}
+
+func EncodeTerminatingGatewayConfigEntry(terminatingGatewayConfigEntry *api.TerminatingGatewayConfigEntry) (*TerminatingGatewayConfigEntry, diag.Diagnostics) {
+	if terminatingGatewayConfigEntry == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := TerminatingGatewayConfigEntry{}
+	res.Name = types.StringValue(terminatingGatewayConfigEntry.Name)
+	if terminatingGatewayConfigEntry.Services != nil {
+		res.Services = make([]*LinkedService, len(terminatingGatewayConfigEntry.Services))
+		for i, attr := range terminatingGatewayConfigEntry.Services {
+			{
+				data, d := encodeLinkedService(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Services[i] = data
+				}
+			}
+		}
+	}
+	if terminatingGatewayConfigEntry.Meta != nil {
+		res.Meta = map[string]types.String{}
+		for k, v := range terminatingGatewayConfigEntry.Meta {
+			res.Meta[k] = types.StringValue(v)
+		}
+	}
+	res.Partition = types.StringValue(terminatingGatewayConfigEntry.Partition)
+	res.Namespace = types.StringValue(terminatingGatewayConfigEntry.Namespace)
 	return &res, diags
 }
 
@@ -1248,6 +2402,55 @@ func encodeACLNodeIdentity(aclNodeIdentity *api.ACLNodeIdentity) (*ACLNodeIdenti
 	res := ACLNodeIdentity{}
 	res.NodeName = types.StringValue(aclNodeIdentity.NodeName)
 	res.Datacenter = types.StringValue(aclNodeIdentity.Datacenter)
+	return &res, diags
+}
+
+func encodeAPIGatewayListener(apiGatewayListener *api.APIGatewayListener) (*APIGatewayListener, diag.Diagnostics) {
+	if apiGatewayListener == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := APIGatewayListener{}
+	res.Name = types.StringValue(apiGatewayListener.Name)
+	res.Hostname = types.StringValue(apiGatewayListener.Hostname)
+	res.Port = types.Int64Value(int64(apiGatewayListener.Port))
+	res.Protocol = types.StringValue(apiGatewayListener.Protocol)
+	{
+		data, d := encodeAPIGatewayTLSConfiguration(&apiGatewayListener.TLS)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.TLS = data
+		}
+	}
+	return &res, diags
+}
+
+func encodeConfigEntryStatus(configEntryStatus *api.ConfigEntryStatus) (*ConfigEntryStatus, diag.Diagnostics) {
+	if configEntryStatus == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ConfigEntryStatus{}
+	if configEntryStatus.Conditions != nil {
+		res.Conditions = make([]*Condition, len(configEntryStatus.Conditions))
+		for i, attr := range configEntryStatus.Conditions {
+			{
+				data, d := encodeCondition(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Conditions[i] = data
+				}
+			}
+		}
+	}
 	return &res, diags
 }
 
@@ -1482,6 +2685,267 @@ func encodeTLSConfig(tlsConfig *api.TLSConfig) (*TLSConfig, diag.Diagnostics) {
 	return &res, diags
 }
 
+func encodeExportedService(exportedService *api.ExportedService) (*ExportedService, diag.Diagnostics) {
+	if exportedService == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ExportedService{}
+	res.Name = types.StringValue(exportedService.Name)
+	res.Namespace = types.StringValue(exportedService.Namespace)
+	if exportedService.Consumers != nil {
+		res.Consumers = make([]*ServiceConsumer, len(exportedService.Consumers))
+		for i, attr := range exportedService.Consumers {
+			{
+				data, d := encodeServiceConsumer(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Consumers[i] = data
+				}
+			}
+		}
+	}
+	return &res, diags
+}
+
+func encodeResourceReference(resourceReference *api.ResourceReference) (*ResourceReference, diag.Diagnostics) {
+	if resourceReference == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ResourceReference{}
+	res.Kind = types.StringValue(resourceReference.Kind)
+	res.Name = types.StringValue(resourceReference.Name)
+	res.SectionName = types.StringValue(resourceReference.SectionName)
+	res.Partition = types.StringValue(resourceReference.Partition)
+	res.Namespace = types.StringValue(resourceReference.Namespace)
+	return &res, diags
+}
+
+func encodeHTTPRouteRule(httpRouteRule *api.HTTPRouteRule) (*HTTPRouteRule, diag.Diagnostics) {
+	if httpRouteRule == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := HTTPRouteRule{}
+	{
+		data, d := encodeHTTPFilters(&httpRouteRule.Filters)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Filters = data
+		}
+	}
+	if httpRouteRule.Matches != nil {
+		res.Matches = make([]*HTTPMatch, len(httpRouteRule.Matches))
+		for i, attr := range httpRouteRule.Matches {
+			{
+				data, d := encodeHTTPMatch(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Matches[i] = data
+				}
+			}
+		}
+	}
+	if httpRouteRule.Services != nil {
+		res.Services = make([]*HTTPService, len(httpRouteRule.Services))
+		for i, attr := range httpRouteRule.Services {
+			{
+				data, d := encodeHTTPService(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Services[i] = data
+				}
+			}
+		}
+	}
+	return &res, diags
+}
+
+func encodeGatewayTLSConfig(gatewayTlsConfig *api.GatewayTLSConfig) (*GatewayTLSConfig, diag.Diagnostics) {
+	if gatewayTlsConfig == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := GatewayTLSConfig{}
+	res.Enabled = types.BoolValue(gatewayTlsConfig.Enabled)
+	{
+		data, d := encodeGatewayTLSSDSConfig(gatewayTlsConfig.SDS)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.SDS = data
+		}
+	}
+	res.TLSMinVersion = types.StringValue(gatewayTlsConfig.TLSMinVersion)
+	res.TLSMaxVersion = types.StringValue(gatewayTlsConfig.TLSMaxVersion)
+	if gatewayTlsConfig.CipherSuites != nil {
+		res.CipherSuites = make([]types.String, len(gatewayTlsConfig.CipherSuites))
+		for i, attr := range gatewayTlsConfig.CipherSuites {
+			res.CipherSuites[i] = types.StringValue(attr)
+		}
+	}
+	return &res, diags
+}
+
+func encodeIngressListener(ingressListener *api.IngressListener) (*IngressListener, diag.Diagnostics) {
+	if ingressListener == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := IngressListener{}
+	res.Port = types.Int64Value(int64(ingressListener.Port))
+	res.Protocol = types.StringValue(ingressListener.Protocol)
+	if ingressListener.Services != nil {
+		res.Services = make([]*IngressService, len(ingressListener.Services))
+		for i, attr := range ingressListener.Services {
+			{
+				data, d := encodeIngressService(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Services[i] = data
+				}
+			}
+		}
+	}
+	{
+		data, d := encodeGatewayTLSConfig(ingressListener.TLS)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.TLS = data
+		}
+	}
+	return &res, diags
+}
+
+func encodeIngressServiceConfig(ingressServiceConfig *api.IngressServiceConfig) (*IngressServiceConfig, diag.Diagnostics) {
+	if ingressServiceConfig == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := IngressServiceConfig{}
+	return &res, diags
+}
+
+func encodeJSONWebKeySet(jsonWebKeySet *api.JSONWebKeySet) (*JSONWebKeySet, diag.Diagnostics) {
+	if jsonWebKeySet == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := JSONWebKeySet{}
+	{
+		data, d := encodeLocalJWKS(jsonWebKeySet.Local)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Local = data
+		}
+	}
+	{
+		data, d := encodeRemoteJWKS(jsonWebKeySet.Remote)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Remote = data
+		}
+	}
+	return &res, diags
+}
+
+func encodeJWTLocation(jwtLocation *api.JWTLocation) (*JWTLocation, diag.Diagnostics) {
+	if jwtLocation == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := JWTLocation{}
+	{
+		data, d := encodeJWTLocationHeader(jwtLocation.Header)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Header = data
+		}
+	}
+	{
+		data, d := encodeJWTLocationQueryParam(jwtLocation.QueryParam)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.QueryParam = data
+		}
+	}
+	{
+		data, d := encodeJWTLocationCookie(jwtLocation.Cookie)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Cookie = data
+		}
+	}
+	return &res, diags
+}
+
+func encodeJWTForwardingConfig(jwtForwardingConfig *api.JWTForwardingConfig) (*JWTForwardingConfig, diag.Diagnostics) {
+	if jwtForwardingConfig == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := JWTForwardingConfig{}
+	res.HeaderName = types.StringValue(jwtForwardingConfig.HeaderName)
+	res.PadForwardPayloadHeader = types.BoolValue(jwtForwardingConfig.PadForwardPayloadHeader)
+	return &res, diags
+}
+
+func encodeJWTCacheConfig(jwtCacheConfig *api.JWTCacheConfig) (*JWTCacheConfig, diag.Diagnostics) {
+	if jwtCacheConfig == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := JWTCacheConfig{}
+	res.Size = types.Int64Value(int64(jwtCacheConfig.Size))
+	return &res, diags
+}
+
 func encodeKVPair(kvPair *api.KVPair) (*KVPair, diag.Diagnostics) {
 	if kvPair == nil {
 		return nil, nil
@@ -1494,6 +2958,69 @@ func encodeKVPair(kvPair *api.KVPair) (*KVPair, diag.Diagnostics) {
 	res.Value = types.StringValue(string(kvPair.Value))
 	res.Namespace = types.StringValue(kvPair.Namespace)
 	res.Partition = types.StringValue(kvPair.Partition)
+	return &res, diags
+}
+
+func encodeTransparentProxyMeshConfig(transparentProxyMeshConfig *api.TransparentProxyMeshConfig) (*TransparentProxyMeshConfig, diag.Diagnostics) {
+	if transparentProxyMeshConfig == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := TransparentProxyMeshConfig{}
+	res.MeshDestinationsOnly = types.BoolValue(transparentProxyMeshConfig.MeshDestinationsOnly)
+	return &res, diags
+}
+
+func encodeMeshTLSConfig(meshTlsConfig *api.MeshTLSConfig) (*MeshTLSConfig, diag.Diagnostics) {
+	if meshTlsConfig == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := MeshTLSConfig{}
+	{
+		data, d := encodeMeshDirectionalTLSConfig(meshTlsConfig.Incoming)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Incoming = data
+		}
+	}
+	{
+		data, d := encodeMeshDirectionalTLSConfig(meshTlsConfig.Outgoing)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Outgoing = data
+		}
+	}
+	return &res, diags
+}
+
+func encodeMeshHTTPConfig(meshHttpConfig *api.MeshHTTPConfig) (*MeshHTTPConfig, diag.Diagnostics) {
+	if meshHttpConfig == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := MeshHTTPConfig{}
+	res.SanitizeXForwardedClientCert = types.BoolValue(meshHttpConfig.SanitizeXForwardedClientCert)
+	return &res, diags
+}
+
+func encodePeeringMeshConfig(peeringMeshConfig *api.PeeringMeshConfig) (*PeeringMeshConfig, diag.Diagnostics) {
+	if peeringMeshConfig == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := PeeringMeshConfig{}
+	res.PeerThroughMeshGateways = types.BoolValue(peeringMeshConfig.PeerThroughMeshGateways)
 	return &res, diags
 }
 
@@ -1722,37 +3249,6 @@ func encodeQueryTemplate(queryTemplate *api.QueryTemplate) (*QueryTemplate, diag
 	return &res, diags
 }
 
-func encodeServiceEntry(serviceEntry *api.ServiceEntry) (*ServiceEntry, diag.Diagnostics) {
-	if serviceEntry == nil {
-		return nil, nil
-	}
-
-	var diags diag.Diagnostics
-	res := ServiceEntry{}
-	return &res, diags
-}
-
-func encodeEnvoyExtension(envoyExtension *api.EnvoyExtension) (*EnvoyExtension, diag.Diagnostics) {
-	if envoyExtension == nil {
-		return nil, nil
-	}
-
-	var diags diag.Diagnostics
-	res := EnvoyExtension{}
-	res.Name = types.StringValue(envoyExtension.Name)
-	res.Required = types.BoolValue(envoyExtension.Required)
-	if envoyExtension.Arguments != nil {
-		data, err := json.Marshal(envoyExtension.Arguments)
-		if err != nil {
-			panic(err)
-		}
-		res.Arguments = types.StringValue(string(data))
-	}
-	res.ConsulVersion = types.StringValue(envoyExtension.ConsulVersion)
-	res.EnvoyVersion = types.StringValue(envoyExtension.EnvoyVersion)
-	return &res, diags
-}
-
 func encodeTransparentProxyConfig(transparentProxyConfig *api.TransparentProxyConfig) (*TransparentProxyConfig, diag.Diagnostics) {
 	if transparentProxyConfig == nil {
 		return nil, nil
@@ -1762,44 +3258,6 @@ func encodeTransparentProxyConfig(transparentProxyConfig *api.TransparentProxyCo
 	res := TransparentProxyConfig{}
 	res.OutboundListenerPort = types.Int64Value(int64(transparentProxyConfig.OutboundListenerPort))
 	res.DialedDirectly = types.BoolValue(transparentProxyConfig.DialedDirectly)
-	return &res, diags
-}
-
-func encodeUpstream(upstream *api.Upstream) (*Upstream, diag.Diagnostics) {
-	if upstream == nil {
-		return nil, nil
-	}
-
-	var diags diag.Diagnostics
-	res := Upstream{}
-	res.DestinationType = types.StringValue(string(upstream.DestinationType))
-	res.DestinationPartition = types.StringValue(upstream.DestinationPartition)
-	res.DestinationNamespace = types.StringValue(upstream.DestinationNamespace)
-	res.DestinationPeer = types.StringValue(upstream.DestinationPeer)
-	res.DestinationName = types.StringValue(upstream.DestinationName)
-	res.Datacenter = types.StringValue(upstream.Datacenter)
-	res.LocalBindAddress = types.StringValue(upstream.LocalBindAddress)
-	res.LocalBindPort = types.Int64Value(int64(upstream.LocalBindPort))
-	res.LocalBindSocketPath = types.StringValue(upstream.LocalBindSocketPath)
-	res.LocalBindSocketMode = types.StringValue(upstream.LocalBindSocketMode)
-	if upstream.Config != nil {
-		data, err := json.Marshal(upstream.Config)
-		if err != nil {
-			panic(err)
-		}
-		res.Config = types.StringValue(string(data))
-	}
-	{
-		data, d := encodeMeshGatewayConfig(&upstream.MeshGateway)
-		diags.Append(d...)
-		if diags.HasError() {
-			return nil, diags
-		}
-		if data != nil {
-			res.MeshGateway = data
-		}
-	}
-	res.CentrallyConfigured = types.BoolValue(upstream.CentrallyConfigured)
 	return &res, diags
 }
 
@@ -1856,6 +3314,432 @@ func encodeAccessLogsConfig(accessLogsConfig *api.AccessLogsConfig) (*AccessLogs
 	return &res, diags
 }
 
+func encodeEnvoyExtension(envoyExtension *api.EnvoyExtension) (*EnvoyExtension, diag.Diagnostics) {
+	if envoyExtension == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := EnvoyExtension{}
+	res.Name = types.StringValue(envoyExtension.Name)
+	res.Required = types.BoolValue(envoyExtension.Required)
+	if envoyExtension.Arguments != nil {
+		data, err := json.Marshal(envoyExtension.Arguments)
+		if err != nil {
+			panic(err)
+		}
+		res.Arguments = types.StringValue(string(data))
+	}
+	res.ConsulVersion = types.StringValue(envoyExtension.ConsulVersion)
+	res.EnvoyVersion = types.StringValue(envoyExtension.EnvoyVersion)
+	return &res, diags
+}
+
+func encodeServiceResolverFailoverPolicy(serviceResolverFailoverPolicy *api.ServiceResolverFailoverPolicy) (*ServiceResolverFailoverPolicy, diag.Diagnostics) {
+	if serviceResolverFailoverPolicy == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ServiceResolverFailoverPolicy{}
+	res.Mode = types.StringValue(serviceResolverFailoverPolicy.Mode)
+	if serviceResolverFailoverPolicy.Regions != nil {
+		res.Regions = make([]types.String, len(serviceResolverFailoverPolicy.Regions))
+		for i, attr := range serviceResolverFailoverPolicy.Regions {
+			res.Regions[i] = types.StringValue(attr)
+		}
+	}
+	return &res, diags
+}
+
+func encodeServiceResolverPrioritizeByLocality(serviceResolverPrioritizeByLocality *api.ServiceResolverPrioritizeByLocality) (*ServiceResolverPrioritizeByLocality, diag.Diagnostics) {
+	if serviceResolverPrioritizeByLocality == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ServiceResolverPrioritizeByLocality{}
+	res.Mode = types.StringValue(serviceResolverPrioritizeByLocality.Mode)
+	return &res, diags
+}
+
+func encodeReadWriteRatesConfig(readWriteRatesConfig *api.ReadWriteRatesConfig) (*ReadWriteRatesConfig, diag.Diagnostics) {
+	if readWriteRatesConfig == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ReadWriteRatesConfig{}
+	res.ReadRate = types.Float64Value(float64(readWriteRatesConfig.ReadRate))
+	res.WriteRate = types.Float64Value(float64(readWriteRatesConfig.WriteRate))
+	return &res, diags
+}
+
+func encodeSamenessGroupMember(samenessGroupMember *api.SamenessGroupMember) (*SamenessGroupMember, diag.Diagnostics) {
+	if samenessGroupMember == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := SamenessGroupMember{}
+	res.Partition = types.StringValue(samenessGroupMember.Partition)
+	res.Peer = types.StringValue(samenessGroupMember.Peer)
+	return &res, diags
+}
+
+func encodeUpstreamConfiguration(upstreamConfiguration *api.UpstreamConfiguration) (*UpstreamConfiguration, diag.Diagnostics) {
+	if upstreamConfiguration == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := UpstreamConfiguration{}
+	if upstreamConfiguration.Overrides != nil {
+		res.Overrides = make([]*UpstreamConfig, len(upstreamConfiguration.Overrides))
+		for i, attr := range upstreamConfiguration.Overrides {
+			{
+				data, d := encodeUpstreamConfig(attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Overrides[i] = data
+				}
+			}
+		}
+	}
+	{
+		data, d := encodeUpstreamConfig(upstreamConfiguration.Defaults)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Defaults = data
+		}
+	}
+	return &res, diags
+}
+
+func encodeDestinationConfig(destinationConfig *api.DestinationConfig) (*DestinationConfig, diag.Diagnostics) {
+	if destinationConfig == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := DestinationConfig{}
+	if destinationConfig.Addresses != nil {
+		res.Addresses = make([]types.String, len(destinationConfig.Addresses))
+		for i, attr := range destinationConfig.Addresses {
+			res.Addresses[i] = types.StringValue(attr)
+		}
+	}
+	res.Port = types.Int64Value(int64(destinationConfig.Port))
+	return &res, diags
+}
+
+func encodeServiceEntry(serviceEntry *api.ServiceEntry) (*ServiceEntry, diag.Diagnostics) {
+	if serviceEntry == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ServiceEntry{}
+	return &res, diags
+}
+
+func encodeSourceIntention(sourceIntention *api.SourceIntention) (*SourceIntention, diag.Diagnostics) {
+	if sourceIntention == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := SourceIntention{}
+	res.Name = types.StringValue(sourceIntention.Name)
+	res.Peer = types.StringValue(sourceIntention.Peer)
+	res.Partition = types.StringValue(sourceIntention.Partition)
+	res.Namespace = types.StringValue(sourceIntention.Namespace)
+	res.SamenessGroup = types.StringValue(sourceIntention.SamenessGroup)
+	res.Action = types.StringValue(string(sourceIntention.Action))
+	if sourceIntention.Permissions != nil {
+		res.Permissions = make([]*IntentionPermission, len(sourceIntention.Permissions))
+		for i, attr := range sourceIntention.Permissions {
+			{
+				data, d := encodeIntentionPermission(attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Permissions[i] = data
+				}
+			}
+		}
+	}
+	res.Precedence = types.Int64Value(int64(sourceIntention.Precedence))
+	res.Type = types.StringValue(string(sourceIntention.Type))
+	res.Description = types.StringValue(sourceIntention.Description)
+	return &res, diags
+}
+
+func encodeIntentionJWTRequirement(intentionJwtRequirement *api.IntentionJWTRequirement) (*IntentionJWTRequirement, diag.Diagnostics) {
+	if intentionJwtRequirement == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := IntentionJWTRequirement{}
+	if intentionJwtRequirement.Providers != nil {
+		res.Providers = make([]*IntentionJWTProvider, len(intentionJwtRequirement.Providers))
+		for i, attr := range intentionJwtRequirement.Providers {
+			{
+				data, d := encodeIntentionJWTProvider(attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Providers[i] = data
+				}
+			}
+		}
+	}
+	return &res, diags
+}
+
+func encodeServiceResolverSubset(serviceResolverSubset *api.ServiceResolverSubset) (*ServiceResolverSubset, diag.Diagnostics) {
+	if serviceResolverSubset == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ServiceResolverSubset{}
+	return &res, diags
+}
+
+func encodeServiceResolverRedirect(serviceResolverRedirect *api.ServiceResolverRedirect) (*ServiceResolverRedirect, diag.Diagnostics) {
+	if serviceResolverRedirect == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ServiceResolverRedirect{}
+	return &res, diags
+}
+
+func encodeServiceResolverFailover(serviceResolverFailover *api.ServiceResolverFailover) (*ServiceResolverFailover, diag.Diagnostics) {
+	if serviceResolverFailover == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ServiceResolverFailover{}
+	return &res, diags
+}
+
+func encodeLoadBalancer(loadBalancer *api.LoadBalancer) (*LoadBalancer, diag.Diagnostics) {
+	if loadBalancer == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := LoadBalancer{}
+	return &res, diags
+}
+
+func encodeServiceRoute(serviceRoute *api.ServiceRoute) (*ServiceRoute, diag.Diagnostics) {
+	if serviceRoute == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ServiceRoute{}
+	{
+		data, d := encodeServiceRouteMatch(serviceRoute.Match)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Match = data
+		}
+	}
+	{
+		data, d := encodeServiceRouteDestination(serviceRoute.Destination)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Destination = data
+		}
+	}
+	return &res, diags
+}
+
+func encodeServiceSplit(serviceSplit *api.ServiceSplit) (*ServiceSplit, diag.Diagnostics) {
+	if serviceSplit == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ServiceSplit{}
+	res.Weight = types.Float64Value(float64(serviceSplit.Weight))
+	res.Service = types.StringValue(serviceSplit.Service)
+	res.ServiceSubset = types.StringValue(serviceSplit.ServiceSubset)
+	res.Namespace = types.StringValue(serviceSplit.Namespace)
+	res.Partition = types.StringValue(serviceSplit.Partition)
+	{
+		data, d := encodeHTTPHeaderModifiers(serviceSplit.RequestHeaders)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.RequestHeaders = data
+		}
+	}
+	{
+		data, d := encodeHTTPHeaderModifiers(serviceSplit.ResponseHeaders)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.ResponseHeaders = data
+		}
+	}
+	return &res, diags
+}
+
+func encodeTCPService(tcpService *api.TCPService) (*TCPService, diag.Diagnostics) {
+	if tcpService == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := TCPService{}
+	res.Name = types.StringValue(tcpService.Name)
+	res.Partition = types.StringValue(tcpService.Partition)
+	res.Namespace = types.StringValue(tcpService.Namespace)
+	return &res, diags
+}
+
+func encodeLinkedService(linkedService *api.LinkedService) (*LinkedService, diag.Diagnostics) {
+	if linkedService == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := LinkedService{}
+	res.Namespace = types.StringValue(linkedService.Namespace)
+	res.Name = types.StringValue(linkedService.Name)
+	res.CAFile = types.StringValue(linkedService.CAFile)
+	res.CertFile = types.StringValue(linkedService.CertFile)
+	res.KeyFile = types.StringValue(linkedService.KeyFile)
+	res.SNI = types.StringValue(linkedService.SNI)
+	return &res, diags
+}
+
+func encodeAPIGatewayTLSConfiguration(apiGatewayTlsConfiguration *api.APIGatewayTLSConfiguration) (*APIGatewayTLSConfiguration, diag.Diagnostics) {
+	if apiGatewayTlsConfiguration == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := APIGatewayTLSConfiguration{}
+	if apiGatewayTlsConfiguration.Certificates != nil {
+		res.Certificates = make([]*ResourceReference, len(apiGatewayTlsConfiguration.Certificates))
+		for i, attr := range apiGatewayTlsConfiguration.Certificates {
+			{
+				data, d := encodeResourceReference(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Certificates[i] = data
+				}
+			}
+		}
+	}
+	res.MaxVersion = types.StringValue(apiGatewayTlsConfiguration.MaxVersion)
+	res.MinVersion = types.StringValue(apiGatewayTlsConfiguration.MinVersion)
+	if apiGatewayTlsConfiguration.CipherSuites != nil {
+		res.CipherSuites = make([]types.String, len(apiGatewayTlsConfiguration.CipherSuites))
+		for i, attr := range apiGatewayTlsConfiguration.CipherSuites {
+			res.CipherSuites[i] = types.StringValue(attr)
+		}
+	}
+	return &res, diags
+}
+
+func encodeCondition(condition *api.Condition) (*Condition, diag.Diagnostics) {
+	if condition == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := Condition{}
+	res.Type = types.StringValue(condition.Type)
+	res.Status = types.StringValue(string(condition.Status))
+	res.Reason = types.StringValue(condition.Reason)
+	res.Message = types.StringValue(condition.Message)
+	{
+		data, d := encodeResourceReference(condition.Resource)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Resource = data
+		}
+	}
+	if condition.LastTransitionTime != nil {
+		res.LastTransitionTime = types.StringValue(condition.LastTransitionTime.Format(time.RFC3339))
+	}
+	return &res, diags
+}
+
+func encodeUpstream(upstream *api.Upstream) (*Upstream, diag.Diagnostics) {
+	if upstream == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := Upstream{}
+	res.DestinationType = types.StringValue(string(upstream.DestinationType))
+	res.DestinationPartition = types.StringValue(upstream.DestinationPartition)
+	res.DestinationNamespace = types.StringValue(upstream.DestinationNamespace)
+	res.DestinationPeer = types.StringValue(upstream.DestinationPeer)
+	res.DestinationName = types.StringValue(upstream.DestinationName)
+	res.Datacenter = types.StringValue(upstream.Datacenter)
+	res.LocalBindAddress = types.StringValue(upstream.LocalBindAddress)
+	res.LocalBindPort = types.Int64Value(int64(upstream.LocalBindPort))
+	res.LocalBindSocketPath = types.StringValue(upstream.LocalBindSocketPath)
+	res.LocalBindSocketMode = types.StringValue(upstream.LocalBindSocketMode)
+	if upstream.Config != nil {
+		data, err := json.Marshal(upstream.Config)
+		if err != nil {
+			panic(err)
+		}
+		res.Config = types.StringValue(string(data))
+	}
+	{
+		data, d := encodeMeshGatewayConfig(&upstream.MeshGateway)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.MeshGateway = data
+		}
+	}
+	res.CentrallyConfigured = types.BoolValue(upstream.CentrallyConfigured)
+	return &res, diags
+}
+
 func encodeHealthCheckDefinition(healthCheckDefinition *api.HealthCheckDefinition) (*HealthCheckDefinition, diag.Diagnostics) {
 	if healthCheckDefinition == nil {
 		return nil, nil
@@ -1887,6 +3771,306 @@ func encodeHealthCheckDefinition(healthCheckDefinition *api.HealthCheckDefinitio
 	res.IntervalDuration = types.StringValue(healthCheckDefinition.IntervalDuration.String())
 	res.TimeoutDuration = types.StringValue(healthCheckDefinition.TimeoutDuration.String())
 	res.DeregisterCriticalServiceAfterDuration = types.StringValue(healthCheckDefinition.DeregisterCriticalServiceAfterDuration.String())
+	return &res, diags
+}
+
+func encodeServiceConsumer(serviceConsumer *api.ServiceConsumer) (*ServiceConsumer, diag.Diagnostics) {
+	if serviceConsumer == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ServiceConsumer{}
+	res.Partition = types.StringValue(serviceConsumer.Partition)
+	res.Peer = types.StringValue(serviceConsumer.Peer)
+	res.SamenessGroup = types.StringValue(serviceConsumer.SamenessGroup)
+	return &res, diags
+}
+
+func encodeHTTPFilters(httpFilters *api.HTTPFilters) (*HTTPFilters, diag.Diagnostics) {
+	if httpFilters == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := HTTPFilters{}
+	if httpFilters.Headers != nil {
+		res.Headers = make([]*HTTPHeaderFilter, len(httpFilters.Headers))
+		for i, attr := range httpFilters.Headers {
+			{
+				data, d := encodeHTTPHeaderFilter(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Headers[i] = data
+				}
+			}
+		}
+	}
+	{
+		data, d := encodeURLRewrite(httpFilters.URLRewrite)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.URLRewrite = data
+		}
+	}
+	return &res, diags
+}
+
+func encodeHTTPMatch(httpMatch *api.HTTPMatch) (*HTTPMatch, diag.Diagnostics) {
+	if httpMatch == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := HTTPMatch{}
+	if httpMatch.Headers != nil {
+		res.Headers = make([]*HTTPHeaderMatch, len(httpMatch.Headers))
+		for i, attr := range httpMatch.Headers {
+			{
+				data, d := encodeHTTPHeaderMatch(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Headers[i] = data
+				}
+			}
+		}
+	}
+	res.Method = types.StringValue(string(httpMatch.Method))
+	{
+		data, d := encodeHTTPPathMatch(&httpMatch.Path)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Path = data
+		}
+	}
+	if httpMatch.Query != nil {
+		res.Query = make([]*HTTPQueryMatch, len(httpMatch.Query))
+		for i, attr := range httpMatch.Query {
+			{
+				data, d := encodeHTTPQueryMatch(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Query[i] = data
+				}
+			}
+		}
+	}
+	return &res, diags
+}
+
+func encodeHTTPService(httpService *api.HTTPService) (*HTTPService, diag.Diagnostics) {
+	if httpService == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := HTTPService{}
+	res.Name = types.StringValue(httpService.Name)
+	res.Weight = types.Int64Value(int64(httpService.Weight))
+	{
+		data, d := encodeHTTPFilters(&httpService.Filters)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Filters = data
+		}
+	}
+	res.Partition = types.StringValue(httpService.Partition)
+	res.Namespace = types.StringValue(httpService.Namespace)
+	return &res, diags
+}
+
+func encodeGatewayTLSSDSConfig(gatewayTlssdsConfig *api.GatewayTLSSDSConfig) (*GatewayTLSSDSConfig, diag.Diagnostics) {
+	if gatewayTlssdsConfig == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := GatewayTLSSDSConfig{}
+	return &res, diags
+}
+
+func encodeIngressService(ingressService *api.IngressService) (*IngressService, diag.Diagnostics) {
+	if ingressService == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := IngressService{}
+	res.Name = types.StringValue(ingressService.Name)
+	if ingressService.Hosts != nil {
+		res.Hosts = make([]types.String, len(ingressService.Hosts))
+		for i, attr := range ingressService.Hosts {
+			res.Hosts[i] = types.StringValue(attr)
+		}
+	}
+	res.Namespace = types.StringValue(ingressService.Namespace)
+	res.Partition = types.StringValue(ingressService.Partition)
+	{
+		data, d := encodeGatewayServiceTLSConfig(ingressService.TLS)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.TLS = data
+		}
+	}
+	{
+		data, d := encodeHTTPHeaderModifiers(ingressService.RequestHeaders)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.RequestHeaders = data
+		}
+	}
+	{
+		data, d := encodeHTTPHeaderModifiers(ingressService.ResponseHeaders)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.ResponseHeaders = data
+		}
+	}
+	if ingressService.MaxConnections != nil {
+		res.MaxConnections = types.Int64Value(int64(*ingressService.MaxConnections))
+	}
+	if ingressService.MaxPendingRequests != nil {
+		res.MaxPendingRequests = types.Int64Value(int64(*ingressService.MaxPendingRequests))
+	}
+	if ingressService.MaxConcurrentRequests != nil {
+		res.MaxConcurrentRequests = types.Int64Value(int64(*ingressService.MaxConcurrentRequests))
+	}
+	{
+		data, d := encodePassiveHealthCheck(ingressService.PassiveHealthCheck)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.PassiveHealthCheck = data
+		}
+	}
+	return &res, diags
+}
+
+func encodeLocalJWKS(localJwks *api.LocalJWKS) (*LocalJWKS, diag.Diagnostics) {
+	if localJwks == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := LocalJWKS{}
+	res.JWKS = types.StringValue(localJwks.JWKS)
+	res.Filename = types.StringValue(localJwks.Filename)
+	return &res, diags
+}
+
+func encodeRemoteJWKS(remoteJwks *api.RemoteJWKS) (*RemoteJWKS, diag.Diagnostics) {
+	if remoteJwks == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := RemoteJWKS{}
+	res.URI = types.StringValue(remoteJwks.URI)
+	res.RequestTimeoutMs = types.Int64Value(int64(remoteJwks.RequestTimeoutMs))
+	res.CacheDuration = types.StringValue(remoteJwks.CacheDuration.String())
+	res.FetchAsynchronously = types.BoolValue(remoteJwks.FetchAsynchronously)
+	{
+		data, d := encodeJWKSRetryPolicy(remoteJwks.RetryPolicy)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.RetryPolicy = data
+		}
+	}
+	{
+		data, d := encodeJWKSCluster(remoteJwks.JWKSCluster)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.JWKSCluster = data
+		}
+	}
+	return &res, diags
+}
+
+func encodeJWTLocationHeader(jwtLocationHeader *api.JWTLocationHeader) (*JWTLocationHeader, diag.Diagnostics) {
+	if jwtLocationHeader == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := JWTLocationHeader{}
+	res.Name = types.StringValue(jwtLocationHeader.Name)
+	res.ValuePrefix = types.StringValue(jwtLocationHeader.ValuePrefix)
+	res.Forward = types.BoolValue(jwtLocationHeader.Forward)
+	return &res, diags
+}
+
+func encodeJWTLocationQueryParam(jwtLocationQueryParam *api.JWTLocationQueryParam) (*JWTLocationQueryParam, diag.Diagnostics) {
+	if jwtLocationQueryParam == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := JWTLocationQueryParam{}
+	res.Name = types.StringValue(jwtLocationQueryParam.Name)
+	return &res, diags
+}
+
+func encodeJWTLocationCookie(jwtLocationCookie *api.JWTLocationCookie) (*JWTLocationCookie, diag.Diagnostics) {
+	if jwtLocationCookie == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := JWTLocationCookie{}
+	res.Name = types.StringValue(jwtLocationCookie.Name)
+	return &res, diags
+}
+
+func encodeMeshDirectionalTLSConfig(meshDirectionalTlsConfig *api.MeshDirectionalTLSConfig) (*MeshDirectionalTLSConfig, diag.Diagnostics) {
+	if meshDirectionalTlsConfig == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := MeshDirectionalTLSConfig{}
+	res.TLSMinVersion = types.StringValue(meshDirectionalTlsConfig.TLSMinVersion)
+	res.TLSMaxVersion = types.StringValue(meshDirectionalTlsConfig.TLSMaxVersion)
+	if meshDirectionalTlsConfig.CipherSuites != nil {
+		res.CipherSuites = make([]types.String, len(meshDirectionalTlsConfig.CipherSuites))
+		for i, attr := range meshDirectionalTlsConfig.CipherSuites {
+			res.CipherSuites[i] = types.StringValue(attr)
+		}
+	}
 	return &res, diags
 }
 
@@ -1937,6 +4121,372 @@ func encodeExposePath(exposePath *api.ExposePath) (*ExposePath, diag.Diagnostics
 	return &res, diags
 }
 
+func encodeUpstreamConfig(upstreamConfig *api.UpstreamConfig) (*UpstreamConfig, diag.Diagnostics) {
+	if upstreamConfig == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := UpstreamConfig{}
+	res.Name = types.StringValue(upstreamConfig.Name)
+	res.Partition = types.StringValue(upstreamConfig.Partition)
+	res.Namespace = types.StringValue(upstreamConfig.Namespace)
+	res.Peer = types.StringValue(upstreamConfig.Peer)
+	res.EnvoyListenerJSON = types.StringValue(upstreamConfig.EnvoyListenerJSON)
+	res.EnvoyClusterJSON = types.StringValue(upstreamConfig.EnvoyClusterJSON)
+	res.Protocol = types.StringValue(upstreamConfig.Protocol)
+	res.ConnectTimeoutMs = types.Int64Value(int64(upstreamConfig.ConnectTimeoutMs))
+	{
+		data, d := encodeUpstreamLimits(upstreamConfig.Limits)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.Limits = data
+		}
+	}
+	{
+		data, d := encodePassiveHealthCheck(upstreamConfig.PassiveHealthCheck)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.PassiveHealthCheck = data
+		}
+	}
+	{
+		data, d := encodeMeshGatewayConfig(&upstreamConfig.MeshGateway)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.MeshGateway = data
+		}
+	}
+	res.BalanceOutboundConnections = types.StringValue(upstreamConfig.BalanceOutboundConnections)
+	return &res, diags
+}
+
+func encodeIntentionPermission(intentionPermission *api.IntentionPermission) (*IntentionPermission, diag.Diagnostics) {
+	if intentionPermission == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := IntentionPermission{}
+	res.Action = types.StringValue(string(intentionPermission.Action))
+	{
+		data, d := encodeIntentionHTTPPermission(intentionPermission.HTTP)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.HTTP = data
+		}
+	}
+	{
+		data, d := encodeIntentionJWTRequirement(intentionPermission.JWT)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.JWT = data
+		}
+	}
+	return &res, diags
+}
+
+func encodeIntentionJWTProvider(intentionJwtProvider *api.IntentionJWTProvider) (*IntentionJWTProvider, diag.Diagnostics) {
+	if intentionJwtProvider == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := IntentionJWTProvider{}
+	res.Name = types.StringValue(intentionJwtProvider.Name)
+	if intentionJwtProvider.VerifyClaims != nil {
+		res.VerifyClaims = make([]*IntentionJWTClaimVerification, len(intentionJwtProvider.VerifyClaims))
+		for i, attr := range intentionJwtProvider.VerifyClaims {
+			{
+				data, d := encodeIntentionJWTClaimVerification(attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.VerifyClaims[i] = data
+				}
+			}
+		}
+	}
+	return &res, diags
+}
+
+func encodeServiceRouteMatch(serviceRouteMatch *api.ServiceRouteMatch) (*ServiceRouteMatch, diag.Diagnostics) {
+	if serviceRouteMatch == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ServiceRouteMatch{}
+	{
+		data, d := encodeServiceRouteHTTPMatch(serviceRouteMatch.HTTP)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.HTTP = data
+		}
+	}
+	return &res, diags
+}
+
+func encodeServiceRouteDestination(serviceRouteDestination *api.ServiceRouteDestination) (*ServiceRouteDestination, diag.Diagnostics) {
+	if serviceRouteDestination == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ServiceRouteDestination{}
+	res.Service = types.StringValue(serviceRouteDestination.Service)
+	res.ServiceSubset = types.StringValue(serviceRouteDestination.ServiceSubset)
+	res.Namespace = types.StringValue(serviceRouteDestination.Namespace)
+	res.Partition = types.StringValue(serviceRouteDestination.Partition)
+	res.PrefixRewrite = types.StringValue(serviceRouteDestination.PrefixRewrite)
+	res.RequestTimeout = types.StringValue(serviceRouteDestination.RequestTimeout.String())
+	res.IdleTimeout = types.StringValue(serviceRouteDestination.IdleTimeout.String())
+	res.NumRetries = types.Int64Value(int64(serviceRouteDestination.NumRetries))
+	res.RetryOnConnectFailure = types.BoolValue(serviceRouteDestination.RetryOnConnectFailure)
+	if serviceRouteDestination.RetryOnStatusCodes != nil {
+		res.RetryOnStatusCodes = make([]types.Int64, len(serviceRouteDestination.RetryOnStatusCodes))
+		for i, attr := range serviceRouteDestination.RetryOnStatusCodes {
+			res.RetryOnStatusCodes[i] = types.Int64Value(int64(attr))
+		}
+	}
+	if serviceRouteDestination.RetryOn != nil {
+		res.RetryOn = make([]types.String, len(serviceRouteDestination.RetryOn))
+		for i, attr := range serviceRouteDestination.RetryOn {
+			res.RetryOn[i] = types.StringValue(attr)
+		}
+	}
+	{
+		data, d := encodeHTTPHeaderModifiers(serviceRouteDestination.RequestHeaders)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.RequestHeaders = data
+		}
+	}
+	{
+		data, d := encodeHTTPHeaderModifiers(serviceRouteDestination.ResponseHeaders)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.ResponseHeaders = data
+		}
+	}
+	return &res, diags
+}
+
+func encodeHTTPHeaderModifiers(httpHeaderModifiers *api.HTTPHeaderModifiers) (*HTTPHeaderModifiers, diag.Diagnostics) {
+	if httpHeaderModifiers == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := HTTPHeaderModifiers{}
+	if httpHeaderModifiers.Add != nil {
+		res.Add = map[string]types.String{}
+		for k, v := range httpHeaderModifiers.Add {
+			res.Add[k] = types.StringValue(v)
+		}
+	}
+	if httpHeaderModifiers.Set != nil {
+		res.Set = map[string]types.String{}
+		for k, v := range httpHeaderModifiers.Set {
+			res.Set[k] = types.StringValue(v)
+		}
+	}
+	if httpHeaderModifiers.Remove != nil {
+		res.Remove = make([]types.String, len(httpHeaderModifiers.Remove))
+		for i, attr := range httpHeaderModifiers.Remove {
+			res.Remove[i] = types.StringValue(attr)
+		}
+	}
+	return &res, diags
+}
+
+func encodeHTTPHeaderFilter(httpHeaderFilter *api.HTTPHeaderFilter) (*HTTPHeaderFilter, diag.Diagnostics) {
+	if httpHeaderFilter == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := HTTPHeaderFilter{}
+	if httpHeaderFilter.Add != nil {
+		res.Add = map[string]types.String{}
+		for k, v := range httpHeaderFilter.Add {
+			res.Add[k] = types.StringValue(v)
+		}
+	}
+	if httpHeaderFilter.Remove != nil {
+		res.Remove = make([]types.String, len(httpHeaderFilter.Remove))
+		for i, attr := range httpHeaderFilter.Remove {
+			res.Remove[i] = types.StringValue(attr)
+		}
+	}
+	if httpHeaderFilter.Set != nil {
+		res.Set = map[string]types.String{}
+		for k, v := range httpHeaderFilter.Set {
+			res.Set[k] = types.StringValue(v)
+		}
+	}
+	return &res, diags
+}
+
+func encodeURLRewrite(urlRewrite *api.URLRewrite) (*URLRewrite, diag.Diagnostics) {
+	if urlRewrite == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := URLRewrite{}
+	res.Path = types.StringValue(urlRewrite.Path)
+	return &res, diags
+}
+
+func encodeHTTPHeaderMatch(httpHeaderMatch *api.HTTPHeaderMatch) (*HTTPHeaderMatch, diag.Diagnostics) {
+	if httpHeaderMatch == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := HTTPHeaderMatch{}
+	res.Match = types.StringValue(string(httpHeaderMatch.Match))
+	res.Name = types.StringValue(httpHeaderMatch.Name)
+	res.Value = types.StringValue(httpHeaderMatch.Value)
+	return &res, diags
+}
+
+func encodeHTTPPathMatch(httpPathMatch *api.HTTPPathMatch) (*HTTPPathMatch, diag.Diagnostics) {
+	if httpPathMatch == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := HTTPPathMatch{}
+	res.Match = types.StringValue(string(httpPathMatch.Match))
+	res.Value = types.StringValue(httpPathMatch.Value)
+	return &res, diags
+}
+
+func encodeHTTPQueryMatch(httpQueryMatch *api.HTTPQueryMatch) (*HTTPQueryMatch, diag.Diagnostics) {
+	if httpQueryMatch == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := HTTPQueryMatch{}
+	res.Match = types.StringValue(string(httpQueryMatch.Match))
+	res.Name = types.StringValue(httpQueryMatch.Name)
+	res.Value = types.StringValue(httpQueryMatch.Value)
+	return &res, diags
+}
+
+func encodeGatewayServiceTLSConfig(gatewayServiceTlsConfig *api.GatewayServiceTLSConfig) (*GatewayServiceTLSConfig, diag.Diagnostics) {
+	if gatewayServiceTlsConfig == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := GatewayServiceTLSConfig{}
+	{
+		data, d := encodeGatewayTLSSDSConfig(gatewayServiceTlsConfig.SDS)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.SDS = data
+		}
+	}
+	return &res, diags
+}
+
+func encodePassiveHealthCheck(passiveHealthCheck *api.PassiveHealthCheck) (*PassiveHealthCheck, diag.Diagnostics) {
+	if passiveHealthCheck == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := PassiveHealthCheck{}
+	res.Interval = types.StringValue(passiveHealthCheck.Interval.String())
+	res.MaxFailures = types.Int64Value(int64(passiveHealthCheck.MaxFailures))
+	if passiveHealthCheck.EnforcingConsecutive5xx != nil {
+		res.EnforcingConsecutive5xx = types.Int64Value(int64(*passiveHealthCheck.EnforcingConsecutive5xx))
+	}
+	if passiveHealthCheck.MaxEjectionPercent != nil {
+		res.MaxEjectionPercent = types.Int64Value(int64(*passiveHealthCheck.MaxEjectionPercent))
+	}
+	if passiveHealthCheck.BaseEjectionTime != nil {
+		res.BaseEjectionTime = types.StringValue(passiveHealthCheck.BaseEjectionTime.String())
+	}
+	return &res, diags
+}
+
+func encodeJWKSRetryPolicy(jwksRetryPolicy *api.JWKSRetryPolicy) (*JWKSRetryPolicy, diag.Diagnostics) {
+	if jwksRetryPolicy == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := JWKSRetryPolicy{}
+	res.NumRetries = types.Int64Value(int64(jwksRetryPolicy.NumRetries))
+	{
+		data, d := encodeRetryPolicyBackOff(jwksRetryPolicy.RetryPolicyBackOff)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.RetryPolicyBackOff = data
+		}
+	}
+	return &res, diags
+}
+
+func encodeJWKSCluster(jwksCluster *api.JWKSCluster) (*JWKSCluster, diag.Diagnostics) {
+	if jwksCluster == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := JWKSCluster{}
+	res.DiscoveryType = types.StringValue(string(jwksCluster.DiscoveryType))
+	{
+		data, d := encodeJWKSTLSCertificate(jwksCluster.TLSCertificates)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.TLSCertificates = data
+		}
+	}
+	res.ConnectTimeout = types.StringValue(jwksCluster.ConnectTimeout.String())
+	return &res, diags
+}
+
 func encodeQueryFailoverTarget(queryFailoverTarget *api.QueryFailoverTarget) (*QueryFailoverTarget, diag.Diagnostics) {
 	if queryFailoverTarget == nil {
 		return nil, nil
@@ -1948,5 +4498,197 @@ func encodeQueryFailoverTarget(queryFailoverTarget *api.QueryFailoverTarget) (*Q
 	res.Datacenter = types.StringValue(queryFailoverTarget.Datacenter)
 	res.Partition = types.StringValue(queryFailoverTarget.Partition)
 	res.Namespace = types.StringValue(queryFailoverTarget.Namespace)
+	return &res, diags
+}
+
+func encodeUpstreamLimits(upstreamLimits *api.UpstreamLimits) (*UpstreamLimits, diag.Diagnostics) {
+	if upstreamLimits == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := UpstreamLimits{}
+	if upstreamLimits.MaxConnections != nil {
+		res.MaxConnections = types.Int64Value(int64(*upstreamLimits.MaxConnections))
+	}
+	if upstreamLimits.MaxPendingRequests != nil {
+		res.MaxPendingRequests = types.Int64Value(int64(*upstreamLimits.MaxPendingRequests))
+	}
+	if upstreamLimits.MaxConcurrentRequests != nil {
+		res.MaxConcurrentRequests = types.Int64Value(int64(*upstreamLimits.MaxConcurrentRequests))
+	}
+	return &res, diags
+}
+
+func encodeIntentionHTTPPermission(intentionHttpPermission *api.IntentionHTTPPermission) (*IntentionHTTPPermission, diag.Diagnostics) {
+	if intentionHttpPermission == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := IntentionHTTPPermission{}
+	return &res, diags
+}
+
+func encodeIntentionJWTClaimVerification(intentionJwtClaimVerification *api.IntentionJWTClaimVerification) (*IntentionJWTClaimVerification, diag.Diagnostics) {
+	if intentionJwtClaimVerification == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := IntentionJWTClaimVerification{}
+	if intentionJwtClaimVerification.Path != nil {
+		res.Path = make([]types.String, len(intentionJwtClaimVerification.Path))
+		for i, attr := range intentionJwtClaimVerification.Path {
+			res.Path[i] = types.StringValue(attr)
+		}
+	}
+	res.Value = types.StringValue(intentionJwtClaimVerification.Value)
+	return &res, diags
+}
+
+func encodeServiceRouteHTTPMatch(serviceRouteHttpMatch *api.ServiceRouteHTTPMatch) (*ServiceRouteHTTPMatch, diag.Diagnostics) {
+	if serviceRouteHttpMatch == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ServiceRouteHTTPMatch{}
+	res.PathExact = types.StringValue(serviceRouteHttpMatch.PathExact)
+	res.PathPrefix = types.StringValue(serviceRouteHttpMatch.PathPrefix)
+	res.PathRegex = types.StringValue(serviceRouteHttpMatch.PathRegex)
+	if serviceRouteHttpMatch.Header != nil {
+		res.Header = make([]*ServiceRouteHTTPMatchHeader, len(serviceRouteHttpMatch.Header))
+		for i, attr := range serviceRouteHttpMatch.Header {
+			{
+				data, d := encodeServiceRouteHTTPMatchHeader(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.Header[i] = data
+				}
+			}
+		}
+	}
+	if serviceRouteHttpMatch.QueryParam != nil {
+		res.QueryParam = make([]*ServiceRouteHTTPMatchQueryParam, len(serviceRouteHttpMatch.QueryParam))
+		for i, attr := range serviceRouteHttpMatch.QueryParam {
+			{
+				data, d := encodeServiceRouteHTTPMatchQueryParam(&attr)
+				diags.Append(d...)
+				if diags.HasError() {
+					return nil, diags
+				}
+				if data != nil {
+					res.QueryParam[i] = data
+				}
+			}
+		}
+	}
+	if serviceRouteHttpMatch.Methods != nil {
+		res.Methods = make([]types.String, len(serviceRouteHttpMatch.Methods))
+		for i, attr := range serviceRouteHttpMatch.Methods {
+			res.Methods[i] = types.StringValue(attr)
+		}
+	}
+	return &res, diags
+}
+
+func encodeRetryPolicyBackOff(retryPolicyBackOff *api.RetryPolicyBackOff) (*RetryPolicyBackOff, diag.Diagnostics) {
+	if retryPolicyBackOff == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := RetryPolicyBackOff{}
+	return &res, diags
+}
+
+func encodeJWKSTLSCertificate(jwkstlsCertificate *api.JWKSTLSCertificate) (*JWKSTLSCertificate, diag.Diagnostics) {
+	if jwkstlsCertificate == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := JWKSTLSCertificate{}
+	{
+		data, d := encodeJWKSTLSCertProviderInstance(jwkstlsCertificate.CaCertificateProviderInstance)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.CaCertificateProviderInstance = data
+		}
+	}
+	{
+		data, d := encodeJWKSTLSCertTrustedCA(jwkstlsCertificate.TrustedCA)
+		diags.Append(d...)
+		if diags.HasError() {
+			return nil, diags
+		}
+		if data != nil {
+			res.TrustedCA = data
+		}
+	}
+	return &res, diags
+}
+
+func encodeServiceRouteHTTPMatchHeader(serviceRouteHttpMatchHeader *api.ServiceRouteHTTPMatchHeader) (*ServiceRouteHTTPMatchHeader, diag.Diagnostics) {
+	if serviceRouteHttpMatchHeader == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ServiceRouteHTTPMatchHeader{}
+	res.Name = types.StringValue(serviceRouteHttpMatchHeader.Name)
+	res.Present = types.BoolValue(serviceRouteHttpMatchHeader.Present)
+	res.Exact = types.StringValue(serviceRouteHttpMatchHeader.Exact)
+	res.Prefix = types.StringValue(serviceRouteHttpMatchHeader.Prefix)
+	res.Suffix = types.StringValue(serviceRouteHttpMatchHeader.Suffix)
+	res.Regex = types.StringValue(serviceRouteHttpMatchHeader.Regex)
+	res.Invert = types.BoolValue(serviceRouteHttpMatchHeader.Invert)
+	return &res, diags
+}
+
+func encodeServiceRouteHTTPMatchQueryParam(serviceRouteHttpMatchQueryParam *api.ServiceRouteHTTPMatchQueryParam) (*ServiceRouteHTTPMatchQueryParam, diag.Diagnostics) {
+	if serviceRouteHttpMatchQueryParam == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := ServiceRouteHTTPMatchQueryParam{}
+	res.Name = types.StringValue(serviceRouteHttpMatchQueryParam.Name)
+	res.Present = types.BoolValue(serviceRouteHttpMatchQueryParam.Present)
+	res.Exact = types.StringValue(serviceRouteHttpMatchQueryParam.Exact)
+	res.Regex = types.StringValue(serviceRouteHttpMatchQueryParam.Regex)
+	return &res, diags
+}
+
+func encodeJWKSTLSCertProviderInstance(jwkstlsCertProviderInstance *api.JWKSTLSCertProviderInstance) (*JWKSTLSCertProviderInstance, diag.Diagnostics) {
+	if jwkstlsCertProviderInstance == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := JWKSTLSCertProviderInstance{}
+	res.InstanceName = types.StringValue(jwkstlsCertProviderInstance.InstanceName)
+	res.CertificateName = types.StringValue(jwkstlsCertProviderInstance.CertificateName)
+	return &res, diags
+}
+
+func encodeJWKSTLSCertTrustedCA(jwkstlsCertTrustedCa *api.JWKSTLSCertTrustedCA) (*JWKSTLSCertTrustedCA, diag.Diagnostics) {
+	if jwkstlsCertTrustedCa == nil {
+		return nil, nil
+	}
+
+	var diags diag.Diagnostics
+	res := JWKSTLSCertTrustedCA{}
+	res.Filename = types.StringValue(jwkstlsCertTrustedCa.Filename)
+	res.EnvironmentVariable = types.StringValue(jwkstlsCertTrustedCa.EnvironmentVariable)
+	res.InlineString = types.StringValue(jwkstlsCertTrustedCa.InlineString)
+	res.InlineBytes = types.StringValue(string(jwkstlsCertTrustedCa.InlineBytes))
 	return &res, diags
 }

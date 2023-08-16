@@ -1,16 +1,33 @@
-# Check: consul_config_entry.test
-resource "consul_config_entry" "test" {
-  kind = "proxy-defaults"
-  name = "global"
+# Check: consul_config_entry_service.test
+resource "consul_config_entry_service" "test" {
+  name     = "foo"
+  protocol = "http"
+}
 
+# Check: consul_config_entry_proxy.test
+resource "consul_config_entry_proxy" "test" {
+  name = "global"
   config = jsonencode({
-    AccessLogs       = {}
-    Expose           = {}
-    MeshGateway      = {}
-    TransparentProxy = {}
-    Config = {
-      local_connect_timeout_ms = 1000
-      handshake_timeout_ms     = 10000
-    }
+    foo = "bar"
   })
+}
+
+# Check: consul_config_entry_service_router.test
+resource "consul_config_entry_service_router" "test" {
+  name = consul_config_entry_service.test.name
+  routes = [
+    {
+      match = {
+        http = {
+          pathprefix = "/admin"
+        }
+      }
+
+      destination = {
+        namespace = "default"
+        partition = "default"
+        service   = consul_config_entry_service.test.name
+      }
+    }
+  ]
 }

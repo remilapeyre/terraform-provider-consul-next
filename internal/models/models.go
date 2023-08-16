@@ -92,6 +92,15 @@ type ACLTokenSecretID struct {
 	PGPKey     types.String `tfsdk:"pgp_key"`
 }
 
+type APIGatewayConfigEntry struct {
+	Name      types.String            `tfsdk:"name"`
+	Meta      map[string]types.String `tfsdk:"meta"`
+	Listeners []*APIGatewayListener   `tfsdk:"listeners"`
+	Status    *ConfigEntryStatus      `tfsdk:"status"`
+	Partition types.String            `tfsdk:"partition"`
+	Namespace types.String            `tfsdk:"namespace"`
+}
+
 type AgentConfig struct {
 	ID                types.String `tfsdk:"id"`
 	Datacenter        types.String `tfsdk:"datacenter"`
@@ -203,6 +212,57 @@ type Datacenters struct {
 	Datacenters []types.String `tfsdk:"datacenters"`
 }
 
+type ExportedServicesConfigEntry struct {
+	Name      types.String            `tfsdk:"name"`
+	Partition types.String            `tfsdk:"partition"`
+	Services  []*ExportedService      `tfsdk:"services"`
+	Meta      map[string]types.String `tfsdk:"meta"`
+}
+
+type HTTPRouteConfigEntry struct {
+	Name      types.String            `tfsdk:"name"`
+	Parents   []*ResourceReference    `tfsdk:"parents"`
+	Rules     []*HTTPRouteRule        `tfsdk:"rules"`
+	Hostnames []types.String          `tfsdk:"hostnames"`
+	Meta      map[string]types.String `tfsdk:"meta"`
+	Partition types.String            `tfsdk:"partition"`
+	Namespace types.String            `tfsdk:"namespace"`
+	Status    *ConfigEntryStatus      `tfsdk:"status"`
+}
+
+type IngressGatewayConfigEntry struct {
+	Name      types.String            `tfsdk:"name"`
+	Partition types.String            `tfsdk:"partition"`
+	Namespace types.String            `tfsdk:"namespace"`
+	TLS       *GatewayTLSConfig       `tfsdk:"tls"`
+	Listeners []*IngressListener      `tfsdk:"listeners"`
+	Meta      map[string]types.String `tfsdk:"meta"`
+	Defaults  *IngressServiceConfig   `tfsdk:"defaults"`
+}
+
+type InlineCertificateConfigEntry struct {
+	Name        types.String            `tfsdk:"name"`
+	Certificate types.String            `tfsdk:"certificate"`
+	PrivateKey  types.String            `tfsdk:"private_key"`
+	Meta        map[string]types.String `tfsdk:"meta"`
+	Partition   types.String            `tfsdk:"partition"`
+	Namespace   types.String            `tfsdk:"namespace"`
+}
+
+type JWTProviderConfigEntry struct {
+	Name             types.String            `tfsdk:"name"`
+	JSONWebKeySet    *JSONWebKeySet          `tfsdk:"json_web_key_set"`
+	Issuer           types.String            `tfsdk:"issuer"`
+	Audiences        []types.String          `tfsdk:"audiences"`
+	Locations        []*JWTLocation          `tfsdk:"locations"`
+	Forwarding       *JWTForwardingConfig    `tfsdk:"forwarding"`
+	ClockSkewSeconds types.Int64             `tfsdk:"clock_skew_seconds"`
+	CacheConfig      *JWTCacheConfig         `tfsdk:"cache_config"`
+	Meta             map[string]types.String `tfsdk:"meta"`
+	Partition        types.String            `tfsdk:"partition"`
+	Namespace        types.String            `tfsdk:"namespace"`
+}
+
 type KeyPrefix struct {
 	ID types.String `tfsdk:"key_prefix"`
 }
@@ -210,6 +270,17 @@ type KeyPrefix struct {
 type Keys struct {
 	ID   types.String `tfsdk:"id"`
 	Keys []*KVPair    `tfsdk:"keys"`
+}
+
+type MeshConfigEntry struct {
+	Partition                        types.String                `tfsdk:"partition"`
+	Namespace                        types.String                `tfsdk:"namespace"`
+	TransparentProxy                 *TransparentProxyMeshConfig `tfsdk:"transparent_proxy"`
+	AllowEnablingPermissiveMutualTLS types.Bool                  `tfsdk:"allow_enabling_permissive_mutual_tls"`
+	TLS                              *MeshTLSConfig              `tfsdk:"tls"`
+	HTTP                             *MeshHTTPConfig             `tfsdk:"http"`
+	Peering                          *PeeringMeshConfig          `tfsdk:"peering"`
+	Meta                             map[string]types.String     `tfsdk:"meta"`
 }
 
 type Namespace struct {
@@ -315,9 +386,150 @@ type PreparedQueryDefinition struct {
 	Template *QueryTemplate   `tfsdk:"template"`
 }
 
+type ProxyConfigEntry struct {
+	ID                   types.String                         `tfsdk:"id"`
+	Name                 types.String                         `tfsdk:"name"`
+	Partition            types.String                         `tfsdk:"partition"`
+	Namespace            types.String                         `tfsdk:"namespace"`
+	Mode                 types.String                         `tfsdk:"mode"`
+	TransparentProxy     *TransparentProxyConfig              `tfsdk:"transparent_proxy"`
+	MutualTLSMode        types.String                         `tfsdk:"mutual_tls_mode"`
+	Config               types.String                         `tfsdk:"config"`
+	MeshGateway          *MeshGatewayConfig                   `tfsdk:"mesh_gateway"`
+	Expose               *ExposeConfig                        `tfsdk:"expose"`
+	AccessLogs           *AccessLogsConfig                    `tfsdk:"access_logs"`
+	EnvoyExtensions      []*EnvoyExtension                    `tfsdk:"envoy_extensions"`
+	FailoverPolicy       *ServiceResolverFailoverPolicy       `tfsdk:"failover_policy"`
+	PrioritizeByLocality *ServiceResolverPrioritizeByLocality `tfsdk:"prioritize_by_locality"`
+	Meta                 map[string]types.String              `tfsdk:"meta"`
+}
+
+type RateLimitIPConfigEntry struct {
+	Name            types.String            `tfsdk:"name"`
+	Mode            types.String            `tfsdk:"mode"`
+	Meta            map[string]types.String `tfsdk:"meta"`
+	ReadRate        types.Float64           `tfsdk:"read_rate"`
+	WriteRate       types.Float64           `tfsdk:"write_rate"`
+	ACL             *ReadWriteRatesConfig   `tfsdk:"acl"`
+	Catalog         *ReadWriteRatesConfig   `tfsdk:"catalog"`
+	ConfigEntry     *ReadWriteRatesConfig   `tfsdk:"config_entry"`
+	ConnectCA       *ReadWriteRatesConfig   `tfsdk:"connect_ca"`
+	Coordinate      *ReadWriteRatesConfig   `tfsdk:"coordinate"`
+	DiscoveryChain  *ReadWriteRatesConfig   `tfsdk:"discovery_chain"`
+	ServerDiscovery *ReadWriteRatesConfig   `tfsdk:"server_discovery"`
+	Health          *ReadWriteRatesConfig   `tfsdk:"health"`
+	Intention       *ReadWriteRatesConfig   `tfsdk:"intention"`
+	KV              *ReadWriteRatesConfig   `tfsdk:"kv"`
+	Tenancy         *ReadWriteRatesConfig   `tfsdk:"tenancy"`
+	PreparedQuery   *ReadWriteRatesConfig   `tfsdk:"prepared_query"`
+	Session         *ReadWriteRatesConfig   `tfsdk:"session"`
+	Txn             *ReadWriteRatesConfig   `tfsdk:"txn"`
+	AutoConfig      *ReadWriteRatesConfig   `tfsdk:"auto_config"`
+	FederationState *ReadWriteRatesConfig   `tfsdk:"federation_state"`
+	Internal        *ReadWriteRatesConfig   `tfsdk:"internal"`
+	PeerStream      *ReadWriteRatesConfig   `tfsdk:"peer_stream"`
+	Peering         *ReadWriteRatesConfig   `tfsdk:"peering"`
+	DataPlane       *ReadWriteRatesConfig   `tfsdk:"data_plane"`
+	DNS             *ReadWriteRatesConfig   `tfsdk:"dns"`
+	Subscribe       *ReadWriteRatesConfig   `tfsdk:"subscribe"`
+	Resource        *ReadWriteRatesConfig   `tfsdk:"resource"`
+	Partition       types.String            `tfsdk:"partition"`
+	Namespace       types.String            `tfsdk:"namespace"`
+}
+
+type SamenessGroupConfigEntry struct {
+	Name               types.String            `tfsdk:"name"`
+	Partition          types.String            `tfsdk:"partition"`
+	DefaultForFailover types.Bool              `tfsdk:"default_for_failover"`
+	IncludeLocal       types.Bool              `tfsdk:"include_local"`
+	Members            []*SamenessGroupMember  `tfsdk:"members"`
+	Meta               map[string]types.String `tfsdk:"meta"`
+}
+
+type ServiceConfigEntry struct {
+	ID                        types.String            `tfsdk:"id"`
+	Name                      types.String            `tfsdk:"name"`
+	Partition                 types.String            `tfsdk:"partition"`
+	Namespace                 types.String            `tfsdk:"namespace"`
+	Protocol                  types.String            `tfsdk:"protocol"`
+	Mode                      types.String            `tfsdk:"mode"`
+	TransparentProxy          *TransparentProxyConfig `tfsdk:"transparent_proxy"`
+	MutualTLSMode             types.String            `tfsdk:"mutual_tls_mode"`
+	MeshGateway               *MeshGatewayConfig      `tfsdk:"mesh_gateway"`
+	Expose                    *ExposeConfig           `tfsdk:"expose"`
+	ExternalSNI               types.String            `tfsdk:"external_sni"`
+	UpstreamConfig            *UpstreamConfiguration  `tfsdk:"upstream_config"`
+	Destination               *DestinationConfig      `tfsdk:"destination"`
+	MaxInboundConnections     types.Int64             `tfsdk:"max_inbound_connections"`
+	LocalConnectTimeoutMs     types.Int64             `tfsdk:"local_connect_timeout_ms"`
+	LocalRequestTimeoutMs     types.Int64             `tfsdk:"local_request_timeout_ms"`
+	BalanceInboundConnections types.String            `tfsdk:"balance_inbound_connections"`
+	EnvoyExtensions           []*EnvoyExtension       `tfsdk:"envoy_extensions"`
+	Meta                      map[string]types.String `tfsdk:"meta"`
+}
+
 type ServiceHealth struct {
 	ID       types.String    `tfsdk:"id"`
 	Services []*ServiceEntry `tfsdk:"services"`
+}
+
+type ServiceIntentionsConfigEntry struct {
+	Name      types.String             `tfsdk:"name"`
+	Partition types.String             `tfsdk:"partition"`
+	Namespace types.String             `tfsdk:"namespace"`
+	Sources   []*SourceIntention       `tfsdk:"sources"`
+	JWT       *IntentionJWTRequirement `tfsdk:"jwt"`
+	Meta      map[string]types.String  `tfsdk:"meta"`
+}
+
+type ServiceResolverConfigEntry struct {
+	Name                 types.String                         `tfsdk:"name"`
+	Partition            types.String                         `tfsdk:"partition"`
+	Namespace            types.String                         `tfsdk:"namespace"`
+	DefaultSubset        types.String                         `tfsdk:"default_subset"`
+	Subsets              map[string]*ServiceResolverSubset    `tfsdk:"subsets"`
+	Redirect             *ServiceResolverRedirect             `tfsdk:"redirect"`
+	Failover             map[string]*ServiceResolverFailover  `tfsdk:"failover"`
+	ConnectTimeout       types.String                         `tfsdk:"connect_timeout"`
+	RequestTimeout       types.String                         `tfsdk:"request_timeout"`
+	PrioritizeByLocality *ServiceResolverPrioritizeByLocality `tfsdk:"prioritize_by_locality"`
+	LoadBalancer         *LoadBalancer                        `tfsdk:"load_balancer"`
+	Meta                 map[string]types.String              `tfsdk:"meta"`
+}
+
+type ServiceRouterConfigEntry struct {
+	ID        types.String            `tfsdk:"id"`
+	Name      types.String            `tfsdk:"name"`
+	Partition types.String            `tfsdk:"partition"`
+	Namespace types.String            `tfsdk:"namespace"`
+	Routes    []*ServiceRoute         `tfsdk:"routes"`
+	Meta      map[string]types.String `tfsdk:"meta"`
+}
+
+type ServiceSplitterConfigEntry struct {
+	Name      types.String            `tfsdk:"name"`
+	Partition types.String            `tfsdk:"partition"`
+	Namespace types.String            `tfsdk:"namespace"`
+	Splits    []*ServiceSplit         `tfsdk:"splits"`
+	Meta      map[string]types.String `tfsdk:"meta"`
+}
+
+type TCPRouteConfigEntry struct {
+	Name      types.String            `tfsdk:"name"`
+	Parents   []*ResourceReference    `tfsdk:"parents"`
+	Services  []*TCPService           `tfsdk:"services"`
+	Meta      map[string]types.String `tfsdk:"meta"`
+	Status    *ConfigEntryStatus      `tfsdk:"status"`
+	Partition types.String            `tfsdk:"partition"`
+	Namespace types.String            `tfsdk:"namespace"`
+}
+
+type TerminatingGatewayConfigEntry struct {
+	Name      types.String            `tfsdk:"name"`
+	Services  []*LinkedService        `tfsdk:"services"`
+	Meta      map[string]types.String `tfsdk:"meta"`
+	Partition types.String            `tfsdk:"partition"`
+	Namespace types.String            `tfsdk:"namespace"`
 }
 
 type ACLAuthMethodNamespaceRule struct {
@@ -338,6 +550,18 @@ type ACLServiceIdentity struct {
 type ACLNodeIdentity struct {
 	NodeName   types.String `tfsdk:"node_name"`
 	Datacenter types.String `tfsdk:"datacenter"`
+}
+
+type APIGatewayListener struct {
+	Name     types.String                `tfsdk:"name"`
+	Hostname types.String                `tfsdk:"hostname"`
+	Port     types.Int64                 `tfsdk:"port"`
+	Protocol types.String                `tfsdk:"protocol"`
+	TLS      *APIGatewayTLSConfiguration `tfsdk:"tls"`
+}
+
+type ConfigEntryStatus struct {
+	Conditions []*Condition `tfsdk:"conditions"`
 }
 
 type ServerHealth struct {
@@ -424,12 +648,86 @@ type TLSConfig struct {
 	InsecureSkipVerify types.Bool   `tfsdk:"insecure_skip_verify"`
 }
 
+type ExportedService struct {
+	Name      types.String       `tfsdk:"name"`
+	Namespace types.String       `tfsdk:"namespace"`
+	Consumers []*ServiceConsumer `tfsdk:"consumers"`
+}
+
+type ResourceReference struct {
+	Kind        types.String `tfsdk:"kind"`
+	Name        types.String `tfsdk:"name"`
+	SectionName types.String `tfsdk:"section_name"`
+	Partition   types.String `tfsdk:"partition"`
+	Namespace   types.String `tfsdk:"namespace"`
+}
+
+type HTTPRouteRule struct {
+	Filters  *HTTPFilters   `tfsdk:"filters"`
+	Matches  []*HTTPMatch   `tfsdk:"matches"`
+	Services []*HTTPService `tfsdk:"services"`
+}
+
+type GatewayTLSConfig struct {
+	Enabled       types.Bool           `tfsdk:"enabled"`
+	SDS           *GatewayTLSSDSConfig `tfsdk:"sds"`
+	TLSMinVersion types.String         `tfsdk:"tls_min_version"`
+	TLSMaxVersion types.String         `tfsdk:"tls_max_version"`
+	CipherSuites  []types.String       `tfsdk:"cipher_suites"`
+}
+
+type IngressListener struct {
+	Port     types.Int64       `tfsdk:"port"`
+	Protocol types.String      `tfsdk:"protocol"`
+	Services []*IngressService `tfsdk:"services"`
+	TLS      *GatewayTLSConfig `tfsdk:"tls"`
+}
+
+type IngressServiceConfig struct{}
+
+type JSONWebKeySet struct {
+	Local  *LocalJWKS  `tfsdk:"local"`
+	Remote *RemoteJWKS `tfsdk:"remote"`
+}
+
+type JWTLocation struct {
+	Header     *JWTLocationHeader     `tfsdk:"header"`
+	QueryParam *JWTLocationQueryParam `tfsdk:"query_param"`
+	Cookie     *JWTLocationCookie     `tfsdk:"cookie"`
+}
+
+type JWTForwardingConfig struct {
+	HeaderName              types.String `tfsdk:"header_name"`
+	PadForwardPayloadHeader types.Bool   `tfsdk:"pad_forward_payload_header"`
+}
+
+type JWTCacheConfig struct {
+	Size types.Int64 `tfsdk:"size"`
+}
+
 type KVPair struct {
 	Key       types.String `tfsdk:"key"`
 	Flags     types.Int64  `tfsdk:"flags"`
 	Value     types.String `tfsdk:"value"`
 	Namespace types.String `tfsdk:"namespace"`
 	Partition types.String `tfsdk:"partition"`
+}
+
+type TransparentProxyMeshConfig struct {
+	MeshDestinationsOnly types.Bool `tfsdk:"mesh_destinations_only"`
+}
+
+type MeshTLSConfig struct {
+	Incoming *MeshDirectionalTLSConfig `tfsdk:"incoming"`
+	Outgoing *MeshDirectionalTLSConfig `tfsdk:"outgoing"`
+}
+
+type MeshHTTPConfig struct {
+	SanitizeXForwardedClientCert types.Bool `tfsdk:"sanitize_x_forwarded_client_cert"`
+}
+
+type PeeringMeshConfig struct {
+	PeerThroughMeshGateways types.Bool `tfsdk:"peer_through_mesh_gateways"`
 }
 
 type NamespaceACLConfig struct {
@@ -500,35 +798,9 @@ type QueryTemplate struct {
 	RemoveEmptyTags types.Bool   `tfsdk:"remove_empty_tags"`
 }
 
-type ServiceEntry struct{}
-
-type EnvoyExtension struct {
-	Name          types.String `tfsdk:"name"`
-	Required      types.Bool   `tfsdk:"required"`
-	Arguments     types.String `tfsdk:"arguments"`
-	ConsulVersion types.String `tfsdk:"consul_version"`
-	EnvoyVersion  types.String `tfsdk:"envoy_version"`
-}
-
 type TransparentProxyConfig struct {
 	OutboundListenerPort types.Int64 `tfsdk:"outbound_listener_port"`
 	DialedDirectly       types.Bool  `tfsdk:"dialed_directly"`
-}
-
-type Upstream struct {
-	DestinationType      types.String       `tfsdk:"destination_type"`
-	DestinationPartition types.String       `tfsdk:"destination_partition"`
-	DestinationNamespace types.String       `tfsdk:"destination_namespace"`
-	DestinationPeer      types.String       `tfsdk:"destination_peer"`
-	DestinationName      types.String       `tfsdk:"destination_name"`
-	Datacenter           types.String       `tfsdk:"datacenter"`
-	LocalBindAddress     types.String       `tfsdk:"local_bind_address"`
-	LocalBindPort        types.Int64        `tfsdk:"local_bind_port"`
-	LocalBindSocketPath  types.String       `tfsdk:"local_bind_socket_path"`
-	LocalBindSocketMode  types.String       `tfsdk:"local_bind_socket_mode"`
-	Config               types.String       `tfsdk:"config"`
-	MeshGateway          *MeshGatewayConfig `tfsdk:"mesh_gateway"`
-	CentrallyConfigured  types.Bool         `tfsdk:"centrally_configured"`
 }
 
 type MeshGatewayConfig struct {
@@ -549,6 +821,132 @@ type AccessLogsConfig struct {
 	TextFormat          types.String `tfsdk:"text_format"`
 }
 
+type EnvoyExtension struct {
+	Name          types.String `tfsdk:"name"`
+	Required      types.Bool   `tfsdk:"required"`
+	Arguments     types.String `tfsdk:"arguments"`
+	ConsulVersion types.String `tfsdk:"consul_version"`
+	EnvoyVersion  types.String `tfsdk:"envoy_version"`
+}
+
+type ServiceResolverFailoverPolicy struct {
+	Mode    types.String   `tfsdk:"mode"`
+	Regions []types.String `tfsdk:"regions"`
+}
+
+type ServiceResolverPrioritizeByLocality struct {
+	Mode types.String `tfsdk:"mode"`
+}
+
+type ReadWriteRatesConfig struct {
+	ReadRate  types.Float64 `tfsdk:"read_rate"`
+	WriteRate types.Float64 `tfsdk:"write_rate"`
+}
+
+type SamenessGroupMember struct {
+	Partition types.String `tfsdk:"partition"`
+	Peer      types.String `tfsdk:"peer"`
+}
+
+type UpstreamConfiguration struct {
+	Overrides []*UpstreamConfig `tfsdk:"overrides"`
+	Defaults  *UpstreamConfig   `tfsdk:"defaults"`
+}
+
+type DestinationConfig struct {
+	Addresses []types.String `tfsdk:"addresses"`
+	Port      types.Int64    `tfsdk:"port"`
+}
+
+type ServiceEntry struct{}
+
+type SourceIntention struct {
+	Name          types.String           `tfsdk:"name"`
+	Peer          types.String           `tfsdk:"peer"`
+	Partition     types.String           `tfsdk:"partition"`
+	Namespace     types.String           `tfsdk:"namespace"`
+	SamenessGroup types.String           `tfsdk:"sameness_group"`
+	Action        types.String           `tfsdk:"action"`
+	Permissions   []*IntentionPermission `tfsdk:"permissions"`
+	Precedence    types.Int64            `tfsdk:"precedence"`
+	Type          types.String           `tfsdk:"type"`
+	Description   types.String           `tfsdk:"description"`
+}
+
+type IntentionJWTRequirement struct {
+	Providers []*IntentionJWTProvider `tfsdk:"providers"`
+}
+
+type ServiceResolverSubset struct{}
+
+type ServiceResolverRedirect struct{}
+
+type ServiceResolverFailover struct{}
+
+type LoadBalancer struct{}
+
+type ServiceRoute struct {
+	Match       *ServiceRouteMatch       `tfsdk:"match"`
+	Destination *ServiceRouteDestination `tfsdk:"destination"`
+}
+
+type ServiceSplit struct {
+	Weight          types.Float64        `tfsdk:"weight"`
+	Service         types.String         `tfsdk:"service"`
+	ServiceSubset   types.String         `tfsdk:"service_subset"`
+	Namespace       types.String         `tfsdk:"namespace"`
+	Partition       types.String         `tfsdk:"partition"`
+	RequestHeaders  *HTTPHeaderModifiers `tfsdk:"request_headers"`
+	ResponseHeaders *HTTPHeaderModifiers `tfsdk:"response_headers"`
+}
+
+type TCPService struct {
+	Name      types.String `tfsdk:"name"`
+	Partition types.String `tfsdk:"partition"`
+	Namespace types.String `tfsdk:"namespace"`
+}
+
+type LinkedService struct {
+	Namespace types.String `tfsdk:"namespace"`
+	Name      types.String `tfsdk:"name"`
+	CAFile    types.String `tfsdk:"ca_file"`
+	CertFile  types.String `tfsdk:"cert_file"`
+	KeyFile   types.String `tfsdk:"key_file"`
+	SNI       types.String `tfsdk:"sni"`
+}
+
+type APIGatewayTLSConfiguration struct {
+	Certificates []*ResourceReference `tfsdk:"certificates"`
+	MaxVersion   types.String         `tfsdk:"max_version"`
+	MinVersion   types.String         `tfsdk:"min_version"`
+	CipherSuites []types.String       `tfsdk:"cipher_suites"`
+}
+
+type Condition struct {
+	Type               types.String       `tfsdk:"type"`
+	Status             types.String       `tfsdk:"status"`
+	Reason             types.String       `tfsdk:"reason"`
+	Message            types.String       `tfsdk:"message"`
+	Resource           *ResourceReference `tfsdk:"resource"`
+	LastTransitionTime types.String       `tfsdk:"last_transition_time"`
+}
+
+type Upstream struct {
+	DestinationType      types.String       `tfsdk:"destination_type"`
+	DestinationPartition types.String       `tfsdk:"destination_partition"`
+	DestinationNamespace types.String       `tfsdk:"destination_namespace"`
+	DestinationPeer      types.String       `tfsdk:"destination_peer"`
+	DestinationName      types.String       `tfsdk:"destination_name"`
+	Datacenter           types.String       `tfsdk:"datacenter"`
+	LocalBindAddress     types.String       `tfsdk:"local_bind_address"`
+	LocalBindPort        types.Int64        `tfsdk:"local_bind_port"`
+	LocalBindSocketPath  types.String       `tfsdk:"local_bind_socket_path"`
+	LocalBindSocketMode  types.String       `tfsdk:"local_bind_socket_mode"`
+	Config               types.String       `tfsdk:"config"`
+	MeshGateway          *MeshGatewayConfig `tfsdk:"mesh_gateway"`
+	CentrallyConfigured  types.Bool         `tfsdk:"centrally_configured"`
+}
+
 type HealthCheckDefinition struct {
 	HTTP                                   types.String              `tfsdk:"http"`
 	Header                                 map[string][]types.String `tfsdk:"header"`
@@ -566,6 +964,82 @@ type HealthCheckDefinition struct {
 	DeregisterCriticalServiceAfterDuration types.String              `tfsdk:"deregister_critical_service_after_duration"`
 }
 
+type ServiceConsumer struct {
+	Partition     types.String `tfsdk:"partition"`
+	Peer          types.String `tfsdk:"peer"`
+	SamenessGroup types.String `tfsdk:"sameness_group"`
+}
+
+type HTTPFilters struct {
+	Headers    []*HTTPHeaderFilter `tfsdk:"headers"`
+	URLRewrite *URLRewrite         `tfsdk:"url_rewrite"`
+}
+
+type HTTPMatch struct {
+	Headers []*HTTPHeaderMatch `tfsdk:"headers"`
+	Method  types.String       `tfsdk:"method"`
+	Path    *HTTPPathMatch     `tfsdk:"path"`
+	Query   []*HTTPQueryMatch  `tfsdk:"query"`
+}
+
+type HTTPService struct {
+	Name      types.String `tfsdk:"name"`
+	Weight    types.Int64  `tfsdk:"weight"`
+	Filters   *HTTPFilters `tfsdk:"filters"`
+	Partition types.String `tfsdk:"partition"`
+	Namespace types.String `tfsdk:"namespace"`
+}
+
+type GatewayTLSSDSConfig struct{}
+
+type IngressService struct {
+	Name                  types.String             `tfsdk:"name"`
+	Hosts                 []types.String           `tfsdk:"hosts"`
+	Namespace             types.String             `tfsdk:"namespace"`
+	Partition             types.String             `tfsdk:"partition"`
+	TLS                   *GatewayServiceTLSConfig `tfsdk:"tls"`
+	RequestHeaders        *HTTPHeaderModifiers     `tfsdk:"request_headers"`
+	ResponseHeaders       *HTTPHeaderModifiers     `tfsdk:"response_headers"`
+	MaxConnections        types.Int64              `tfsdk:"max_connections"`
+	MaxPendingRequests    types.Int64              `tfsdk:"max_pending_requests"`
+	MaxConcurrentRequests types.Int64              `tfsdk:"max_concurrent_requests"`
+	PassiveHealthCheck    *PassiveHealthCheck      `tfsdk:"passive_health_check"`
+}
+
+type LocalJWKS struct {
+	JWKS     types.String `tfsdk:"jwks"`
+	Filename types.String `tfsdk:"filename"`
+}
+
+type RemoteJWKS struct {
+	URI                 types.String     `tfsdk:"uri"`
+	RequestTimeoutMs    types.Int64      `tfsdk:"request_timeout_ms"`
+	CacheDuration       types.String     `tfsdk:"cache_duration"`
+	FetchAsynchronously types.Bool       `tfsdk:"fetch_asynchronously"`
+	RetryPolicy         *JWKSRetryPolicy `tfsdk:"retry_policy"`
+	JWKSCluster         *JWKSCluster     `tfsdk:"jwks_cluster"`
+}
+
+type JWTLocationHeader struct {
+	Name        types.String `tfsdk:"name"`
+	ValuePrefix types.String `tfsdk:"value_prefix"`
+	Forward     types.Bool   `tfsdk:"forward"`
+}
+
+type JWTLocationQueryParam struct {
+	Name types.String `tfsdk:"name"`
+}
+
+type JWTLocationCookie struct {
+	Name types.String `tfsdk:"name"`
+}
+
+type MeshDirectionalTLSConfig struct {
+	TLSMinVersion types.String   `tfsdk:"tls_min_version"`
+	TLSMaxVersion types.String   `tfsdk:"tls_max_version"`
+	CipherSuites  []types.String `tfsdk:"cipher_suites"`
+}
+
 type QueryFailoverOptions struct {
 	NearestN    types.Int64            `tfsdk:"nearest_n"`
 	Datacenters []types.String         `tfsdk:"datacenters"`
@@ -580,9 +1054,169 @@ type ExposePath struct {
 	ParsedFromCheck types.Bool   `tfsdk:"parsed_from_check"`
 }
 
+type UpstreamConfig struct {
+	Name                       types.String        `tfsdk:"name"`
+	Partition                  types.String        `tfsdk:"partition"`
+	Namespace                  types.String        `tfsdk:"namespace"`
+	Peer                       types.String        `tfsdk:"peer"`
+	EnvoyListenerJSON          types.String        `tfsdk:"envoy_listener_json"`
+	EnvoyClusterJSON           types.String        `tfsdk:"envoy_cluster_json"`
+	Protocol                   types.String        `tfsdk:"protocol"`
+	ConnectTimeoutMs           types.Int64         `tfsdk:"connect_timeout_ms"`
+	Limits                     *UpstreamLimits     `tfsdk:"limits"`
+	PassiveHealthCheck         *PassiveHealthCheck `tfsdk:"passive_health_check"`
+	MeshGateway                *MeshGatewayConfig  `tfsdk:"mesh_gateway"`
+	BalanceOutboundConnections types.String        `tfsdk:"balance_outbound_connections"`
+}
+
+type IntentionPermission struct {
+	Action types.String             `tfsdk:"action"`
+	HTTP   *IntentionHTTPPermission `tfsdk:"http"`
+	JWT    *IntentionJWTRequirement `tfsdk:"jwt"`
+}
+
+type IntentionJWTProvider struct {
+	Name         types.String                     `tfsdk:"name"`
+	VerifyClaims []*IntentionJWTClaimVerification `tfsdk:"verify_claims"`
+}
+
+type ServiceRouteMatch struct {
+	HTTP *ServiceRouteHTTPMatch `tfsdk:"http"`
+}
+
+type ServiceRouteDestination struct {
+	Service               types.String         `tfsdk:"service"`
+	ServiceSubset         types.String         `tfsdk:"service_subset"`
+	Namespace             types.String         `tfsdk:"namespace"`
+	Partition             types.String         `tfsdk:"partition"`
+	PrefixRewrite         types.String         `tfsdk:"prefix_rewrite"`
+	RequestTimeout        types.String         `tfsdk:"request_timeout"`
+	IdleTimeout           types.String         `tfsdk:"idle_timeout"`
+	NumRetries            types.Int64          `tfsdk:"num_retries"`
+	RetryOnConnectFailure types.Bool           `tfsdk:"retry_on_connect_failure"`
+	RetryOnStatusCodes    []types.Int64        `tfsdk:"retry_on_status_codes"`
+	RetryOn               []types.String       `tfsdk:"retry_on"`
+	RequestHeaders        *HTTPHeaderModifiers `tfsdk:"request_headers"`
+	ResponseHeaders       *HTTPHeaderModifiers `tfsdk:"response_headers"`
+}
+
+type HTTPHeaderModifiers struct {
+	Add    map[string]types.String `tfsdk:"add"`
+	Set    map[string]types.String `tfsdk:"set"`
+	Remove []types.String          `tfsdk:"remove"`
+}
+
+type HTTPHeaderFilter struct {
+	Add    map[string]types.String `tfsdk:"add"`
+	Remove []types.String          `tfsdk:"remove"`
+	Set    map[string]types.String `tfsdk:"set"`
+}
+
+type URLRewrite struct {
+	Path types.String `tfsdk:"path"`
+}
+
+type HTTPHeaderMatch struct {
+	Match types.String `tfsdk:"match"`
+	Name  types.String `tfsdk:"name"`
+	Value types.String `tfsdk:"value"`
+}
+
+type HTTPPathMatch struct {
+	Match types.String `tfsdk:"match"`
+	Value types.String `tfsdk:"value"`
+}
+
+type HTTPQueryMatch struct {
+	Match types.String `tfsdk:"match"`
+	Name  types.String `tfsdk:"name"`
+	Value types.String `tfsdk:"value"`
+}
+
+type GatewayServiceTLSConfig struct {
+	SDS *GatewayTLSSDSConfig `tfsdk:"sds"`
+}
+
+type PassiveHealthCheck struct {
+	Interval                types.String `tfsdk:"interval"`
+	MaxFailures             types.Int64  `tfsdk:"max_failures"`
+	EnforcingConsecutive5xx types.Int64  `tfsdk:"enforcing_consecutive5xx"`
+	MaxEjectionPercent      types.Int64  `tfsdk:"max_ejection_percent"`
+	BaseEjectionTime        types.String `tfsdk:"base_ejection_time"`
+}
+
+type JWKSRetryPolicy struct {
+	NumRetries         types.Int64         `tfsdk:"num_retries"`
+	RetryPolicyBackOff *RetryPolicyBackOff `tfsdk:"retry_policy_back_off"`
+}
+
+type JWKSCluster struct {
+	DiscoveryType   types.String        `tfsdk:"discovery_type"`
+	TLSCertificates *JWKSTLSCertificate `tfsdk:"tls_certificates"`
+	ConnectTimeout  types.String        `tfsdk:"connect_timeout"`
+}
+
 type QueryFailoverTarget struct {
 	Peer       types.String `tfsdk:"peer"`
 	Datacenter types.String `tfsdk:"datacenter"`
 	Partition  types.String `tfsdk:"partition"`
 	Namespace  types.String `tfsdk:"namespace"`
+}
+
+type UpstreamLimits struct {
+	MaxConnections        types.Int64 `tfsdk:"max_connections"`
+	MaxPendingRequests    types.Int64 `tfsdk:"max_pending_requests"`
+	MaxConcurrentRequests types.Int64 `tfsdk:"max_concurrent_requests"`
+}
+
+type IntentionHTTPPermission struct{}
+
+type IntentionJWTClaimVerification struct {
+	Path  []types.String `tfsdk:"path"`
+	Value types.String   `tfsdk:"value"`
+}
+
+type ServiceRouteHTTPMatch struct {
+	PathExact  types.String                       `tfsdk:"path_exact"`
+	PathPrefix types.String                       `tfsdk:"path_prefix"`
+	PathRegex  types.String                       `tfsdk:"path_regex"`
+	Header     []*ServiceRouteHTTPMatchHeader     `tfsdk:"header"`
+	QueryParam []*ServiceRouteHTTPMatchQueryParam `tfsdk:"query_param"`
+	Methods    []types.String                     `tfsdk:"methods"`
+}
+
+type RetryPolicyBackOff struct{}
+
+type JWKSTLSCertificate struct {
+	CaCertificateProviderInstance *JWKSTLSCertProviderInstance `tfsdk:"ca_certificate_provider_instance"`
+	TrustedCA                     *JWKSTLSCertTrustedCA        `tfsdk:"trusted_ca"`
+}
+
+type ServiceRouteHTTPMatchHeader struct {
+	Name    types.String `tfsdk:"name"`
+	Present types.Bool   `tfsdk:"present"`
+	Exact   types.String `tfsdk:"exact"`
+	Prefix  types.String `tfsdk:"prefix"`
+	Suffix  types.String `tfsdk:"suffix"`
+	Regex   types.String `tfsdk:"regex"`
+	Invert  types.Bool   `tfsdk:"invert"`
+}
+
+type ServiceRouteHTTPMatchQueryParam struct {
+	Name    types.String `tfsdk:"name"`
+	Present types.Bool   `tfsdk:"present"`
+	Exact   types.String `tfsdk:"exact"`
+	Regex   types.String `tfsdk:"regex"`
+}
+
+type JWKSTLSCertProviderInstance struct {
+	InstanceName    types.String `tfsdk:"instance_name"`
+	CertificateName types.String `tfsdk:"certificate_name"`
+}
+
+type JWKSTLSCertTrustedCA struct {
+	Filename            types.String `tfsdk:"filename"`
+	EnvironmentVariable types.String `tfsdk:"environment_variable"`
+	InlineString        types.String `tfsdk:"inline_string"`
+	InlineBytes         types.String `tfsdk:"inline_bytes"`
 }

@@ -10,18 +10,18 @@ import "encoding/json"
 type ExportedServicesConfigEntry struct {
 	// Name is the name of the partition the ExportedServicesConfigEntry applies to.
 	// Partitioning is a Consul Enterprise feature.
-	Name string `json:",omitempty"`
+	Name string `json:",omitempty" terraform:"name"`
 
 	// Partition is the partition where the ExportedServicesConfigEntry is stored.
 	// If the partition does not match the name, the name will overwrite the partition.
 	// Partitioning is a Consul Enterprise feature.
-	Partition string `json:",omitempty"`
+	Partition string `json:",omitempty" terraform:"partition"`
 
 	// Services is a list of services to be exported and the list of partitions
 	// to expose them to.
-	Services []ExportedService `json:",omitempty"`
+	Services []ExportedService `json:",omitempty" terraform:"services"`
 
-	Meta map[string]string `json:",omitempty"`
+	Meta map[string]string `json:",omitempty" terraform:"meta"`
 
 	// CreateIndex is the Raft index this entry was created at. This is a
 	// read-only field.
@@ -37,26 +37,26 @@ type ExportedServicesConfigEntry struct {
 // other partitions.
 type ExportedService struct {
 	// Name is the name of the service to be exported.
-	Name string
+	Name string `terraform:"name"`
 
 	// Namespace is the namespace to export the service from.
-	Namespace string `json:",omitempty"`
+	Namespace string `json:",omitempty" terraform:"namespace"`
 
 	// Consumers is a list of downstream consumers of the service to be exported.
-	Consumers []ServiceConsumer `json:",omitempty"`
+	Consumers []ServiceConsumer `json:",omitempty" terraform:"consumers"`
 }
 
 // ServiceConsumer represents a downstream consumer of the service to be exported.
 // At most one of Partition or Peer must be specified.
 type ServiceConsumer struct {
 	// Partition is the admin partition to export the service to.
-	Partition string `json:",omitempty"`
+	Partition string `json:",omitempty" terraform:"partition"`
 
 	// Peer is the name of the peer to export the service to.
-	Peer string `json:",omitempty" alias:"peer_name"`
+	Peer string `json:",omitempty" alias:"peer_name" terraform:"peer"`
 
 	// SamenessGroup is the name of the sameness group to export the service to.
-	SamenessGroup string `json:",omitempty" alias:"sameness_group"`
+	SamenessGroup string `json:",omitempty" alias:"sameness_group" terraform:"sameness_group"`
 }
 
 func (e *ExportedServicesConfigEntry) GetKind() string            { return ExportedServices }

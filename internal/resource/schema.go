@@ -8,6 +8,7 @@ package resource
 import (
 	schema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	booldefault "github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	int64default "github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	stringdefault "github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	validator "github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	types "github.com/hashicorp/terraform-plugin-framework/types"
@@ -454,6 +455,128 @@ func adminPartitionSchema() schema.Schema {
 	}
 }
 
+func apiGatewayConfigEntrySchema() schema.Schema {
+	return schema.Schema{
+		MarkdownDescription: "",
+		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Optional: true,
+			},
+			"meta": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+			"listeners": &schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							Optional: true,
+						},
+						"hostname": schema.StringAttribute{
+							Optional: true,
+						},
+						"port": schema.Int64Attribute{
+							Optional: true,
+						},
+						"protocol": schema.StringAttribute{
+							Optional: true,
+						},
+						"tls": &schema.SingleNestedAttribute{
+							Optional: true,
+							Attributes: map[string]schema.Attribute{
+								"certificates": &schema.ListNestedAttribute{
+									Optional: true,
+									NestedObject: schema.NestedAttributeObject{
+										Attributes: map[string]schema.Attribute{
+											"kind": schema.StringAttribute{
+												Optional: true,
+											},
+											"name": schema.StringAttribute{
+												Optional: true,
+											},
+											"section_name": schema.StringAttribute{
+												Optional: true,
+											},
+											"partition": schema.StringAttribute{
+												Optional: true,
+											},
+											"namespace": schema.StringAttribute{
+												Optional: true,
+											},
+										}},
+								},
+								"max_version": schema.StringAttribute{
+									Optional: true,
+								},
+								"min_version": schema.StringAttribute{
+									Optional: true,
+								},
+								"cipher_suites": schema.ListAttribute{
+									ElementType: types.StringType,
+									Optional:    true,
+								},
+							},
+						},
+					}},
+			},
+			"status": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"conditions": &schema.ListNestedAttribute{
+						Optional: true,
+						NestedObject: schema.NestedAttributeObject{
+							Attributes: map[string]schema.Attribute{
+								"type": schema.StringAttribute{
+									Optional: true,
+								},
+								"status": schema.StringAttribute{
+									Optional: true,
+								},
+								"reason": schema.StringAttribute{
+									Optional: true,
+								},
+								"message": schema.StringAttribute{
+									Optional: true,
+								},
+								"resource": &schema.SingleNestedAttribute{
+									Optional: true,
+									Attributes: map[string]schema.Attribute{
+										"kind": schema.StringAttribute{
+											Optional: true,
+										},
+										"name": schema.StringAttribute{
+											Optional: true,
+										},
+										"section_name": schema.StringAttribute{
+											Optional: true,
+										},
+										"partition": schema.StringAttribute{
+											Optional: true,
+										},
+										"namespace": schema.StringAttribute{
+											Optional: true,
+										},
+									},
+								},
+								"last_transition_time": schema.StringAttribute{
+									Optional: true,
+								},
+							}},
+					},
+				},
+			},
+			"partition": schema.StringAttribute{
+				Optional: true,
+			},
+			"namespace": schema.StringAttribute{
+				Optional: true,
+			},
+		},
+		Blocks: map[string]schema.Block{},
+	}
+}
+
 func areaSchema() schema.Schema {
 	return schema.Schema{
 		MarkdownDescription: "",
@@ -677,7 +800,7 @@ func catalogServiceSchema() schema.Schema {
 									Optional: true,
 								},
 								"mesh_gateway": &schema.SingleNestedAttribute{
-									Optional: true,
+									Computed: true,
 									Attributes: map[string]schema.Attribute{
 										"mode": schema.StringAttribute{
 											Optional: true,
@@ -690,7 +813,7 @@ func catalogServiceSchema() schema.Schema {
 							}},
 					},
 					"mesh_gateway": &schema.SingleNestedAttribute{
-						Optional: true,
+						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"mode": schema.StringAttribute{
 								Optional: true,
@@ -698,7 +821,7 @@ func catalogServiceSchema() schema.Schema {
 						},
 					},
 					"expose": &schema.SingleNestedAttribute{
-						Optional: true,
+						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"checks": schema.BoolAttribute{
 								Optional: true,
@@ -727,7 +850,7 @@ func catalogServiceSchema() schema.Schema {
 						},
 					},
 					"access_logs": &schema.SingleNestedAttribute{
-						Optional: true,
+						Computed: true,
 						Attributes: map[string]schema.Attribute{
 							"enabled": schema.BoolAttribute{
 								Optional: true,
@@ -930,6 +1053,739 @@ func configEntrySchema() schema.Schema {
 			},
 			"config": schema.StringAttribute{
 				Optional: true,
+			},
+			"meta": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+		},
+		Blocks: map[string]schema.Block{},
+	}
+}
+
+func exportedServicesConfigEntrySchema() schema.Schema {
+	return schema.Schema{
+		MarkdownDescription: "",
+		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Optional: true,
+			},
+			"partition": schema.StringAttribute{
+				Optional: true,
+			},
+			"services": &schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							Optional: true,
+						},
+						"namespace": schema.StringAttribute{
+							Optional: true,
+						},
+						"consumers": &schema.ListNestedAttribute{
+							Optional: true,
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"partition": schema.StringAttribute{
+										Optional: true,
+									},
+									"peer": schema.StringAttribute{
+										Optional: true,
+									},
+									"sameness_group": schema.StringAttribute{
+										Optional: true,
+									},
+								}},
+						},
+					}},
+			},
+			"meta": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+		},
+		Blocks: map[string]schema.Block{},
+	}
+}
+
+func httpRouteConfigEntrySchema() schema.Schema {
+	return schema.Schema{
+		MarkdownDescription: "",
+		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Optional: true,
+			},
+			"parents": &schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"kind": schema.StringAttribute{
+							Optional: true,
+						},
+						"name": schema.StringAttribute{
+							Optional: true,
+						},
+						"section_name": schema.StringAttribute{
+							Optional: true,
+						},
+						"partition": schema.StringAttribute{
+							Optional: true,
+						},
+						"namespace": schema.StringAttribute{
+							Optional: true,
+						},
+					}},
+			},
+			"rules": &schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"filters": &schema.SingleNestedAttribute{
+							Optional: true,
+							Attributes: map[string]schema.Attribute{
+								"headers": &schema.ListNestedAttribute{
+									Optional: true,
+									NestedObject: schema.NestedAttributeObject{
+										Attributes: map[string]schema.Attribute{
+											"add": schema.MapAttribute{
+												ElementType: types.StringType,
+												Optional:    true,
+											},
+											"remove": schema.ListAttribute{
+												ElementType: types.StringType,
+												Optional:    true,
+											},
+											"set": schema.MapAttribute{
+												ElementType: types.StringType,
+												Optional:    true,
+											},
+										}},
+								},
+								"url_rewrite": &schema.SingleNestedAttribute{
+									Optional: true,
+									Attributes: map[string]schema.Attribute{
+										"path": schema.StringAttribute{
+											Optional: true,
+										},
+									},
+								},
+							},
+						},
+						"matches": &schema.ListNestedAttribute{
+							Optional: true,
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"headers": &schema.ListNestedAttribute{
+										Optional: true,
+										NestedObject: schema.NestedAttributeObject{
+											Attributes: map[string]schema.Attribute{
+												"match": schema.StringAttribute{
+													Optional: true,
+												},
+												"name": schema.StringAttribute{
+													Optional: true,
+												},
+												"value": schema.StringAttribute{
+													Optional: true,
+												},
+											}},
+									},
+									"method": schema.StringAttribute{
+										Optional: true,
+									},
+									"path": &schema.SingleNestedAttribute{
+										Optional: true,
+										Attributes: map[string]schema.Attribute{
+											"match": schema.StringAttribute{
+												Optional: true,
+											},
+											"value": schema.StringAttribute{
+												Optional: true,
+											},
+										},
+									},
+									"query": &schema.ListNestedAttribute{
+										Optional: true,
+										NestedObject: schema.NestedAttributeObject{
+											Attributes: map[string]schema.Attribute{
+												"match": schema.StringAttribute{
+													Optional: true,
+												},
+												"name": schema.StringAttribute{
+													Optional: true,
+												},
+												"value": schema.StringAttribute{
+													Optional: true,
+												},
+											}},
+									},
+								}},
+						},
+						"services": &schema.ListNestedAttribute{
+							Optional: true,
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"name": schema.StringAttribute{
+										Optional: true,
+									},
+									"weight": schema.Int64Attribute{
+										Optional: true,
+									},
+									"filters": &schema.SingleNestedAttribute{
+										Optional: true,
+										Attributes: map[string]schema.Attribute{
+											"headers": &schema.ListNestedAttribute{
+												Optional: true,
+												NestedObject: schema.NestedAttributeObject{
+													Attributes: map[string]schema.Attribute{
+														"add": schema.MapAttribute{
+															ElementType: types.StringType,
+															Optional:    true,
+														},
+														"remove": schema.ListAttribute{
+															ElementType: types.StringType,
+															Optional:    true,
+														},
+														"set": schema.MapAttribute{
+															ElementType: types.StringType,
+															Optional:    true,
+														},
+													}},
+											},
+											"url_rewrite": &schema.SingleNestedAttribute{
+												Optional: true,
+												Attributes: map[string]schema.Attribute{
+													"path": schema.StringAttribute{
+														Optional: true,
+													},
+												},
+											},
+										},
+									},
+									"partition": schema.StringAttribute{
+										Optional: true,
+									},
+									"namespace": schema.StringAttribute{
+										Optional: true,
+									},
+								}},
+						},
+					}},
+			},
+			"hostnames": schema.ListAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+			"meta": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+			"partition": schema.StringAttribute{
+				Optional: true,
+			},
+			"namespace": schema.StringAttribute{
+				Optional: true,
+			},
+			"status": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"conditions": &schema.ListNestedAttribute{
+						Optional: true,
+						NestedObject: schema.NestedAttributeObject{
+							Attributes: map[string]schema.Attribute{
+								"type": schema.StringAttribute{
+									Optional: true,
+								},
+								"status": schema.StringAttribute{
+									Optional: true,
+								},
+								"reason": schema.StringAttribute{
+									Optional: true,
+								},
+								"message": schema.StringAttribute{
+									Optional: true,
+								},
+								"resource": &schema.SingleNestedAttribute{
+									Optional: true,
+									Attributes: map[string]schema.Attribute{
+										"kind": schema.StringAttribute{
+											Optional: true,
+										},
+										"name": schema.StringAttribute{
+											Optional: true,
+										},
+										"section_name": schema.StringAttribute{
+											Optional: true,
+										},
+										"partition": schema.StringAttribute{
+											Optional: true,
+										},
+										"namespace": schema.StringAttribute{
+											Optional: true,
+										},
+									},
+								},
+								"last_transition_time": schema.StringAttribute{
+									Optional: true,
+								},
+							}},
+					},
+				},
+			},
+		},
+		Blocks: map[string]schema.Block{},
+	}
+}
+
+func ingressGatewayConfigEntrySchema() schema.Schema {
+	return schema.Schema{
+		MarkdownDescription: "",
+		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Optional: true,
+			},
+			"partition": schema.StringAttribute{
+				Optional: true,
+			},
+			"namespace": schema.StringAttribute{
+				Optional: true,
+			},
+			"tls": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"enabled": schema.BoolAttribute{
+						Optional: true,
+					},
+					"sds": &schema.SingleNestedAttribute{
+						Optional:   true,
+						Attributes: map[string]schema.Attribute{},
+					},
+					"tls_min_version": schema.StringAttribute{
+						Optional: true,
+					},
+					"tls_max_version": schema.StringAttribute{
+						Optional: true,
+					},
+					"cipher_suites": schema.ListAttribute{
+						ElementType: types.StringType,
+						Optional:    true,
+					},
+				},
+			},
+			"listeners": &schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"port": schema.Int64Attribute{
+							Optional: true,
+						},
+						"protocol": schema.StringAttribute{
+							Optional: true,
+						},
+						"services": &schema.ListNestedAttribute{
+							Optional: true,
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"name": schema.StringAttribute{
+										Optional: true,
+									},
+									"hosts": schema.ListAttribute{
+										ElementType: types.StringType,
+										Optional:    true,
+									},
+									"namespace": schema.StringAttribute{
+										Optional: true,
+									},
+									"partition": schema.StringAttribute{
+										Optional: true,
+									},
+									"tls": &schema.SingleNestedAttribute{
+										Optional: true,
+										Attributes: map[string]schema.Attribute{
+											"sds": &schema.SingleNestedAttribute{
+												Optional:   true,
+												Attributes: map[string]schema.Attribute{},
+											},
+										},
+									},
+									"request_headers": &schema.SingleNestedAttribute{
+										Optional: true,
+										Attributes: map[string]schema.Attribute{
+											"add": schema.MapAttribute{
+												ElementType: types.StringType,
+												Optional:    true,
+											},
+											"set": schema.MapAttribute{
+												ElementType: types.StringType,
+												Optional:    true,
+											},
+											"remove": schema.ListAttribute{
+												ElementType: types.StringType,
+												Optional:    true,
+											},
+										},
+									},
+									"response_headers": &schema.SingleNestedAttribute{
+										Optional: true,
+										Attributes: map[string]schema.Attribute{
+											"add": schema.MapAttribute{
+												ElementType: types.StringType,
+												Optional:    true,
+											},
+											"set": schema.MapAttribute{
+												ElementType: types.StringType,
+												Optional:    true,
+											},
+											"remove": schema.ListAttribute{
+												ElementType: types.StringType,
+												Optional:    true,
+											},
+										},
+									},
+									"max_connections": schema.Int64Attribute{
+										Optional: true,
+									},
+									"max_pending_requests": schema.Int64Attribute{
+										Optional: true,
+									},
+									"max_concurrent_requests": schema.Int64Attribute{
+										Optional: true,
+									},
+									"passive_health_check": &schema.SingleNestedAttribute{
+										Optional: true,
+										Attributes: map[string]schema.Attribute{
+											"interval": schema.StringAttribute{
+												Optional: true,
+											},
+											"max_failures": schema.Int64Attribute{
+												Optional: true,
+											},
+											"enforcing_consecutive5xx": schema.Int64Attribute{
+												Optional: true,
+											},
+											"max_ejection_percent": schema.Int64Attribute{
+												Optional: true,
+											},
+											"base_ejection_time": schema.StringAttribute{
+												Optional: true,
+											},
+										},
+									},
+								}},
+						},
+						"tls": &schema.SingleNestedAttribute{
+							Optional: true,
+							Attributes: map[string]schema.Attribute{
+								"enabled": schema.BoolAttribute{
+									Optional: true,
+								},
+								"sds": &schema.SingleNestedAttribute{
+									Optional:   true,
+									Attributes: map[string]schema.Attribute{},
+								},
+								"tls_min_version": schema.StringAttribute{
+									Optional: true,
+								},
+								"tls_max_version": schema.StringAttribute{
+									Optional: true,
+								},
+								"cipher_suites": schema.ListAttribute{
+									ElementType: types.StringType,
+									Optional:    true,
+								},
+							},
+						},
+					}},
+			},
+			"meta": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+			"defaults": &schema.SingleNestedAttribute{
+				Optional:   true,
+				Attributes: map[string]schema.Attribute{},
+			},
+		},
+		Blocks: map[string]schema.Block{},
+	}
+}
+
+func inlineCertificateConfigEntrySchema() schema.Schema {
+	return schema.Schema{
+		MarkdownDescription: "",
+		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Optional: true,
+			},
+			"certificate": schema.StringAttribute{
+				Optional: true,
+			},
+			"private_key": schema.StringAttribute{
+				Optional: true,
+			},
+			"meta": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+			"partition": schema.StringAttribute{
+				Optional: true,
+			},
+			"namespace": schema.StringAttribute{
+				Optional: true,
+			},
+		},
+		Blocks: map[string]schema.Block{},
+	}
+}
+
+func jwtProviderConfigEntrySchema() schema.Schema {
+	return schema.Schema{
+		MarkdownDescription: "",
+		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Optional: true,
+			},
+			"json_web_key_set": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"local": &schema.SingleNestedAttribute{
+						Optional: true,
+						Attributes: map[string]schema.Attribute{
+							"jwks": schema.StringAttribute{
+								Optional: true,
+							},
+							"filename": schema.StringAttribute{
+								Optional: true,
+							},
+						},
+					},
+					"remote": &schema.SingleNestedAttribute{
+						Optional: true,
+						Attributes: map[string]schema.Attribute{
+							"uri": schema.StringAttribute{
+								Optional: true,
+							},
+							"request_timeout_ms": schema.Int64Attribute{
+								Optional: true,
+							},
+							"cache_duration": schema.StringAttribute{
+								Optional: true,
+							},
+							"fetch_asynchronously": schema.BoolAttribute{
+								Optional: true,
+							},
+							"retry_policy": &schema.SingleNestedAttribute{
+								Optional: true,
+								Attributes: map[string]schema.Attribute{
+									"num_retries": schema.Int64Attribute{
+										Optional: true,
+									},
+									"retry_policy_back_off": &schema.SingleNestedAttribute{
+										Optional:   true,
+										Attributes: map[string]schema.Attribute{},
+									},
+								},
+							},
+							"jwks_cluster": &schema.SingleNestedAttribute{
+								Optional: true,
+								Attributes: map[string]schema.Attribute{
+									"discovery_type": schema.StringAttribute{
+										Optional: true,
+									},
+									"tls_certificates": &schema.SingleNestedAttribute{
+										Optional: true,
+										Attributes: map[string]schema.Attribute{
+											"ca_certificate_provider_instance": &schema.SingleNestedAttribute{
+												Optional: true,
+												Attributes: map[string]schema.Attribute{
+													"instance_name": schema.StringAttribute{
+														Optional: true,
+													},
+													"certificate_name": schema.StringAttribute{
+														Optional: true,
+													},
+												},
+											},
+											"trusted_ca": &schema.SingleNestedAttribute{
+												Optional: true,
+												Attributes: map[string]schema.Attribute{
+													"filename": schema.StringAttribute{
+														Optional: true,
+													},
+													"environment_variable": schema.StringAttribute{
+														Optional: true,
+													},
+													"inline_string": schema.StringAttribute{
+														Optional: true,
+													},
+													"inline_bytes": schema.StringAttribute{
+														Optional: true,
+													},
+												},
+											},
+										},
+									},
+									"connect_timeout": schema.StringAttribute{
+										Optional: true,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			"issuer": schema.StringAttribute{
+				Optional: true,
+			},
+			"audiences": schema.ListAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+			"locations": &schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"header": &schema.SingleNestedAttribute{
+							Optional: true,
+							Attributes: map[string]schema.Attribute{
+								"name": schema.StringAttribute{
+									Optional: true,
+								},
+								"value_prefix": schema.StringAttribute{
+									Optional: true,
+								},
+								"forward": schema.BoolAttribute{
+									Optional: true,
+								},
+							},
+						},
+						"query_param": &schema.SingleNestedAttribute{
+							Optional: true,
+							Attributes: map[string]schema.Attribute{
+								"name": schema.StringAttribute{
+									Optional: true,
+								},
+							},
+						},
+						"cookie": &schema.SingleNestedAttribute{
+							Optional: true,
+							Attributes: map[string]schema.Attribute{
+								"name": schema.StringAttribute{
+									Optional: true,
+								},
+							},
+						},
+					}},
+			},
+			"forwarding": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"header_name": schema.StringAttribute{
+						Optional: true,
+					},
+					"pad_forward_payload_header": schema.BoolAttribute{
+						Optional: true,
+					},
+				},
+			},
+			"clock_skew_seconds": schema.Int64Attribute{
+				Optional: true,
+			},
+			"cache_config": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"size": schema.Int64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"meta": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+			"partition": schema.StringAttribute{
+				Optional: true,
+			},
+			"namespace": schema.StringAttribute{
+				Optional: true,
+			},
+		},
+		Blocks: map[string]schema.Block{},
+	}
+}
+
+func meshConfigEntrySchema() schema.Schema {
+	return schema.Schema{
+		MarkdownDescription: "",
+		Attributes: map[string]schema.Attribute{
+			"partition": schema.StringAttribute{
+				Optional: true,
+			},
+			"namespace": schema.StringAttribute{
+				Optional: true,
+			},
+			"transparent_proxy": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"mesh_destinations_only": schema.BoolAttribute{
+						Optional: true,
+					},
+				},
+			},
+			"allow_enabling_permissive_mutual_tls": schema.BoolAttribute{
+				Optional: true,
+			},
+			"tls": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"incoming": &schema.SingleNestedAttribute{
+						Optional: true,
+						Attributes: map[string]schema.Attribute{
+							"tls_min_version": schema.StringAttribute{
+								Optional: true,
+							},
+							"tls_max_version": schema.StringAttribute{
+								Optional: true,
+							},
+							"cipher_suites": schema.ListAttribute{
+								ElementType: types.StringType,
+								Optional:    true,
+							},
+						},
+					},
+					"outgoing": &schema.SingleNestedAttribute{
+						Optional: true,
+						Attributes: map[string]schema.Attribute{
+							"tls_min_version": schema.StringAttribute{
+								Optional: true,
+							},
+							"tls_max_version": schema.StringAttribute{
+								Optional: true,
+							},
+							"cipher_suites": schema.ListAttribute{
+								ElementType: types.StringType,
+								Optional:    true,
+							},
+						},
+					},
+				},
+			},
+			"http": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"sanitize_x_forwarded_client_cert": schema.BoolAttribute{
+						Optional: true,
+					},
+				},
+			},
+			"peering": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"peer_through_mesh_gateways": schema.BoolAttribute{
+						Optional: true,
+					},
+				},
 			},
 			"meta": schema.MapAttribute{
 				ElementType: types.StringType,
@@ -1375,6 +2231,1410 @@ func preparedQueryDefinitionSchema() schema.Schema {
 						Default:             booldefault.StaticBool(false),
 					},
 				},
+			},
+		},
+		Blocks: map[string]schema.Block{},
+	}
+}
+
+func proxyConfigEntrySchema() schema.Schema {
+	return schema.Schema{
+		MarkdownDescription: "",
+		Attributes: map[string]schema.Attribute{
+			"id": schema.StringAttribute{
+				Computed: true,
+			},
+			"name": schema.StringAttribute{
+				Optional: true,
+			},
+			"partition": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: "This defaults to `\"\"`",
+				Default:             stringdefault.StaticString(""),
+			},
+			"namespace": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: "This defaults to `\"\"`",
+				Default:             stringdefault.StaticString(""),
+			},
+			"mode": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: "This defaults to `\"\"`",
+				Default:             stringdefault.StaticString(""),
+			},
+			"transparent_proxy": &schema.SingleNestedAttribute{
+				Computed: true,
+				Attributes: map[string]schema.Attribute{
+					"outbound_listener_port": schema.Int64Attribute{
+						Optional: true,
+					},
+					"dialed_directly": schema.BoolAttribute{
+						Optional: true,
+					},
+				},
+			},
+			"mutual_tls_mode": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: "This defaults to `\"\"`",
+				Default:             stringdefault.StaticString(""),
+			},
+			"config": schema.StringAttribute{
+				Optional: true,
+			},
+			"mesh_gateway": &schema.SingleNestedAttribute{
+				Computed: true,
+				Attributes: map[string]schema.Attribute{
+					"mode": schema.StringAttribute{
+						Optional: true,
+					},
+				},
+			},
+			"expose": &schema.SingleNestedAttribute{
+				Computed: true,
+				Attributes: map[string]schema.Attribute{
+					"checks": schema.BoolAttribute{
+						Optional: true,
+					},
+					"paths": &schema.ListNestedAttribute{
+						Optional: true,
+						NestedObject: schema.NestedAttributeObject{
+							Attributes: map[string]schema.Attribute{
+								"listener_port": schema.Int64Attribute{
+									Optional: true,
+								},
+								"path": schema.StringAttribute{
+									Optional: true,
+								},
+								"local_path_port": schema.Int64Attribute{
+									Optional: true,
+								},
+								"protocol": schema.StringAttribute{
+									Optional: true,
+								},
+								"parsed_from_check": schema.BoolAttribute{
+									Optional: true,
+								},
+							}},
+					},
+				},
+			},
+			"access_logs": &schema.SingleNestedAttribute{
+				Computed: true,
+				Attributes: map[string]schema.Attribute{
+					"enabled": schema.BoolAttribute{
+						Optional: true,
+					},
+					"disable_listener_logs": schema.BoolAttribute{
+						Optional: true,
+					},
+					"type": schema.StringAttribute{
+						Optional: true,
+					},
+					"path": schema.StringAttribute{
+						Optional: true,
+					},
+					"json_format": schema.StringAttribute{
+						Optional: true,
+					},
+					"text_format": schema.StringAttribute{
+						Optional: true,
+					},
+				},
+			},
+			"envoy_extensions": &schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							Optional: true,
+						},
+						"required": schema.BoolAttribute{
+							Optional: true,
+						},
+						"arguments": schema.StringAttribute{
+							Optional: true,
+						},
+						"consul_version": schema.StringAttribute{
+							Optional: true,
+						},
+						"envoy_version": schema.StringAttribute{
+							Optional: true,
+						},
+					}},
+			},
+			"failover_policy": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"mode": schema.StringAttribute{
+						Optional: true,
+					},
+					"regions": schema.ListAttribute{
+						ElementType: types.StringType,
+						Optional:    true,
+					},
+				},
+			},
+			"prioritize_by_locality": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"mode": schema.StringAttribute{
+						Optional: true,
+					},
+				},
+			},
+			"meta": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+		},
+		Blocks: map[string]schema.Block{},
+	}
+}
+
+func rateLimitIpConfigEntrySchema() schema.Schema {
+	return schema.Schema{
+		MarkdownDescription: "",
+		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Optional: true,
+			},
+			"mode": schema.StringAttribute{
+				Optional: true,
+			},
+			"meta": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+			"read_rate": schema.Float64Attribute{
+				Optional: true,
+			},
+			"write_rate": schema.Float64Attribute{
+				Optional: true,
+			},
+			"acl": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"catalog": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"config_entry": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"connect_ca": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"coordinate": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"discovery_chain": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"server_discovery": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"health": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"intention": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"kv": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"tenancy": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"prepared_query": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"session": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"txn": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"auto_config": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"federation_state": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"internal": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"peer_stream": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"peering": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"data_plane": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"dns": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"subscribe": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"resource": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"read_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+					"write_rate": schema.Float64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"partition": schema.StringAttribute{
+				Optional: true,
+			},
+			"namespace": schema.StringAttribute{
+				Optional: true,
+			},
+		},
+		Blocks: map[string]schema.Block{},
+	}
+}
+
+func samenessGroupConfigEntrySchema() schema.Schema {
+	return schema.Schema{
+		MarkdownDescription: "",
+		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Optional: true,
+			},
+			"partition": schema.StringAttribute{
+				Optional: true,
+			},
+			"default_for_failover": schema.BoolAttribute{
+				Optional: true,
+			},
+			"include_local": schema.BoolAttribute{
+				Optional: true,
+			},
+			"members": &schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"partition": schema.StringAttribute{
+							Optional: true,
+						},
+						"peer": schema.StringAttribute{
+							Optional: true,
+						},
+					}},
+			},
+			"meta": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+		},
+		Blocks: map[string]schema.Block{},
+	}
+}
+
+func serviceConfigEntrySchema() schema.Schema {
+	return schema.Schema{
+		MarkdownDescription: "",
+		Attributes: map[string]schema.Attribute{
+			"id": schema.StringAttribute{
+				Computed: true,
+			},
+			"name": schema.StringAttribute{
+				Optional: true,
+			},
+			"partition": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: "This defaults to `\"\"`",
+				Default:             stringdefault.StaticString(""),
+			},
+			"namespace": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: "This defaults to `\"\"`",
+				Default:             stringdefault.StaticString(""),
+			},
+			"protocol": schema.StringAttribute{
+				Optional: true,
+			},
+			"mode": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: "This defaults to `\"\"`",
+				Default:             stringdefault.StaticString(""),
+			},
+			"transparent_proxy": &schema.SingleNestedAttribute{
+				Computed: true,
+				Attributes: map[string]schema.Attribute{
+					"outbound_listener_port": schema.Int64Attribute{
+						Optional: true,
+					},
+					"dialed_directly": schema.BoolAttribute{
+						Optional: true,
+					},
+				},
+			},
+			"mutual_tls_mode": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: "This defaults to `\"\"`",
+				Default:             stringdefault.StaticString(""),
+			},
+			"mesh_gateway": &schema.SingleNestedAttribute{
+				Computed: true,
+				Attributes: map[string]schema.Attribute{
+					"mode": schema.StringAttribute{
+						Optional: true,
+					},
+				},
+			},
+			"expose": &schema.SingleNestedAttribute{
+				Computed: true,
+				Attributes: map[string]schema.Attribute{
+					"checks": schema.BoolAttribute{
+						Optional: true,
+					},
+					"paths": &schema.ListNestedAttribute{
+						Optional: true,
+						NestedObject: schema.NestedAttributeObject{
+							Attributes: map[string]schema.Attribute{
+								"listener_port": schema.Int64Attribute{
+									Optional: true,
+								},
+								"path": schema.StringAttribute{
+									Optional: true,
+								},
+								"local_path_port": schema.Int64Attribute{
+									Optional: true,
+								},
+								"protocol": schema.StringAttribute{
+									Optional: true,
+								},
+								"parsed_from_check": schema.BoolAttribute{
+									Optional: true,
+								},
+							}},
+					},
+				},
+			},
+			"external_sni": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: "This defaults to `\"\"`",
+				Default:             stringdefault.StaticString(""),
+			},
+			"upstream_config": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"overrides": &schema.ListNestedAttribute{
+						Optional: true,
+						NestedObject: schema.NestedAttributeObject{
+							Attributes: map[string]schema.Attribute{
+								"name": schema.StringAttribute{
+									Optional: true,
+								},
+								"partition": schema.StringAttribute{
+									Optional: true,
+								},
+								"namespace": schema.StringAttribute{
+									Optional: true,
+								},
+								"peer": schema.StringAttribute{
+									Optional: true,
+								},
+								"envoy_listener_json": schema.StringAttribute{
+									Optional: true,
+								},
+								"envoy_cluster_json": schema.StringAttribute{
+									Optional: true,
+								},
+								"protocol": schema.StringAttribute{
+									Optional: true,
+								},
+								"connect_timeout_ms": schema.Int64Attribute{
+									Optional: true,
+								},
+								"limits": &schema.SingleNestedAttribute{
+									Optional: true,
+									Attributes: map[string]schema.Attribute{
+										"max_connections": schema.Int64Attribute{
+											Optional: true,
+										},
+										"max_pending_requests": schema.Int64Attribute{
+											Optional: true,
+										},
+										"max_concurrent_requests": schema.Int64Attribute{
+											Optional: true,
+										},
+									},
+								},
+								"passive_health_check": &schema.SingleNestedAttribute{
+									Optional: true,
+									Attributes: map[string]schema.Attribute{
+										"interval": schema.StringAttribute{
+											Optional: true,
+										},
+										"max_failures": schema.Int64Attribute{
+											Optional: true,
+										},
+										"enforcing_consecutive5xx": schema.Int64Attribute{
+											Optional: true,
+										},
+										"max_ejection_percent": schema.Int64Attribute{
+											Optional: true,
+										},
+										"base_ejection_time": schema.StringAttribute{
+											Optional: true,
+										},
+									},
+								},
+								"mesh_gateway": &schema.SingleNestedAttribute{
+									Computed: true,
+									Attributes: map[string]schema.Attribute{
+										"mode": schema.StringAttribute{
+											Optional: true,
+										},
+									},
+								},
+								"balance_outbound_connections": schema.StringAttribute{
+									Optional: true,
+								},
+							}},
+					},
+					"defaults": &schema.SingleNestedAttribute{
+						Optional: true,
+						Attributes: map[string]schema.Attribute{
+							"name": schema.StringAttribute{
+								Optional: true,
+							},
+							"partition": schema.StringAttribute{
+								Optional: true,
+							},
+							"namespace": schema.StringAttribute{
+								Optional: true,
+							},
+							"peer": schema.StringAttribute{
+								Optional: true,
+							},
+							"envoy_listener_json": schema.StringAttribute{
+								Optional: true,
+							},
+							"envoy_cluster_json": schema.StringAttribute{
+								Optional: true,
+							},
+							"protocol": schema.StringAttribute{
+								Optional: true,
+							},
+							"connect_timeout_ms": schema.Int64Attribute{
+								Optional: true,
+							},
+							"limits": &schema.SingleNestedAttribute{
+								Optional: true,
+								Attributes: map[string]schema.Attribute{
+									"max_connections": schema.Int64Attribute{
+										Optional: true,
+									},
+									"max_pending_requests": schema.Int64Attribute{
+										Optional: true,
+									},
+									"max_concurrent_requests": schema.Int64Attribute{
+										Optional: true,
+									},
+								},
+							},
+							"passive_health_check": &schema.SingleNestedAttribute{
+								Optional: true,
+								Attributes: map[string]schema.Attribute{
+									"interval": schema.StringAttribute{
+										Optional: true,
+									},
+									"max_failures": schema.Int64Attribute{
+										Optional: true,
+									},
+									"enforcing_consecutive5xx": schema.Int64Attribute{
+										Optional: true,
+									},
+									"max_ejection_percent": schema.Int64Attribute{
+										Optional: true,
+									},
+									"base_ejection_time": schema.StringAttribute{
+										Optional: true,
+									},
+								},
+							},
+							"mesh_gateway": &schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"mode": schema.StringAttribute{
+										Optional: true,
+									},
+								},
+							},
+							"balance_outbound_connections": schema.StringAttribute{
+								Optional: true,
+							},
+						},
+					},
+				},
+			},
+			"destination": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"addresses": schema.ListAttribute{
+						ElementType: types.StringType,
+						Optional:    true,
+					},
+					"port": schema.Int64Attribute{
+						Optional: true,
+					},
+				},
+			},
+			"max_inbound_connections": schema.Int64Attribute{
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: "This defaults to 0",
+				Default:             int64default.StaticInt64(0),
+			},
+			"local_connect_timeout_ms": schema.Int64Attribute{
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: "This defaults to 0",
+				Default:             int64default.StaticInt64(0),
+			},
+			"local_request_timeout_ms": schema.Int64Attribute{
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: "This defaults to 0",
+				Default:             int64default.StaticInt64(0),
+			},
+			"balance_inbound_connections": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: "This defaults to `\"\"`",
+				Default:             stringdefault.StaticString(""),
+			},
+			"envoy_extensions": &schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							Optional: true,
+						},
+						"required": schema.BoolAttribute{
+							Optional: true,
+						},
+						"arguments": schema.StringAttribute{
+							Optional: true,
+						},
+						"consul_version": schema.StringAttribute{
+							Optional: true,
+						},
+						"envoy_version": schema.StringAttribute{
+							Optional: true,
+						},
+					}},
+			},
+			"meta": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+		},
+		Blocks: map[string]schema.Block{},
+	}
+}
+
+func serviceIntentionsConfigEntrySchema() schema.Schema {
+	return schema.Schema{
+		MarkdownDescription: "",
+		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Optional: true,
+			},
+			"partition": schema.StringAttribute{
+				Optional: true,
+			},
+			"namespace": schema.StringAttribute{
+				Optional: true,
+			},
+			"sources": &schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							Optional: true,
+						},
+						"peer": schema.StringAttribute{
+							Optional: true,
+						},
+						"partition": schema.StringAttribute{
+							Optional: true,
+						},
+						"namespace": schema.StringAttribute{
+							Optional: true,
+						},
+						"sameness_group": schema.StringAttribute{
+							Optional: true,
+						},
+						"action": schema.StringAttribute{
+							Optional: true,
+						},
+						"permissions": &schema.ListNestedAttribute{
+							Optional: true,
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"action": schema.StringAttribute{
+										Optional: true,
+									},
+									"http": &schema.SingleNestedAttribute{
+										Optional:   true,
+										Attributes: map[string]schema.Attribute{},
+									},
+									"jwt": &schema.SingleNestedAttribute{
+										Optional: true,
+										Attributes: map[string]schema.Attribute{
+											"providers": &schema.ListNestedAttribute{
+												Optional: true,
+												NestedObject: schema.NestedAttributeObject{
+													Attributes: map[string]schema.Attribute{
+														"name": schema.StringAttribute{
+															Optional: true,
+														},
+														"verify_claims": &schema.ListNestedAttribute{
+															Optional: true,
+															NestedObject: schema.NestedAttributeObject{
+																Attributes: map[string]schema.Attribute{
+																	"path": schema.ListAttribute{
+																		ElementType: types.StringType,
+																		Optional:    true,
+																	},
+																	"value": schema.StringAttribute{
+																		Optional: true,
+																	},
+																}},
+														},
+													}},
+											},
+										},
+									},
+								}},
+						},
+						"precedence": schema.Int64Attribute{
+							Optional: true,
+						},
+						"type": schema.StringAttribute{
+							Optional: true,
+						},
+						"description": schema.StringAttribute{
+							Optional: true,
+						},
+					}},
+			},
+			"jwt": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"providers": &schema.ListNestedAttribute{
+						Optional: true,
+						NestedObject: schema.NestedAttributeObject{
+							Attributes: map[string]schema.Attribute{
+								"name": schema.StringAttribute{
+									Optional: true,
+								},
+								"verify_claims": &schema.ListNestedAttribute{
+									Optional: true,
+									NestedObject: schema.NestedAttributeObject{
+										Attributes: map[string]schema.Attribute{
+											"path": schema.ListAttribute{
+												ElementType: types.StringType,
+												Optional:    true,
+											},
+											"value": schema.StringAttribute{
+												Optional: true,
+											},
+										}},
+								},
+							}},
+					},
+				},
+			},
+			"meta": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+		},
+		Blocks: map[string]schema.Block{},
+	}
+}
+
+func serviceResolverConfigEntrySchema() schema.Schema {
+	return schema.Schema{
+		MarkdownDescription: "",
+		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Optional: true,
+			},
+			"partition": schema.StringAttribute{
+				Optional: true,
+			},
+			"namespace": schema.StringAttribute{
+				Optional: true,
+			},
+			"default_subset": schema.StringAttribute{
+				Optional: true,
+			},
+			"subsets": &schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{},
+				},
+			},
+			"redirect": &schema.SingleNestedAttribute{
+				Optional:   true,
+				Attributes: map[string]schema.Attribute{},
+			},
+			"failover": &schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{},
+				},
+			},
+			"connect_timeout": schema.StringAttribute{
+				Optional: true,
+			},
+			"request_timeout": schema.StringAttribute{
+				Optional: true,
+			},
+			"prioritize_by_locality": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"mode": schema.StringAttribute{
+						Optional: true,
+					},
+				},
+			},
+			"load_balancer": &schema.SingleNestedAttribute{
+				Optional:   true,
+				Attributes: map[string]schema.Attribute{},
+			},
+			"meta": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+		},
+		Blocks: map[string]schema.Block{},
+	}
+}
+
+func serviceRouterConfigEntrySchema() schema.Schema {
+	return schema.Schema{
+		MarkdownDescription: "",
+		Attributes: map[string]schema.Attribute{
+			"id": schema.StringAttribute{
+				Computed: true,
+			},
+			"name": schema.StringAttribute{
+				Optional: true,
+			},
+			"partition": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: "This defaults to `\"\"`",
+				Default:             stringdefault.StaticString(""),
+			},
+			"namespace": schema.StringAttribute{
+				Optional:            true,
+				Computed:            true,
+				MarkdownDescription: "This defaults to `\"\"`",
+				Default:             stringdefault.StaticString(""),
+			},
+			"routes": &schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"match": &schema.SingleNestedAttribute{
+							Optional: true,
+							Attributes: map[string]schema.Attribute{
+								"http": &schema.SingleNestedAttribute{
+									Optional: true,
+									Attributes: map[string]schema.Attribute{
+										"path_exact": schema.StringAttribute{
+											Optional:            true,
+											Computed:            true,
+											MarkdownDescription: "This defaults to `\"\"`",
+											Default:             stringdefault.StaticString(""),
+										},
+										"path_prefix": schema.StringAttribute{
+											Optional:            true,
+											Computed:            true,
+											MarkdownDescription: "This defaults to `\"\"`",
+											Default:             stringdefault.StaticString(""),
+										},
+										"path_regex": schema.StringAttribute{
+											Optional:            true,
+											Computed:            true,
+											MarkdownDescription: "This defaults to `\"\"`",
+											Default:             stringdefault.StaticString(""),
+										},
+										"header": &schema.ListNestedAttribute{
+											Optional: true,
+											NestedObject: schema.NestedAttributeObject{
+												Attributes: map[string]schema.Attribute{
+													"name": schema.StringAttribute{
+														Optional: true,
+													},
+													"present": schema.BoolAttribute{
+														Optional: true,
+													},
+													"exact": schema.StringAttribute{
+														Optional: true,
+													},
+													"prefix": schema.StringAttribute{
+														Optional: true,
+													},
+													"suffix": schema.StringAttribute{
+														Optional: true,
+													},
+													"regex": schema.StringAttribute{
+														Optional: true,
+													},
+													"invert": schema.BoolAttribute{
+														Optional: true,
+													},
+												}},
+										},
+										"query_param": &schema.ListNestedAttribute{
+											Optional: true,
+											NestedObject: schema.NestedAttributeObject{
+												Attributes: map[string]schema.Attribute{
+													"name": schema.StringAttribute{
+														Optional: true,
+													},
+													"present": schema.BoolAttribute{
+														Optional: true,
+													},
+													"exact": schema.StringAttribute{
+														Optional: true,
+													},
+													"regex": schema.StringAttribute{
+														Optional: true,
+													},
+												}},
+										},
+										"methods": schema.ListAttribute{
+											ElementType: types.StringType,
+											Optional:    true,
+										},
+									},
+								},
+							},
+						},
+						"destination": &schema.SingleNestedAttribute{
+							Optional: true,
+							Attributes: map[string]schema.Attribute{
+								"service": schema.StringAttribute{
+									Optional: true,
+								},
+								"service_subset": schema.StringAttribute{
+									Optional:            true,
+									Computed:            true,
+									MarkdownDescription: "This defaults to `\"\"`",
+									Default:             stringdefault.StaticString(""),
+								},
+								"namespace": schema.StringAttribute{
+									Optional: true,
+								},
+								"partition": schema.StringAttribute{
+									Optional: true,
+								},
+								"prefix_rewrite": schema.StringAttribute{
+									Optional:            true,
+									Computed:            true,
+									MarkdownDescription: "This defaults to `\"\"`",
+									Default:             stringdefault.StaticString(""),
+								},
+								"request_timeout": schema.StringAttribute{
+									Optional:            true,
+									Computed:            true,
+									MarkdownDescription: "This defaults to `\"0s\"`",
+									Default:             stringdefault.StaticString("0s"),
+								},
+								"idle_timeout": schema.StringAttribute{
+									Optional:            true,
+									Computed:            true,
+									MarkdownDescription: "This defaults to `\"0s\"`",
+									Default:             stringdefault.StaticString("0s"),
+								},
+								"num_retries": schema.Int64Attribute{
+									Optional:            true,
+									Computed:            true,
+									MarkdownDescription: "This defaults to 0",
+									Default:             int64default.StaticInt64(0),
+								},
+								"retry_on_connect_failure": schema.BoolAttribute{
+									Optional:            true,
+									Computed:            true,
+									MarkdownDescription: "This defaults to `false`",
+									Default:             booldefault.StaticBool(false),
+								},
+								"retry_on_status_codes": schema.ListAttribute{
+									ElementType: types.Int64Type,
+									Optional:    true,
+								},
+								"retry_on": schema.ListAttribute{
+									ElementType: types.StringType,
+									Optional:    true,
+								},
+								"request_headers": &schema.SingleNestedAttribute{
+									Optional: true,
+									Attributes: map[string]schema.Attribute{
+										"add": schema.MapAttribute{
+											ElementType: types.StringType,
+											Optional:    true,
+										},
+										"set": schema.MapAttribute{
+											ElementType: types.StringType,
+											Optional:    true,
+										},
+										"remove": schema.ListAttribute{
+											ElementType: types.StringType,
+											Optional:    true,
+										},
+									},
+								},
+								"response_headers": &schema.SingleNestedAttribute{
+									Optional: true,
+									Attributes: map[string]schema.Attribute{
+										"add": schema.MapAttribute{
+											ElementType: types.StringType,
+											Optional:    true,
+										},
+										"set": schema.MapAttribute{
+											ElementType: types.StringType,
+											Optional:    true,
+										},
+										"remove": schema.ListAttribute{
+											ElementType: types.StringType,
+											Optional:    true,
+										},
+									},
+								},
+							},
+						},
+					}},
+			},
+			"meta": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+		},
+		Blocks: map[string]schema.Block{},
+	}
+}
+
+func serviceSplitterConfigEntrySchema() schema.Schema {
+	return schema.Schema{
+		MarkdownDescription: "",
+		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Optional: true,
+			},
+			"partition": schema.StringAttribute{
+				Optional: true,
+			},
+			"namespace": schema.StringAttribute{
+				Optional: true,
+			},
+			"splits": &schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"weight": schema.Float64Attribute{
+							Optional: true,
+						},
+						"service": schema.StringAttribute{
+							Optional: true,
+						},
+						"service_subset": schema.StringAttribute{
+							Optional: true,
+						},
+						"namespace": schema.StringAttribute{
+							Optional: true,
+						},
+						"partition": schema.StringAttribute{
+							Optional: true,
+						},
+						"request_headers": &schema.SingleNestedAttribute{
+							Optional: true,
+							Attributes: map[string]schema.Attribute{
+								"add": schema.MapAttribute{
+									ElementType: types.StringType,
+									Optional:    true,
+								},
+								"set": schema.MapAttribute{
+									ElementType: types.StringType,
+									Optional:    true,
+								},
+								"remove": schema.ListAttribute{
+									ElementType: types.StringType,
+									Optional:    true,
+								},
+							},
+						},
+						"response_headers": &schema.SingleNestedAttribute{
+							Optional: true,
+							Attributes: map[string]schema.Attribute{
+								"add": schema.MapAttribute{
+									ElementType: types.StringType,
+									Optional:    true,
+								},
+								"set": schema.MapAttribute{
+									ElementType: types.StringType,
+									Optional:    true,
+								},
+								"remove": schema.ListAttribute{
+									ElementType: types.StringType,
+									Optional:    true,
+								},
+							},
+						},
+					}},
+			},
+			"meta": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+		},
+		Blocks: map[string]schema.Block{},
+	}
+}
+
+func tcpRouteConfigEntrySchema() schema.Schema {
+	return schema.Schema{
+		MarkdownDescription: "",
+		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Optional: true,
+			},
+			"parents": &schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"kind": schema.StringAttribute{
+							Optional: true,
+						},
+						"name": schema.StringAttribute{
+							Optional: true,
+						},
+						"section_name": schema.StringAttribute{
+							Optional: true,
+						},
+						"partition": schema.StringAttribute{
+							Optional: true,
+						},
+						"namespace": schema.StringAttribute{
+							Optional: true,
+						},
+					}},
+			},
+			"services": &schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"name": schema.StringAttribute{
+							Optional: true,
+						},
+						"partition": schema.StringAttribute{
+							Optional: true,
+						},
+						"namespace": schema.StringAttribute{
+							Optional: true,
+						},
+					}},
+			},
+			"meta": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+			"status": &schema.SingleNestedAttribute{
+				Optional: true,
+				Attributes: map[string]schema.Attribute{
+					"conditions": &schema.ListNestedAttribute{
+						Optional: true,
+						NestedObject: schema.NestedAttributeObject{
+							Attributes: map[string]schema.Attribute{
+								"type": schema.StringAttribute{
+									Optional: true,
+								},
+								"status": schema.StringAttribute{
+									Optional: true,
+								},
+								"reason": schema.StringAttribute{
+									Optional: true,
+								},
+								"message": schema.StringAttribute{
+									Optional: true,
+								},
+								"resource": &schema.SingleNestedAttribute{
+									Optional: true,
+									Attributes: map[string]schema.Attribute{
+										"kind": schema.StringAttribute{
+											Optional: true,
+										},
+										"name": schema.StringAttribute{
+											Optional: true,
+										},
+										"section_name": schema.StringAttribute{
+											Optional: true,
+										},
+										"partition": schema.StringAttribute{
+											Optional: true,
+										},
+										"namespace": schema.StringAttribute{
+											Optional: true,
+										},
+									},
+								},
+								"last_transition_time": schema.StringAttribute{
+									Optional: true,
+								},
+							}},
+					},
+				},
+			},
+			"partition": schema.StringAttribute{
+				Optional: true,
+			},
+			"namespace": schema.StringAttribute{
+				Optional: true,
+			},
+		},
+		Blocks: map[string]schema.Block{},
+	}
+}
+
+func terminatingGatewayConfigEntrySchema() schema.Schema {
+	return schema.Schema{
+		MarkdownDescription: "",
+		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Optional: true,
+			},
+			"services": &schema.ListNestedAttribute{
+				Optional: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"namespace": schema.StringAttribute{
+							Optional: true,
+						},
+						"name": schema.StringAttribute{
+							Optional: true,
+						},
+						"ca_file": schema.StringAttribute{
+							Optional: true,
+						},
+						"cert_file": schema.StringAttribute{
+							Optional: true,
+						},
+						"key_file": schema.StringAttribute{
+							Optional: true,
+						},
+						"sni": schema.StringAttribute{
+							Optional: true,
+						},
+					}},
+			},
+			"meta": schema.MapAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+			"partition": schema.StringAttribute{
+				Optional: true,
+			},
+			"namespace": schema.StringAttribute{
+				Optional: true,
 			},
 		},
 		Blocks: map[string]schema.Block{},

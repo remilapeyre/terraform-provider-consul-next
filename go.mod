@@ -3,7 +3,7 @@ module github.com/remilapeyre/terraform-provider-consul-next
 go 1.20
 
 require (
-	github.com/Lenstra/terraform-plugin-generator v0.0.0-20230815145806-37a9fa808896
+	github.com/Lenstra/terraform-plugin-generator v0.0.0-20230816162859-b8194a3baa86
 	github.com/dave/jennifer v1.7.0
 	github.com/hashicorp/consul/api v1.24.0
 	github.com/hashicorp/terraform-plugin-docs v0.16.0
@@ -74,7 +74,6 @@ require (
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/stoewer/go-strcase v1.3.0 // indirect
-	github.com/stretchr/objx v0.5.0 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect

@@ -137,9 +137,9 @@ type AgentServiceConnectProxyConfig struct {
 	TransparentProxy       *TransparentProxyConfig `json:",omitempty" terraform:"transparent_proxy"`
 	Config                 map[string]interface{}  `json:",omitempty" bexpr:"-" terraform:"config"`
 	Upstreams              []Upstream              `json:",omitempty" terraform:"upstreams"`
-	MeshGateway            MeshGatewayConfig       `json:",omitempty" terraform:"mesh_gateway"`
-	Expose                 ExposeConfig            `json:",omitempty" terraform:"expose"`
-	AccessLogs             *AccessLogsConfig       `json:",omitempty" terraform:"access_logs"`
+	MeshGateway            MeshGatewayConfig       `json:",omitempty" terraform:"mesh_gateway,computed"`
+	Expose                 ExposeConfig            `json:",omitempty" terraform:"expose,computed"`
+	AccessLogs             *AccessLogsConfig       `json:",omitempty" terraform:"access_logs,computed"`
 }
 
 const (
@@ -448,7 +448,7 @@ type Upstream struct {
 	LocalBindSocketPath  string                 `json:",omitempty" terraform:"local_bind_socket_path"`
 	LocalBindSocketMode  string                 `json:",omitempty" terraform:"local_bind_socket_mode"`
 	Config               map[string]interface{} `json:",omitempty" bexpr:"-" terraform:"config"`
-	MeshGateway          MeshGatewayConfig      `json:",omitempty" terraform:"mesh_gateway"`
+	MeshGateway          MeshGatewayConfig      `json:",omitempty" terraform:"mesh_gateway,computed"`
 	CentrallyConfigured  bool                   `json:",omitempty" bexpr:"-" terraform:"centrally_configured"`
 }
 

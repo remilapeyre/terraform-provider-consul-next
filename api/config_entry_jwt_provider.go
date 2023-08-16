@@ -20,20 +20,20 @@ type JWTProviderConfigEntry struct {
 	Kind string `json:",omitempty"`
 
 	// Name is the name of the provider being configured.
-	Name string `json:",omitempty"`
+	Name string `json:",omitempty" terraform:"name"`
 
 	// JSONWebKeySet defines a JSON Web Key Set, its location on disk, or the
 	// means with which to fetch a key set from a remote server.
-	JSONWebKeySet *JSONWebKeySet `json:",omitempty" alias:"json_web_key_set"`
+	JSONWebKeySet *JSONWebKeySet `json:",omitempty" alias:"json_web_key_set" terraform:"json_web_key_set"`
 
 	// Issuer is the entity that must have issued the JWT.
 	// This value must match the "iss" claim of the token.
-	Issuer string `json:",omitempty"`
+	Issuer string `json:",omitempty" terraform:"issuer"`
 
 	// Audiences is the set of audiences the JWT is allowed to access.
 	// If specified, all JWTs verified with this provider must address
 	// at least one of these to be considered valid.
-	Audiences []string `json:",omitempty"`
+	Audiences []string `json:",omitempty" terraform:"audiences"`
 
 	// Locations where the JWT will be present in requests.
 	// Envoy will check all of these locations to extract a JWT.
@@ -41,25 +41,25 @@ type JWTProviderConfigEntry struct {
 	// 1. Authorization header with Bearer schema:
 	//    "Authorization: Bearer <token>"
 	// 2. access_token query parameter.
-	Locations []*JWTLocation `json:",omitempty"`
+	Locations []*JWTLocation `json:",omitempty" terraform:"locations"`
 
 	// Forwarding defines rules for forwarding verified JWTs to the backend.
-	Forwarding *JWTForwardingConfig `json:",omitempty"`
+	Forwarding *JWTForwardingConfig `json:",omitempty" terraform:"forwarding"`
 
 	// ClockSkewSeconds specifies the maximum allowable time difference
 	// from clock skew when validating the "exp" (Expiration) and "nbf"
 	// (Not Before) claims.
 	//
 	// Default value is 30 seconds.
-	ClockSkewSeconds int `json:",omitempty" alias:"clock_skew_seconds"`
+	ClockSkewSeconds int `json:",omitempty" alias:"clock_skew_seconds" terraform:"clock_skew_seconds"`
 
 	// CacheConfig defines configuration for caching the validation
 	// result for previously seen JWTs. Caching results can speed up
 	// verification when individual tokens are expected to be handled
 	// multiple times.
-	CacheConfig *JWTCacheConfig `json:",omitempty" alias:"cache_config"`
+	CacheConfig *JWTCacheConfig `json:",omitempty" alias:"cache_config" terraform:"cache_config"`
 
-	Meta map[string]string `json:",omitempty"`
+	Meta map[string]string `json:",omitempty" terraform:"meta"`
 
 	// CreateIndex is the Raft index this entry was created at. This is a
 	// read-only field.
@@ -72,11 +72,11 @@ type JWTProviderConfigEntry struct {
 
 	// Partition is the partition the JWTProviderConfigEntry applies to.
 	// Partitioning is a Consul Enterprise feature.
-	Partition string `json:",omitempty"`
+	Partition string `json:",omitempty" terraform:"partition"`
 
 	// Namespace is the namespace the JWTProviderConfigEntry applies to.
 	// Namespacing is a Consul Enterprise feature.
-	Namespace string `json:",omitempty"`
+	Namespace string `json:",omitempty" terraform:"namespace"`
 }
 
 // JWTLocation is a location where the JWT could be present in requests.
@@ -84,47 +84,47 @@ type JWTProviderConfigEntry struct {
 // Only one of Header, QueryParam, or Cookie can be specified.
 type JWTLocation struct {
 	// Header defines how to extract a JWT from an HTTP request header.
-	Header *JWTLocationHeader `json:",omitempty"`
+	Header *JWTLocationHeader `json:",omitempty" terraform:"header"`
 
 	// QueryParam defines how to extract a JWT from an HTTP request
 	// query parameter.
-	QueryParam *JWTLocationQueryParam `json:",omitempty" alias:"query_param"`
+	QueryParam *JWTLocationQueryParam `json:",omitempty" alias:"query_param" terraform:"query_param"`
 
 	// Cookie defines how to extract a JWT from an HTTP request cookie.
-	Cookie *JWTLocationCookie `json:",omitempty"`
+	Cookie *JWTLocationCookie `json:",omitempty" terraform:"cookie"`
 }
 
 // JWTLocationHeader defines how to extract a JWT from an HTTP
 // request header.
 type JWTLocationHeader struct {
 	// Name is the name of the header containing the token.
-	Name string `json:",omitempty"`
+	Name string `json:",omitempty" terraform:"name"`
 
 	// ValuePrefix is an optional prefix that precedes the token in the
 	// header value.
 	// For example, "Bearer " is a standard value prefix for a header named
 	// "Authorization", but the prefix is not part of the token itself:
 	// "Authorization: Bearer <token>"
-	ValuePrefix string `json:",omitempty" alias:"value_prefix"`
+	ValuePrefix string `json:",omitempty" alias:"value_prefix" terraform:"value_prefix"`
 
 	// Forward defines whether the header with the JWT should be
 	// forwarded after the token has been verified. If false, the
 	// header will not be forwarded to the backend.
 	//
 	// Default value is false.
-	Forward bool `json:",omitempty"`
+	Forward bool `json:",omitempty" terraform:"forward"`
 }
 
 // JWTLocationQueryParam defines how to extract a JWT from an HTTP request query parameter.
 type JWTLocationQueryParam struct {
 	// Name is the name of the query param containing the token.
-	Name string `json:",omitempty"`
+	Name string `json:",omitempty" terraform:"name"`
 }
 
 // JWTLocationCookie defines how to extract a JWT from an HTTP request cookie.
 type JWTLocationCookie struct {
 	// Name is the name of the cookie containing the token.
-	Name string `json:",omitempty"`
+	Name string `json:",omitempty" terraform:"name"`
 }
 
 type JWTForwardingConfig struct {
@@ -134,13 +134,13 @@ type JWTForwardingConfig struct {
 	//
 	// The header value will be base64-URL-encoded, and will not be
 	// padded unless PadForwardPayloadHeader is true.
-	HeaderName string `json:",omitempty" alias:"header_name"`
+	HeaderName string `json:",omitempty" alias:"header_name" terraform:"header_name"`
 
 	// PadForwardPayloadHeader determines whether padding should be added
 	// to the base64 encoded token forwarded with ForwardPayloadHeader.
 	//
 	// Default value is false.
-	PadForwardPayloadHeader bool `json:",omitempty" alias:"pad_forward_payload_header"`
+	PadForwardPayloadHeader bool `json:",omitempty" alias:"pad_forward_payload_header" terraform:"pad_forward_payload_header"`
 }
 
 // JSONWebKeySet defines a key set, its location on disk, or the
@@ -149,10 +149,10 @@ type JWTForwardingConfig struct {
 // Exactly one of Local or Remote must be specified.
 type JSONWebKeySet struct {
 	// Local specifies a local source for the key set.
-	Local *LocalJWKS `json:",omitempty"`
+	Local *LocalJWKS `json:",omitempty" terraform:"local"`
 
 	// Remote specifies how to fetch a key set from a remote server.
-	Remote *RemoteJWKS `json:",omitempty"`
+	Remote *RemoteJWKS `json:",omitempty" terraform:"remote"`
 }
 
 // LocalJWKS specifies a location for a local JWKS.
@@ -160,28 +160,28 @@ type JSONWebKeySet struct {
 // Only one of String and Filename can be specified.
 type LocalJWKS struct {
 	// JWKS contains a base64 encoded JWKS.
-	JWKS string `json:",omitempty"`
+	JWKS string `json:",omitempty" terraform:"jwks"`
 
 	// Filename configures a location on disk where the JWKS can be
 	// found. If specified, the file must be present on the disk of ALL
 	// proxies with intentions referencing this provider.
-	Filename string `json:",omitempty"`
+	Filename string `json:",omitempty" terraform:"filename"`
 }
 
 // RemoteJWKS specifies how to fetch a JWKS from a remote server.
 type RemoteJWKS struct {
 	// URI is the URI of the server to query for the JWKS.
-	URI string `json:",omitempty"`
+	URI string `json:",omitempty" terraform:"uri"`
 
 	// RequestTimeoutMs is the number of milliseconds to
 	// time out when making a request for the JWKS.
-	RequestTimeoutMs int `json:",omitempty" alias:"request_timeout_ms"`
+	RequestTimeoutMs int `json:",omitempty" alias:"request_timeout_ms" terraform:"request_timeout_ms"`
 
 	// CacheDuration is the duration after which cached keys
 	// should be expired.
 	//
 	// Default value is 5 minutes.
-	CacheDuration time.Duration `json:",omitempty" alias:"cache_duration"`
+	CacheDuration time.Duration `json:",omitempty" alias:"cache_duration" terraform:"cache_duration"`
 
 	// FetchAsynchronously indicates that the JWKS should be fetched
 	// when a client request arrives. Client requests will be paused
@@ -190,15 +190,15 @@ type RemoteJWKS struct {
 	// fetched before being activated.
 	//
 	// Default value is false.
-	FetchAsynchronously bool `json:",omitempty" alias:"fetch_asynchronously"`
+	FetchAsynchronously bool `json:",omitempty" alias:"fetch_asynchronously" terraform:"fetch_asynchronously"`
 
 	// RetryPolicy defines a retry policy for fetching JWKS.
 	//
 	// There is no retry by default.
-	RetryPolicy *JWKSRetryPolicy `json:",omitempty" alias:"retry_policy"`
+	RetryPolicy *JWKSRetryPolicy `json:",omitempty" alias:"retry_policy" terraform:"retry_policy"`
 
 	// JWKSCluster defines how the specified Remote JWKS URI is to be fetched.
-	JWKSCluster *JWKSCluster `json:",omitempty" alias:"jwks_cluster"`
+	JWKSCluster *JWKSCluster `json:",omitempty" alias:"jwks_cluster" terraform:"jwks_cluster"`
 }
 
 type JWKSCluster struct {
@@ -206,18 +206,18 @@ type JWKSCluster struct {
 	//
 	// This defaults to STRICT_DNS.
 	// Other options include STATIC, LOGICAL_DNS, EDS or ORIGINAL_DST.
-	DiscoveryType ClusterDiscoveryType `json:",omitempty" alias:"discovery_type"`
+	DiscoveryType ClusterDiscoveryType `json:",omitempty" alias:"discovery_type" terraform:"discovery_type"`
 
 	// TLSCertificates refers to the data containing certificate authority certificates to use
 	// in verifying a presented peer certificate.
 	// If not specified and a peer certificate is presented it will not be verified.
 	//
 	// Must be either CaCertificateProviderInstance or TrustedCA.
-	TLSCertificates *JWKSTLSCertificate `json:",omitempty" alias:"tls_certificates"`
+	TLSCertificates *JWKSTLSCertificate `json:",omitempty" alias:"tls_certificates" terraform:"tls_certificates"`
 
 	// The timeout for new network connections to hosts in the cluster.
 	// If not set, a default value of 5s will be used.
-	ConnectTimeout time.Duration `json:",omitempty" alias:"connect_timeout"`
+	ConnectTimeout time.Duration `json:",omitempty" alias:"connect_timeout" terraform:"connect_timeout"`
 }
 
 type ClusterDiscoveryType string
@@ -229,13 +229,13 @@ type ClusterDiscoveryType string
 // Must be either CaCertificateProviderInstance or TrustedCA.
 type JWKSTLSCertificate struct {
 	// CaCertificateProviderInstance Certificate provider instance for fetching TLS certificates.
-	CaCertificateProviderInstance *JWKSTLSCertProviderInstance `json:",omitempty" alias:"ca_certificate_provider_instance"`
+	CaCertificateProviderInstance *JWKSTLSCertProviderInstance `json:",omitempty" alias:"ca_certificate_provider_instance" terraform:"ca_certificate_provider_instance"`
 
 	// TrustedCA defines TLS certificate data containing certificate authority certificates
 	// to use in verifying a presented peer certificate.
 	//
 	// Exactly one of Filename, EnvironmentVariable, InlineString or InlineBytes must be specified.
-	TrustedCA *JWKSTLSCertTrustedCA `json:",omitempty" alias:"trusted_ca"`
+	TrustedCA *JWKSTLSCertTrustedCA `json:",omitempty" alias:"trusted_ca" terraform:"trusted_ca"`
 }
 
 // JWKSTLSCertTrustedCA defines TLS certificate data containing certificate authority certificates
@@ -243,24 +243,24 @@ type JWKSTLSCertificate struct {
 //
 // Exactly one of Filename, EnvironmentVariable, InlineString or InlineBytes must be specified.
 type JWKSTLSCertTrustedCA struct {
-	Filename            string `json:",omitempty" alias:"filename"`
-	EnvironmentVariable string `json:",omitempty" alias:"environment_variable"`
-	InlineString        string `json:",omitempty" alias:"inline_string"`
-	InlineBytes         []byte `json:",omitempty" alias:"inline_bytes"`
+	Filename            string `json:",omitempty" alias:"filename" terraform:"filename"`
+	EnvironmentVariable string `json:",omitempty" alias:"environment_variable" terraform:"environment_variable"`
+	InlineString        string `json:",omitempty" alias:"inline_string" terraform:"inline_string"`
+	InlineBytes         []byte `json:",omitempty" alias:"inline_bytes" terraform:"inline_bytes"`
 }
 
 type JWKSTLSCertProviderInstance struct {
 	// InstanceName refers to the certificate provider instance name
 	//
 	// The default value is "default".
-	InstanceName string `json:",omitempty" alias:"instance_name"`
+	InstanceName string `json:",omitempty" alias:"instance_name" terraform:"instance_name"`
 
 	// CertificateName is used to specify certificate instances or types. For example, "ROOTCA" to specify
 	// a root-certificate (validation context) or "example.com" to specify a certificate for a
 	// particular domain.
 	//
 	// The default value is the empty string.
-	CertificateName string `json:",omitempty" alias:"certificate_name"`
+	CertificateName string `json:",omitempty" alias:"certificate_name" terraform:"certificate_name"`
 }
 
 type JWKSRetryPolicy struct {
@@ -269,12 +269,12 @@ type JWKSRetryPolicy struct {
 	// a base interval of 1s and max of 10s.
 	//
 	// Default value is 0.
-	NumRetries int `json:",omitempty" alias:"num_retries"`
+	NumRetries int `json:",omitempty" alias:"num_retries" terraform:"num_retries"`
 
 	// Backoff policy
 	//
 	// Defaults to Envoy's backoff policy
-	RetryPolicyBackOff *RetryPolicyBackOff `json:",omitempty" alias:"retry_policy_back_off"`
+	RetryPolicyBackOff *RetryPolicyBackOff `json:",omitempty" alias:"retry_policy_back_off" terraform:"retry_policy_back_off"`
 }
 
 type RetryPolicyBackOff struct {
@@ -295,7 +295,7 @@ type JWTCacheConfig struct {
 	// results to cache.
 	//
 	// Defaults to 0, meaning that JWT caching is disabled.
-	Size int `json:",omitempty"`
+	Size int `json:",omitempty" terraform:"size"`
 }
 
 func (e *JWTProviderConfigEntry) GetKind() string {

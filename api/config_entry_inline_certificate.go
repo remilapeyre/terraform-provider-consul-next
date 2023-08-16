@@ -10,14 +10,14 @@ type InlineCertificateConfigEntry struct {
 
 	// Name is used to match the config entry with its associated tcp-route
 	// service. This should match the name provided in the service definition.
-	Name string
+	Name string `terraform:"name"`
 
 	// Certificate is the public certificate component of an x509 key pair encoded in raw PEM format.
-	Certificate string
+	Certificate string `terraform:"certificate"`
 	// PrivateKey is the private key component of an x509 key pair encoded in raw PEM format.
-	PrivateKey string `alias:"private_key"`
+	PrivateKey string `alias:"private_key" terraform:"private_key"`
 
-	Meta map[string]string `json:",omitempty"`
+	Meta map[string]string `json:",omitempty" terraform:"meta"`
 
 	// CreateIndex is the Raft index this entry was created at. This is a
 	// read-only field.
@@ -30,11 +30,11 @@ type InlineCertificateConfigEntry struct {
 
 	// Partition is the partition the config entry is associated with.
 	// Partitioning is a Consul Enterprise feature.
-	Partition string `json:",omitempty"`
+	Partition string `json:",omitempty" terraform:"partition"`
 
 	// Namespace is the namespace the config entry is associated with.
 	// Namespacing is a Consul Enterprise feature.
-	Namespace string `json:",omitempty"`
+	Namespace string `json:",omitempty" terraform:"namespace"`
 }
 
 func (a *InlineCertificateConfigEntry) GetKind() string            { return InlineCertificate }

@@ -54,7 +54,7 @@ func (p *ConsulProvider) Configure(ctx context.Context, req provider.ConfigureRe
 }
 
 func (p *ConsulProvider) Resources(ctx context.Context) []func() resource.Resource {
-	return []func() resource.Resource{
+	resources := []func() resource.Resource{
 		consulresource.NewACLAuthMethod,
 		consulresource.NewACLBindingRule,
 		consulresource.NewACLPolicy,
@@ -66,7 +66,6 @@ func (p *ConsulProvider) Resources(ctx context.Context) []func() resource.Resour
 		consulresource.NewAutopilotConfig,
 		consulresource.NewCatalogService,
 		consulresource.NewCertificateAuthority,
-		consulresource.NewConfigEntry,
 		consulresource.NewKeyPrefix,
 		consulresource.NewNamespace,
 		consulresource.NewNamespacePolicyAttachment,
@@ -77,6 +76,9 @@ func (p *ConsulProvider) Resources(ctx context.Context) []func() resource.Resour
 		consulresource.NewPeeringToken,
 		consulresource.NewPreparedQuery,
 	}
+
+	resources = append(resources, consulresource.ConfigEntriesResources()...)
+	return resources
 }
 
 func (p *ConsulProvider) DataSources(ctx context.Context) []func() datasource.DataSource {

@@ -15,22 +15,22 @@ import (
 // that can be specified as SectionName
 type ResourceReference struct {
 	// Kind is the kind of ConfigEntry that this resource refers to.
-	Kind string
+	Kind string `terraform:"kind"`
 	// Name is the identifier for the ConfigEntry this resource refers to.
-	Name string
+	Name string `terraform:"name"`
 	// SectionName is a generic subresource identifier that specifies
 	// a subset of the ConfigEntry to which this reference applies. Usage
 	// of this field should be up to the controller that leverages it. If
 	// unused, this should be blank.
-	SectionName string
+	SectionName string `terraform:"section_name"`
 
 	// Partition is the partition the config entry is associated with.
 	// Partitioning is a Consul Enterprise feature.
-	Partition string `json:",omitempty"`
+	Partition string `json:",omitempty" terraform:"partition"`
 
 	// Namespace is the namespace the config entry is associated with.
 	// Namespacing is a Consul Enterprise feature.
-	Namespace string `json:",omitempty"`
+	Namespace string `json:",omitempty" terraform:"namespace"`
 }
 
 // ConfigEntryStatus is used for propagating back asynchronously calculated
@@ -38,7 +38,7 @@ type ResourceReference struct {
 type ConfigEntryStatus struct {
 	// Conditions is the set of condition objects associated with
 	// a ConfigEntry status.
-	Conditions []Condition
+	Conditions []Condition `terraform:"conditions"`
 }
 
 // Condition is used for a single message and state associated
@@ -47,19 +47,19 @@ type ConfigEntryStatus struct {
 // respect to each of those resources.
 type Condition struct {
 	// Type is a value from a bounded set of types that an object might have
-	Type string
+	Type string `terraform:"type"`
 	// Status is a value from a bounded set of statuses that an object might have
-	Status ConditionStatus
+	Status ConditionStatus `terraform:"status"`
 	// Reason is a value from a bounded set of reasons for a given status
-	Reason string
+	Reason string `terraform:"reason"`
 	// Message is a message that gives more detailed information about
 	// why a Condition has a given status and reason
-	Message string
+	Message string `terraform:"message"`
 	// Resource is an optional reference to a resource for which this
 	// condition applies
-	Resource *ResourceReference
+	Resource *ResourceReference `terraform:"resource"`
 	// LastTransitionTime is the time at which this Condition was created
-	LastTransitionTime *time.Time
+	LastTransitionTime *time.Time `terraform:"last_transition_time"`
 }
 
 type (

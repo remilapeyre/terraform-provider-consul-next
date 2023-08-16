@@ -12,27 +12,27 @@ import (
 type MeshConfigEntry struct {
 	// Partition is the partition the MeshConfigEntry applies to.
 	// Partitioning is a Consul Enterprise feature.
-	Partition string `json:",omitempty"`
+	Partition string `json:",omitempty" terraform:"partition"`
 
 	// Namespace is the namespace the MeshConfigEntry applies to.
 	// Namespacing is a Consul Enterprise feature.
-	Namespace string `json:",omitempty"`
+	Namespace string `json:",omitempty" terraform:"namespace"`
 
 	// TransparentProxy applies configuration specific to proxies
 	// in transparent mode.
-	TransparentProxy TransparentProxyMeshConfig `alias:"transparent_proxy"`
+	TransparentProxy TransparentProxyMeshConfig `alias:"transparent_proxy" terraform:"transparent_proxy"`
 
 	// AllowEnablingPermissiveMutualTLS must be true in order to allow setting
 	// MutualTLSMode=permissive in either service-defaults or proxy-defaults.
-	AllowEnablingPermissiveMutualTLS bool `json:",omitempty" alias:"allow_enabling_permissive_mutual_tls"`
+	AllowEnablingPermissiveMutualTLS bool `json:",omitempty" alias:"allow_enabling_permissive_mutual_tls" terraform:"allow_enabling_permissive_mutual_tls"`
 
-	TLS *MeshTLSConfig `json:",omitempty"`
+	TLS *MeshTLSConfig `json:",omitempty" terraform:"tls"`
 
-	HTTP *MeshHTTPConfig `json:",omitempty"`
+	HTTP *MeshHTTPConfig `json:",omitempty" terraform:"http"`
 
-	Peering *PeeringMeshConfig `json:",omitempty"`
+	Peering *PeeringMeshConfig `json:",omitempty" terraform:"peering"`
 
-	Meta map[string]string `json:",omitempty"`
+	Meta map[string]string `json:",omitempty" terraform:"meta"`
 
 	// CreateIndex is the Raft index this entry was created at. This is a
 	// read-only field.
@@ -45,26 +45,26 @@ type MeshConfigEntry struct {
 }
 
 type TransparentProxyMeshConfig struct {
-	MeshDestinationsOnly bool `alias:"mesh_destinations_only"`
+	MeshDestinationsOnly bool `alias:"mesh_destinations_only" terraform:"mesh_destinations_only"`
 }
 
 type MeshTLSConfig struct {
-	Incoming *MeshDirectionalTLSConfig `json:",omitempty"`
-	Outgoing *MeshDirectionalTLSConfig `json:",omitempty"`
+	Incoming *MeshDirectionalTLSConfig `json:",omitempty" terraform:"incoming"`
+	Outgoing *MeshDirectionalTLSConfig `json:",omitempty" terraform:"outgoing"`
 }
 
 type MeshDirectionalTLSConfig struct {
-	TLSMinVersion string   `json:",omitempty" alias:"tls_min_version"`
-	TLSMaxVersion string   `json:",omitempty" alias:"tls_max_version"`
-	CipherSuites  []string `json:",omitempty" alias:"cipher_suites"`
+	TLSMinVersion string   `json:",omitempty" alias:"tls_min_version" terraform:"tls_min_version"`
+	TLSMaxVersion string   `json:",omitempty" alias:"tls_max_version" terraform:"tls_max_version"`
+	CipherSuites  []string `json:",omitempty" alias:"cipher_suites" terraform:"cipher_suites"`
 }
 
 type MeshHTTPConfig struct {
-	SanitizeXForwardedClientCert bool `alias:"sanitize_x_forwarded_client_cert"`
+	SanitizeXForwardedClientCert bool `alias:"sanitize_x_forwarded_client_cert" terraform:"sanitize_x_forwarded_client_cert"`
 }
 
 type PeeringMeshConfig struct {
-	PeerThroughMeshGateways bool `json:",omitempty" alias:"peer_through_mesh_gateways"`
+	PeerThroughMeshGateways bool `json:",omitempty" alias:"peer_through_mesh_gateways" terraform:"peer_through_mesh_gateways"`
 }
 
 func (e *MeshConfigEntry) GetKind() string            { return MeshConfig }

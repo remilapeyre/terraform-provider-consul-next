@@ -10,13 +10,13 @@ import (
 
 type ServiceRouterConfigEntry struct {
 	Kind      string
-	Name      string
-	Partition string `json:",omitempty"`
-	Namespace string `json:",omitempty"`
+	Name      string `terraform:"name"`
+	Partition string `json:",omitempty" terraform:"partition"`
+	Namespace string `json:",omitempty" terraform:"namespace"`
 
-	Routes []ServiceRoute `json:",omitempty"`
+	Routes []ServiceRoute `json:",omitempty" terraform:"routes"`
 
-	Meta        map[string]string `json:",omitempty"`
+	Meta        map[string]string `json:",omitempty" terraform:"meta"`
 	CreateIndex uint64
 	ModifyIndex uint64
 }
@@ -30,55 +30,55 @@ func (e *ServiceRouterConfigEntry) GetCreateIndex() uint64     { return e.Create
 func (e *ServiceRouterConfigEntry) GetModifyIndex() uint64     { return e.ModifyIndex }
 
 type ServiceRoute struct {
-	Match       *ServiceRouteMatch       `json:",omitempty"`
-	Destination *ServiceRouteDestination `json:",omitempty"`
+	Match       *ServiceRouteMatch       `json:",omitempty" terraform:"match"`
+	Destination *ServiceRouteDestination `json:",omitempty" terraform:"destination"`
 }
 
 type ServiceRouteMatch struct {
-	HTTP *ServiceRouteHTTPMatch `json:",omitempty"`
+	HTTP *ServiceRouteHTTPMatch `json:",omitempty" terraform:"http"`
 }
 
 type ServiceRouteHTTPMatch struct {
-	PathExact  string `json:",omitempty" alias:"path_exact"`
-	PathPrefix string `json:",omitempty" alias:"path_prefix"`
-	PathRegex  string `json:",omitempty" alias:"path_regex"`
+	PathExact  string `json:",omitempty" alias:"path_exact" terraform:"path_exact"`
+	PathPrefix string `json:",omitempty" alias:"path_prefix" terraform:"path_prefix"`
+	PathRegex  string `json:",omitempty" alias:"path_regex" terraform:"path_regex"`
 
-	Header     []ServiceRouteHTTPMatchHeader     `json:",omitempty"`
-	QueryParam []ServiceRouteHTTPMatchQueryParam `json:",omitempty" alias:"query_param"`
-	Methods    []string                          `json:",omitempty"`
+	Header     []ServiceRouteHTTPMatchHeader     `json:",omitempty" terraform:"header"`
+	QueryParam []ServiceRouteHTTPMatchQueryParam `json:",omitempty" alias:"query_param" terraform:"query_param"`
+	Methods    []string                          `json:",omitempty" terraform:"methods"`
 }
 
 type ServiceRouteHTTPMatchHeader struct {
-	Name    string
-	Present bool   `json:",omitempty"`
-	Exact   string `json:",omitempty"`
-	Prefix  string `json:",omitempty"`
-	Suffix  string `json:",omitempty"`
-	Regex   string `json:",omitempty"`
-	Invert  bool   `json:",omitempty"`
+	Name    string `terraform:"name"`
+	Present bool   `json:",omitempty" terraform:"present"`
+	Exact   string `json:",omitempty" terraform:"exact"`
+	Prefix  string `json:",omitempty" terraform:"prefix"`
+	Suffix  string `json:",omitempty" terraform:"suffix"`
+	Regex   string `json:",omitempty" terraform:"regex"`
+	Invert  bool   `json:",omitempty" terraform:"invert"`
 }
 
 type ServiceRouteHTTPMatchQueryParam struct {
-	Name    string
-	Present bool   `json:",omitempty"`
-	Exact   string `json:",omitempty"`
-	Regex   string `json:",omitempty"`
+	Name    string `terraform:"name"`
+	Present bool   `json:",omitempty" terraform:"present"`
+	Exact   string `json:",omitempty" terraform:"exact"`
+	Regex   string `json:",omitempty" terraform:"regex"`
 }
 
 type ServiceRouteDestination struct {
-	Service               string               `json:",omitempty"`
-	ServiceSubset         string               `json:",omitempty" alias:"service_subset"`
-	Namespace             string               `json:",omitempty"`
-	Partition             string               `json:",omitempty"`
-	PrefixRewrite         string               `json:",omitempty" alias:"prefix_rewrite"`
-	RequestTimeout        time.Duration        `json:",omitempty" alias:"request_timeout"`
-	IdleTimeout           time.Duration        `json:",omitempty" alias:"idle_timeout"`
-	NumRetries            uint32               `json:",omitempty" alias:"num_retries"`
-	RetryOnConnectFailure bool                 `json:",omitempty" alias:"retry_on_connect_failure"`
-	RetryOnStatusCodes    []uint32             `json:",omitempty" alias:"retry_on_status_codes"`
-	RetryOn               []string             `json:",omitempty" alias:"retry_on"`
-	RequestHeaders        *HTTPHeaderModifiers `json:",omitempty" alias:"request_headers"`
-	ResponseHeaders       *HTTPHeaderModifiers `json:",omitempty" alias:"response_headers"`
+	Service               string               `json:",omitempty" terraform:"service"`
+	ServiceSubset         string               `json:",omitempty" alias:"service_subset" terraform:"service_subset"`
+	Namespace             string               `json:",omitempty" terraform:"namespace"`
+	Partition             string               `json:",omitempty" terraform:"partition"`
+	PrefixRewrite         string               `json:",omitempty" alias:"prefix_rewrite" terraform:"prefix_rewrite"`
+	RequestTimeout        time.Duration        `json:",omitempty" alias:"request_timeout" terraform:"request_timeout"`
+	IdleTimeout           time.Duration        `json:",omitempty" alias:"idle_timeout" terraform:"idle_timeout"`
+	NumRetries            uint32               `json:",omitempty" alias:"num_retries" terraform:"num_retries"`
+	RetryOnConnectFailure bool                 `json:",omitempty" alias:"retry_on_connect_failure" terraform:"retry_on_connect_failure"`
+	RetryOnStatusCodes    []uint32             `json:",omitempty" alias:"retry_on_status_codes" terraform:"retry_on_status_codes"`
+	RetryOn               []string             `json:",omitempty" alias:"retry_on" terraform:"retry_on"`
+	RequestHeaders        *HTTPHeaderModifiers `json:",omitempty" alias:"request_headers" terraform:"request_headers"`
+	ResponseHeaders       *HTTPHeaderModifiers `json:",omitempty" alias:"response_headers" terraform:"response_headers"`
 }
 
 func (e *ServiceRouteDestination) MarshalJSON() ([]byte, error) {
@@ -130,13 +130,13 @@ func (e *ServiceRouteDestination) UnmarshalJSON(data []byte) error {
 
 type ServiceSplitterConfigEntry struct {
 	Kind      string
-	Name      string
-	Partition string `json:",omitempty"`
-	Namespace string `json:",omitempty"`
+	Name      string `terraform:"name"`
+	Partition string `json:",omitempty" terraform:"partition"`
+	Namespace string `json:",omitempty" terraform:"namespace"`
 
-	Splits []ServiceSplit `json:",omitempty"`
+	Splits []ServiceSplit `json:",omitempty" terraform:"splits"`
 
-	Meta        map[string]string `json:",omitempty"`
+	Meta        map[string]string `json:",omitempty" terraform:"meta"`
 	CreateIndex uint64
 	ModifyIndex uint64
 }
@@ -150,37 +150,37 @@ func (e *ServiceSplitterConfigEntry) GetCreateIndex() uint64     { return e.Crea
 func (e *ServiceSplitterConfigEntry) GetModifyIndex() uint64     { return e.ModifyIndex }
 
 type ServiceSplit struct {
-	Weight          float32
-	Service         string               `json:",omitempty"`
-	ServiceSubset   string               `json:",omitempty" alias:"service_subset"`
-	Namespace       string               `json:",omitempty"`
-	Partition       string               `json:",omitempty"`
-	RequestHeaders  *HTTPHeaderModifiers `json:",omitempty" alias:"request_headers"`
-	ResponseHeaders *HTTPHeaderModifiers `json:",omitempty" alias:"response_headers"`
+	Weight          float32              `terraform:"weight"`
+	Service         string               `json:",omitempty" terraform:"service"`
+	ServiceSubset   string               `json:",omitempty" alias:"service_subset" terraform:"service_subset"`
+	Namespace       string               `json:",omitempty" terraform:"namespace"`
+	Partition       string               `json:",omitempty" terraform:"partition"`
+	RequestHeaders  *HTTPHeaderModifiers `json:",omitempty" alias:"request_headers" terraform:"request_headers"`
+	ResponseHeaders *HTTPHeaderModifiers `json:",omitempty" alias:"response_headers" terraform:"response_headers"`
 }
 
 type ServiceResolverConfigEntry struct {
 	Kind      string
-	Name      string
-	Partition string `json:",omitempty"`
-	Namespace string `json:",omitempty"`
+	Name      string `terraform:"name"`
+	Partition string `json:",omitempty" terraform:"partition"`
+	Namespace string `json:",omitempty" terraform:"namespace"`
 
-	DefaultSubset  string                             `json:",omitempty" alias:"default_subset"`
-	Subsets        map[string]ServiceResolverSubset   `json:",omitempty"`
-	Redirect       *ServiceResolverRedirect           `json:",omitempty"`
-	Failover       map[string]ServiceResolverFailover `json:",omitempty"`
-	ConnectTimeout time.Duration                      `json:",omitempty" alias:"connect_timeout"`
-	RequestTimeout time.Duration                      `json:",omitempty" alias:"request_timeout"`
+	DefaultSubset  string                             `json:",omitempty" alias:"default_subset" terraform:"default_subset"`
+	Subsets        map[string]ServiceResolverSubset   `json:",omitempty" terraform:"subsets"`
+	Redirect       *ServiceResolverRedirect           `json:",omitempty" terraform:"redirect"`
+	Failover       map[string]ServiceResolverFailover `json:",omitempty" terraform:"failover"`
+	ConnectTimeout time.Duration                      `json:",omitempty" alias:"connect_timeout" terraform:"connect_timeout"`
+	RequestTimeout time.Duration                      `json:",omitempty" alias:"request_timeout" terraform:"request_timeout"`
 
 	// PrioritizeByLocality controls whether the locality of services within the
 	// local partition will be used to prioritize connectivity.
-	PrioritizeByLocality *ServiceResolverPrioritizeByLocality `json:",omitempty" alias:"prioritize_by_locality"`
+	PrioritizeByLocality *ServiceResolverPrioritizeByLocality `json:",omitempty" alias:"prioritize_by_locality" terraform:"prioritize_by_locality"`
 
 	// LoadBalancer determines the load balancing policy and configuration for services
 	// issuing requests to this upstream service.
-	LoadBalancer *LoadBalancer `json:",omitempty" alias:"load_balancer"`
+	LoadBalancer *LoadBalancer `json:",omitempty" alias:"load_balancer" terraform:"load_balancer"`
 
-	Meta        map[string]string `json:",omitempty"`
+	Meta        map[string]string `json:",omitempty" terraform:"meta"`
 	CreateIndex uint64
 	ModifyIndex uint64
 }
@@ -267,15 +267,15 @@ type ServiceResolverFailoverTarget struct {
 type ServiceResolverFailoverPolicy struct {
 	// Mode specifies the type of failover that will be performed. Valid values are
 	// "sequential", "" (equivalent to "sequential") and "order-by-locality".
-	Mode    string   `json:",omitempty"`
-	Regions []string `json:",omitempty"`
+	Mode    string   `json:",omitempty" terraform:"mode"`
+	Regions []string `json:",omitempty" terraform:"regions"`
 }
 
 type ServiceResolverPrioritizeByLocality struct {
 	// Mode specifies the type of prioritization that will be performed
 	// when selecting nodes in the local partition.
 	// Valid values are: "" (default "none"), "none", and "failover".
-	Mode string `json:",omitempty"`
+	Mode string `json:",omitempty" terraform:"mode"`
 }
 
 // LoadBalancer determines the load balancing policy and configuration for services
@@ -358,13 +358,13 @@ type CookieConfig struct {
 type HTTPHeaderModifiers struct {
 	// Add is a set of name -> value pairs that should be appended to the request
 	// or response (i.e. allowing duplicates if the same header already exists).
-	Add map[string]string `json:",omitempty"`
+	Add map[string]string `json:",omitempty" terraform:"add"`
 
 	// Set is a set of name -> value pairs that should be added to the request or
 	// response, overwriting any existing header values of the same name.
-	Set map[string]string `json:",omitempty"`
+	Set map[string]string `json:",omitempty" terraform:"set"`
 
 	// Remove is the set of header names that should be stripped from the request
 	// or response.
-	Remove []string `json:",omitempty"`
+	Remove []string `json:",omitempty" terraform:"remove"`
 }

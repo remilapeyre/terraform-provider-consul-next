@@ -138,3 +138,19 @@ type ServiceHealth struct {
 	ID       string              `terraform:"id"`
 	Services []*api.ServiceEntry `terraform:"services"`
 }
+
+// Config entries
+type ProxyConfigEntry struct {
+	ID    string               `terraform:"id,computed"`
+	Entry api.ProxyConfigEntry `terraform:"-,promoted"`
+}
+
+type ServiceConfigEntry struct {
+	ID    string                 `terraform:"id,computed"`
+	Entry api.ServiceConfigEntry `terraform:"-,promoted"`
+}
+
+type ServiceRouterConfigEntry struct {
+	ID    string                       `terraform:"id,computed"`
+	Entry api.ServiceRouterConfigEntry `terraform:"-,promoted"`
+}

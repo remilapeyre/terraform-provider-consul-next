@@ -107,6 +107,10 @@ func resourceFieldInformation() (generator.FieldInformationGetter, error) {
 			info.Default = jen.Qual("github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault", "StaticString").Call(jen.Lit(default_))
 			info.Computed = true
 			info.Description += fmt.Sprintf("This defaults to `%q`", default_)
+		case int:
+			info.Default = jen.Qual("github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default", "StaticInt64").Call(jen.Lit(default_))
+			info.Computed = true
+			info.Description += fmt.Sprintf("This defaults to %v", default_)
 		case nil:
 			break
 		default:
@@ -173,7 +177,6 @@ func main() {
 		"CatalogNode":               api.CatalogNode{},
 		"CatalogService":            api.CatalogService{},
 		"Config":                    api.Config{},
-		"ConfigEntry":               structs.ConfigEntry{},
 		"Datacenters":               structs.Datacenters{},
 		"KeyPrefix":                 structs.KeyPrefix{},
 		"Keys":                      structs.Keys{},
@@ -191,6 +194,26 @@ func main() {
 		"PeeringToken":              structs.PeeringToken{},
 		"PreparedQueryDefinition":   api.PreparedQueryDefinition{},
 		"ServiceHealth":             structs.ServiceHealth{},
+
+		// Config entries
+		"ConfigEntry":                   structs.ConfigEntry{},
+		"TCPRouteConfigEntry":           api.TCPRouteConfigEntry{},
+		"HTTPRouteConfigEntry":          api.HTTPRouteConfigEntry{},
+		"RateLimitIPConfigEntry":        api.RateLimitIPConfigEntry{},
+		"InlineCertificateConfigEntry":  api.InlineCertificateConfigEntry{},
+		"IngressGatewayConfigEntry":     api.IngressGatewayConfigEntry{},
+		"TerminatingGatewayConfigEntry": api.TerminatingGatewayConfigEntry{},
+		"APIGatewayConfigEntry":         api.APIGatewayConfigEntry{},
+		"ServiceRouterConfigEntry":      structs.ServiceRouterConfigEntry{},
+		"ServiceSplitterConfigEntry":    api.ServiceSplitterConfigEntry{},
+		"ServiceResolverConfigEntry":    api.ServiceResolverConfigEntry{},
+		"MeshConfigEntry":               api.MeshConfigEntry{},
+		"ExportedServicesConfigEntry":   api.ExportedServicesConfigEntry{},
+		"SamenessGroupConfigEntry":      api.SamenessGroupConfigEntry{},
+		"ServiceConfigEntry":            structs.ServiceConfigEntry{},
+		"ProxyConfigEntry":              structs.ProxyConfigEntry{},
+		"JWTProviderConfigEntry":        api.JWTProviderConfigEntry{},
+		"ServiceIntentionsConfigEntry":  api.ServiceIntentionsConfigEntry{},
 	}
 	err := generator.GenerateModels("./internal/models", "models", objects, nil)
 	if err != nil {
@@ -250,6 +273,25 @@ func main() {
 		"namespace_role_attachment":   structs.NamespaceRoleAttachment{},
 		"area":                        api.Area{},
 		"prepared_query_definition":   api.PreparedQueryDefinition{},
+
+		// Config entries
+		"tcp_route_config_entry":           api.TCPRouteConfigEntry{},
+		"http_route_config_entry":          api.HTTPRouteConfigEntry{},
+		"rate_limit_ip_config_entry":       api.RateLimitIPConfigEntry{},
+		"inline_certificate_config_entry":  api.InlineCertificateConfigEntry{},
+		"ingress_gateway_config_entry":     api.IngressGatewayConfigEntry{},
+		"terminating_gateway_config_entry": api.TerminatingGatewayConfigEntry{},
+		"api_gateway_config_entry":         api.APIGatewayConfigEntry{},
+		"service_router_config_entry":      structs.ServiceRouterConfigEntry{},
+		"service_splitter_config_entry":    api.ServiceSplitterConfigEntry{},
+		"service_resolver_config_entry":    api.ServiceResolverConfigEntry{},
+		"mesh_config_entry":                api.MeshConfigEntry{},
+		"exported_services_config_entry":   api.ExportedServicesConfigEntry{},
+		"sameness_group_config_entry":      api.SamenessGroupConfigEntry{},
+		"service_config_entry":             structs.ServiceConfigEntry{},
+		"proxy_config_entry":               structs.ProxyConfigEntry{},
+		"jwt_provider_config_entry":        api.JWTProviderConfigEntry{},
+		"service_intentions_config_entry":  api.ServiceIntentionsConfigEntry{},
 	}
 	f, err := resourceFieldInformation()
 	if err != nil {

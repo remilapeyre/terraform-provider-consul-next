@@ -201,32 +201,32 @@ type AccessLogsConfig struct {
 type UpstreamConfiguration struct {
 	// Overrides is a slice of per-service configuration. The name field is
 	// required.
-	Overrides []*UpstreamConfig `json:",omitempty"`
+	Overrides []*UpstreamConfig `json:",omitempty" terraform:"overrides"`
 
 	// Defaults contains default configuration for all upstreams of a given
 	// service. The name field must be empty.
-	Defaults *UpstreamConfig `json:",omitempty"`
+	Defaults *UpstreamConfig `json:",omitempty" terraform:"defaults"`
 }
 
 type UpstreamConfig struct {
 	// Name is only accepted within service-defaults.upstreamConfig.overrides .
-	Name string `json:",omitempty"`
+	Name string `json:",omitempty" terraform:"name"`
 
 	// Partition is only accepted within service-defaults.upstreamConfig.overrides .
-	Partition string `json:",omitempty"`
+	Partition string `json:",omitempty" terraform:"partition"`
 
 	// Namespace is only accepted within service-defaults.upstreamConfig.overrides .
-	Namespace string `json:",omitempty"`
+	Namespace string `json:",omitempty" terraform:"namespace"`
 
 	// Peer is only accepted within service-defaults.upstreamConfig.overrides .
-	Peer string `json:",omitempty"`
+	Peer string `json:",omitempty" terraform:"peer"`
 
 	// EnvoyListenerJSON is a complete override ("escape hatch") for the upstream's
 	// listener.
 	//
 	// Note: This escape hatch is NOT compatible with the discovery chain and
 	// will be ignored if a discovery chain is active.
-	EnvoyListenerJSON string `json:",omitempty" alias:"envoy_listener_json"`
+	EnvoyListenerJSON string `json:",omitempty" alias:"envoy_listener_json" terraform:"envoy_listener_json"`
 
 	// EnvoyClusterJSON is a complete override ("escape hatch") for the upstream's
 	// cluster. The Connect client TLS certificate and context will be injected
@@ -234,65 +234,65 @@ type UpstreamConfig struct {
 	//
 	// Note: This escape hatch is NOT compatible with the discovery chain and
 	// will be ignored if a discovery chain is active.
-	EnvoyClusterJSON string `json:",omitempty" alias:"envoy_cluster_json"`
+	EnvoyClusterJSON string `json:",omitempty" alias:"envoy_cluster_json" terraform:"envoy_cluster_json"`
 
 	// Protocol describes the upstream's service protocol. Valid values are "tcp",
 	// "http" and "grpc". Anything else is treated as tcp. The enables protocol
 	// aware features like per-request metrics and connection pooling, tracing,
 	// routing etc.
-	Protocol string `json:",omitempty"`
+	Protocol string `json:",omitempty" terraform:"protocol"`
 
 	// ConnectTimeoutMs is the number of milliseconds to timeout making a new
 	// connection to this upstream. Defaults to 5000 (5 seconds) if not set.
-	ConnectTimeoutMs int `json:",omitempty" alias:"connect_timeout_ms"`
+	ConnectTimeoutMs int `json:",omitempty" alias:"connect_timeout_ms" terraform:"connect_timeout_ms"`
 
 	// Limits are the set of limits that are applied to the proxy for a specific upstream of a
 	// service instance.
-	Limits *UpstreamLimits `json:",omitempty"`
+	Limits *UpstreamLimits `json:",omitempty" terraform:"limits"`
 
 	// PassiveHealthCheck configuration determines how upstream proxy instances will
 	// be monitored for removal from the load balancing pool.
-	PassiveHealthCheck *PassiveHealthCheck `json:",omitempty" alias:"passive_health_check"`
+	PassiveHealthCheck *PassiveHealthCheck `json:",omitempty" alias:"passive_health_check" terraform:"passive_health_check"`
 
 	// MeshGatewayConfig controls how Mesh Gateways are configured and used
-	MeshGateway MeshGatewayConfig `json:",omitempty" alias:"mesh_gateway" `
+	MeshGateway MeshGatewayConfig `json:",omitempty" alias:"mesh_gateway"  terraform:"mesh_gateway,computed"`
 
 	// BalanceOutboundConnections indicates that the proxy should attempt to evenly distribute
 	// outbound connections across worker threads. Only used by envoy proxies.
-	BalanceOutboundConnections string `json:",omitempty" alias:"balance_outbound_connections"`
+	BalanceOutboundConnections string `json:",omitempty" alias:"balance_outbound_connections" terraform:"balance_outbound_connections"`
 }
 
 // DestinationConfig represents a virtual service, i.e. one that is external to Consul
 type DestinationConfig struct {
 	// Addresses of the endpoint; hostname or IP
-	Addresses []string `json:",omitempty"`
+	Addresses []string `json:",omitempty" terraform:"addresses"`
 
 	// Port allowed within this endpoint
-	Port int `json:",omitempty"`
+	Port int `json:",omitempty" terraform:"port"`
 }
 
 type PassiveHealthCheck struct {
 	// Interval between health check analysis sweeps. Each sweep may remove
 	// hosts or return hosts to the pool.
-	Interval time.Duration `json:",omitempty"`
+	Interval time.Duration `json:",omitempty" terraform:"interval"`
 
 	// MaxFailures is the count of consecutive failures that results in a host
 	// being removed from the pool.
-	MaxFailures uint32 `alias:"max_failures"`
+	MaxFailures uint32 `alias:"max_failures" terraform:"max_failures"`
 
 	// EnforcingConsecutive5xx is the % chance that a host will be actually ejected
 	// when an outlier status is detected through consecutive 5xx.
 	// This setting can be used to disable ejection or to ramp it up slowly.
-	EnforcingConsecutive5xx *uint32 `json:",omitempty" alias:"enforcing_consecutive_5xx"`
+	EnforcingConsecutive5xx *uint32 `json:",omitempty" alias:"enforcing_consecutive_5xx" terraform:"enforcing_consecutive5xx"`
 
 	// The maximum % of an upstream cluster that can be ejected due to outlier detection.
 	// Defaults to 10% but will eject at least one host regardless of the value.
-	MaxEjectionPercent *uint32 `json:",omitempty" alias:"max_ejection_percent"`
+	MaxEjectionPercent *uint32 `json:",omitempty" alias:"max_ejection_percent" terraform:"max_ejection_percent"`
 
 	// The base time that a host is ejected for. The real time is equal to the base time
 	// multiplied by the number of times the host has been ejected and is capped by
 	// max_ejection_time (Default 300s). Defaults to 30000ms or 30s.
-	BaseEjectionTime *time.Duration `json:",omitempty" alias:"base_ejection_time"`
+	BaseEjectionTime *time.Duration `json:",omitempty" alias:"base_ejection_time" terraform:"base_ejection_time"`
 }
 
 // UpstreamLimits describes the limits that are associated with a specific
@@ -300,40 +300,40 @@ type PassiveHealthCheck struct {
 type UpstreamLimits struct {
 	// MaxConnections is the maximum number of connections the local proxy can
 	// make to the upstream service.
-	MaxConnections *int `alias:"max_connections"`
+	MaxConnections *int `alias:"max_connections" terraform:"max_connections"`
 
 	// MaxPendingRequests is the maximum number of requests that will be queued
 	// waiting for an available connection. This is mostly applicable to HTTP/1.1
 	// clusters since all HTTP/2 requests are streamed over a single
 	// connection.
-	MaxPendingRequests *int `alias:"max_pending_requests"`
+	MaxPendingRequests *int `alias:"max_pending_requests" terraform:"max_pending_requests"`
 
 	// MaxConcurrentRequests is the maximum number of in-flight requests that will be allowed
 	// to the upstream cluster at a point in time. This is mostly applicable to HTTP/2
 	// clusters since all HTTP/1.1 requests are limited by MaxConnections.
-	MaxConcurrentRequests *int `alias:"max_concurrent_requests"`
+	MaxConcurrentRequests *int `alias:"max_concurrent_requests" terraform:"max_concurrent_requests"`
 }
 
 type ServiceConfigEntry struct {
 	Kind                      string
-	Name                      string
-	Partition                 string                  `json:",omitempty"`
-	Namespace                 string                  `json:",omitempty"`
-	Protocol                  string                  `json:",omitempty"`
-	Mode                      ProxyMode               `json:",omitempty"`
-	TransparentProxy          *TransparentProxyConfig `json:",omitempty" alias:"transparent_proxy"`
-	MutualTLSMode             MutualTLSMode           `json:",omitempty" alias:"mutual_tls_mode"`
-	MeshGateway               MeshGatewayConfig       `json:",omitempty" alias:"mesh_gateway"`
-	Expose                    ExposeConfig            `json:",omitempty"`
-	ExternalSNI               string                  `json:",omitempty" alias:"external_sni"`
-	UpstreamConfig            *UpstreamConfiguration  `json:",omitempty" alias:"upstream_config"`
-	Destination               *DestinationConfig      `json:",omitempty"`
-	MaxInboundConnections     int                     `json:",omitempty" alias:"max_inbound_connections"`
-	LocalConnectTimeoutMs     int                     `json:",omitempty" alias:"local_connect_timeout_ms"`
-	LocalRequestTimeoutMs     int                     `json:",omitempty" alias:"local_request_timeout_ms"`
-	BalanceInboundConnections string                  `json:",omitempty" alias:"balance_inbound_connections"`
-	EnvoyExtensions           []EnvoyExtension        `json:",omitempty" alias:"envoy_extensions"`
-	Meta                      map[string]string       `json:",omitempty"`
+	Name                      string                  `terraform:"name"`
+	Partition                 string                  `json:",omitempty" terraform:"partition"`
+	Namespace                 string                  `json:",omitempty" terraform:"namespace"`
+	Protocol                  string                  `json:",omitempty" terraform:"protocol"`
+	Mode                      ProxyMode               `json:",omitempty" terraform:"mode"`
+	TransparentProxy          *TransparentProxyConfig `json:",omitempty" alias:"transparent_proxy" terraform:"transparent_proxy,computed"`
+	MutualTLSMode             MutualTLSMode           `json:",omitempty" alias:"mutual_tls_mode" terraform:"mutual_tls_mode"`
+	MeshGateway               MeshGatewayConfig       `json:",omitempty" alias:"mesh_gateway" terraform:"mesh_gateway,computed"`
+	Expose                    ExposeConfig            `json:",omitempty" terraform:"expose,computed"`
+	ExternalSNI               string                  `json:",omitempty" alias:"external_sni" terraform:"external_sni"`
+	UpstreamConfig            *UpstreamConfiguration  `json:",omitempty" alias:"upstream_config" terraform:"upstream_config"`
+	Destination               *DestinationConfig      `json:",omitempty" terraform:"destination"`
+	MaxInboundConnections     int                     `json:",omitempty" alias:"max_inbound_connections" terraform:"max_inbound_connections"`
+	LocalConnectTimeoutMs     int                     `json:",omitempty" alias:"local_connect_timeout_ms" terraform:"local_connect_timeout_ms"`
+	LocalRequestTimeoutMs     int                     `json:",omitempty" alias:"local_request_timeout_ms" terraform:"local_request_timeout_ms"`
+	BalanceInboundConnections string                  `json:",omitempty" alias:"balance_inbound_connections" terraform:"balance_inbound_connections"`
+	EnvoyExtensions           []EnvoyExtension        `json:",omitempty" alias:"envoy_extensions" terraform:"envoy_extensions"`
+	Meta                      map[string]string       `json:",omitempty" terraform:"meta"`
 	CreateIndex               uint64
 	ModifyIndex               uint64
 }
@@ -348,21 +348,21 @@ func (s *ServiceConfigEntry) GetModifyIndex() uint64     { return s.ModifyIndex 
 
 type ProxyConfigEntry struct {
 	Kind                 string
-	Name                 string
-	Partition            string                               `json:",omitempty"`
-	Namespace            string                               `json:",omitempty"`
-	Mode                 ProxyMode                            `json:",omitempty"`
-	TransparentProxy     *TransparentProxyConfig              `json:",omitempty" alias:"transparent_proxy"`
-	MutualTLSMode        MutualTLSMode                        `json:",omitempty" alias:"mutual_tls_mode"`
-	Config               map[string]interface{}               `json:",omitempty"`
-	MeshGateway          MeshGatewayConfig                    `json:",omitempty" alias:"mesh_gateway"`
-	Expose               ExposeConfig                         `json:",omitempty"`
-	AccessLogs           *AccessLogsConfig                    `json:",omitempty" alias:"access_logs"`
-	EnvoyExtensions      []EnvoyExtension                     `json:",omitempty" alias:"envoy_extensions"`
-	FailoverPolicy       *ServiceResolverFailoverPolicy       `json:",omitempty" alias:"failover_policy"`
-	PrioritizeByLocality *ServiceResolverPrioritizeByLocality `json:",omitempty" alias:"prioritize_by_locality"`
+	Name                 string                               `terraform:"name"`
+	Partition            string                               `json:",omitempty" terraform:"partition"`
+	Namespace            string                               `json:",omitempty" terraform:"namespace"`
+	Mode                 ProxyMode                            `json:",omitempty" terraform:"mode"`
+	TransparentProxy     *TransparentProxyConfig              `json:",omitempty" alias:"transparent_proxy" terraform:"transparent_proxy,computed"`
+	MutualTLSMode        MutualTLSMode                        `json:",omitempty" alias:"mutual_tls_mode" terraform:"mutual_tls_mode"`
+	Config               map[string]interface{}               `json:",omitempty" terraform:"config"`
+	MeshGateway          MeshGatewayConfig                    `json:",omitempty" alias:"mesh_gateway" terraform:"mesh_gateway,computed"`
+	Expose               ExposeConfig                         `json:",omitempty" terraform:"expose,computed"`
+	AccessLogs           *AccessLogsConfig                    `json:",omitempty" alias:"access_logs" terraform:"access_logs,computed"`
+	EnvoyExtensions      []EnvoyExtension                     `json:",omitempty" alias:"envoy_extensions" terraform:"envoy_extensions"`
+	FailoverPolicy       *ServiceResolverFailoverPolicy       `json:",omitempty" alias:"failover_policy" terraform:"failover_policy"`
+	PrioritizeByLocality *ServiceResolverPrioritizeByLocality `json:",omitempty" alias:"prioritize_by_locality" terraform:"prioritize_by_locality"`
 
-	Meta        map[string]string `json:",omitempty"`
+	Meta        map[string]string `json:",omitempty" terraform:"meta"`
 	CreateIndex uint64
 	ModifyIndex uint64
 }

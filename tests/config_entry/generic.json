@@ -1,0 +1,10 @@
+{
+  "consul_config_entry.test": {
+    "config": "{\"AccessLogs\":{},\"Config\":{\"handshake_timeout_ms\":10000,\"local_connect_timeout_ms\":1000},\"Expose\":{},\"MeshGateway\":{},\"TransparentProxy\":{}}",
+    "id": "proxy-defaults/global",
+    "kind": "proxy-defaults",
+    "name": "global",
+    "namespace": "",
+    "partition": ""
+  }
+}

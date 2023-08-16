@@ -7,30 +7,30 @@ import "time"
 
 type ServiceIntentionsConfigEntry struct {
 	Kind      string
-	Name      string
-	Partition string `json:",omitempty"`
-	Namespace string `json:",omitempty"`
+	Name      string `terraform:"name"`
+	Partition string `json:",omitempty" terraform:"partition"`
+	Namespace string `json:",omitempty" terraform:"namespace"`
 
-	Sources []*SourceIntention
-	JWT     *IntentionJWTRequirement `json:",omitempty"`
+	Sources []*SourceIntention       `terraform:"sources"`
+	JWT     *IntentionJWTRequirement `json:",omitempty" terraform:"jwt"`
 
-	Meta map[string]string `json:",omitempty"`
+	Meta map[string]string `json:",omitempty" terraform:"meta"`
 
 	CreateIndex uint64
 	ModifyIndex uint64
 }
 
 type SourceIntention struct {
-	Name          string
-	Peer          string                 `json:",omitempty"`
-	Partition     string                 `json:",omitempty"`
-	Namespace     string                 `json:",omitempty"`
-	SamenessGroup string                 `json:",omitempty" alias:"sameness_group"`
-	Action        IntentionAction        `json:",omitempty"`
-	Permissions   []*IntentionPermission `json:",omitempty"`
-	Precedence    int
-	Type          IntentionSourceType
-	Description   string `json:",omitempty"`
+	Name          string                 `terraform:"name"`
+	Peer          string                 `json:",omitempty" terraform:"peer"`
+	Partition     string                 `json:",omitempty" terraform:"partition"`
+	Namespace     string                 `json:",omitempty" terraform:"namespace"`
+	SamenessGroup string                 `json:",omitempty" alias:"sameness_group" terraform:"sameness_group"`
+	Action        IntentionAction        `json:",omitempty" terraform:"action"`
+	Permissions   []*IntentionPermission `json:",omitempty" terraform:"permissions"`
+	Precedence    int                    `terraform:"precedence"`
+	Type          IntentionSourceType    `terraform:"type"`
+	Description   string                 `json:",omitempty" terraform:"description"`
 
 	LegacyID         string            `json:",omitempty" alias:"legacy_id"`
 	LegacyMeta       map[string]string `json:",omitempty" alias:"legacy_meta"`
@@ -47,9 +47,9 @@ func (e *ServiceIntentionsConfigEntry) GetCreateIndex() uint64     { return e.Cr
 func (e *ServiceIntentionsConfigEntry) GetModifyIndex() uint64     { return e.ModifyIndex }
 
 type IntentionPermission struct {
-	Action IntentionAction
-	HTTP   *IntentionHTTPPermission `json:",omitempty"`
-	JWT    *IntentionJWTRequirement `json:",omitempty"`
+	Action IntentionAction          `terraform:"action"`
+	HTTP   *IntentionHTTPPermission `json:",omitempty" terraform:"http"`
+	JWT    *IntentionJWTRequirement `json:",omitempty" terraform:"jwt"`
 }
 
 type IntentionHTTPPermission struct {
@@ -74,21 +74,21 @@ type IntentionHTTPHeaderPermission struct {
 
 type IntentionJWTRequirement struct {
 	// Providers is a list of providers to consider when verifying a JWT.
-	Providers []*IntentionJWTProvider `json:",omitempty"`
+	Providers []*IntentionJWTProvider `json:",omitempty" terraform:"providers"`
 }
 
 type IntentionJWTProvider struct {
 	// Name is the name of the JWT provider. There MUST be a corresponding
 	// "jwt-provider" config entry with this name.
-	Name string `json:",omitempty"`
+	Name string `json:",omitempty" terraform:"name"`
 
 	// VerifyClaims is a list of additional claims to verify in a JWT's payload.
-	VerifyClaims []*IntentionJWTClaimVerification `json:",omitempty" alias:"verify_claims"`
+	VerifyClaims []*IntentionJWTClaimVerification `json:",omitempty" alias:"verify_claims" terraform:"verify_claims"`
 }
 
 type IntentionJWTClaimVerification struct {
 	// Path is the path to the claim in the token JSON.
-	Path []string `json:",omitempty"`
+	Path []string `json:",omitempty" terraform:"path"`
 
 	// Value is the expected value at the given path:
 	// - If the type at the path is a list then we verify
@@ -96,5 +96,5 @@ type IntentionJWTClaimVerification struct {
 	//
 	// - If the type at the path is a string then we verify
 	//   that this value matches.
-	Value string `json:",omitempty"`
+	Value string `json:",omitempty" terraform:"value"`
 }
