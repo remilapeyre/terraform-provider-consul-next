@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/Lenstra/terraform-plugin-generator v0.0.0-20230815145806-37a9fa808896
-	github.com/dave/jennifer v1.6.1
+	github.com/dave/jennifer v1.7.0
 	github.com/hashicorp/consul/api v1.24.0
 	github.com/hashicorp/terraform-plugin-docs v0.16.0
 	github.com/hashicorp/terraform-plugin-framework v1.3.4
