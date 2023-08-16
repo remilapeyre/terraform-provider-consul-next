@@ -77,5 +77,8 @@ jobs:
       - run: go mod download
       - env:
           TF_ACC: "1"
-        run: go test -v -cover ./internal/provider/
+        run: |
+          curl -LO https://releases.hashicorp.com/consul/1.16.1/consul_1.16.1_linux_amd64.zip
+          sudo unzip consul_1.16.1_linux_amd64.zip consul -d /usr/local/bin
+          go test -v -cover ./...
         timeout-minutes: 10
