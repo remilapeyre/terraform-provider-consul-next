@@ -17,7 +17,6 @@ description: |-
 
 ### Optional
 
-- `auth_method` (String) This defaults to `""`
 - `auth_method_namespace` (String) This defaults to `""`
 - `description` (String) This defaults to `""`
 - `expiration_ttl` (String) This defaults to `"0s"`
@@ -32,6 +31,7 @@ description: |-
 ### Read-Only
 
 - `accessor_id` (String)
+- `auth_method` (String)
 - `create_time` (String)
 - `expiration_time` (String)
 - `id` (String) The ID of this resource.

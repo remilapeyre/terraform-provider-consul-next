@@ -41,7 +41,7 @@ type ACLToken struct {
 	ServiceIdentities []*ACLServiceIdentity `json:",omitempty" terraform:"service_identities"`
 	NodeIdentities    []*ACLNodeIdentity    `json:",omitempty" terraform:"node_identities"`
 	Local             bool                  `terraform:"local"`
-	AuthMethod        string                `json:",omitempty" terraform:"auth_method"`
+	AuthMethod        string                `json:",omitempty" terraform:"auth_method,computed"`
 	ExpirationTTL     time.Duration         `json:",omitempty" terraform:"expiration_ttl"`
 	ExpirationTime    *time.Time            `json:",omitempty" terraform:"expiration_time,computed"`
 	CreateTime        time.Time             `json:",omitempty" terraform:"create_time,computed"`

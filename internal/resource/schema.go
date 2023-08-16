@@ -339,10 +339,7 @@ func aclTokenSchema() schema.Schema {
 				Default:             booldefault.StaticBool(false),
 			},
 			"auth_method": schema.StringAttribute{
-				Optional:            true,
-				Computed:            true,
-				MarkdownDescription: "This defaults to `\"\"`",
-				Default:             stringdefault.StaticString(""),
+				Computed: true,
 			},
 			"expiration_ttl": schema.StringAttribute{
 				Optional:            true,

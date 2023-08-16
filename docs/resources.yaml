@@ -94,8 +94,6 @@ acl_token:
     default: "0s"
   namespace:
     default: ""
-  auth_method:
-    default: ""
   description:
     default: ""
   partition:
