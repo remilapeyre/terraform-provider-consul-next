@@ -7,7 +7,7 @@ require (
 	github.com/dave/jennifer v1.7.0
 	github.com/hashicorp/consul/api v1.24.0
 	github.com/hashicorp/terraform-plugin-docs v0.16.0
-	github.com/hashicorp/terraform-plugin-framework v1.3.4
+	github.com/hashicorp/terraform-plugin-framework v1.3.5
 	github.com/hashicorp/terraform-plugin-go v0.18.0
 	github.com/hashicorp/terraform-plugin-testing v1.4.0
 	github.com/remilapeyre/terraform-plugin-test v0.2.1-0.20230815214330-23229437f263
