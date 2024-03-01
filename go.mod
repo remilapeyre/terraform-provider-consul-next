@@ -12,7 +12,7 @@ require (
 	github.com/hashicorp/terraform-plugin-testing v1.5.1
 	github.com/remilapeyre/terraform-plugin-test v0.2.1-0.20230815214330-23229437f263
 	github.com/sethvargo/go-retry v0.2.4
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 	golang.org/x/exp v0.0.0-20230809150735-7b3493d9a819
 	gopkg.in/yaml.v3 v3.0.1
 )
